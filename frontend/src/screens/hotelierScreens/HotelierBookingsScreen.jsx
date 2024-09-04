@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Table, Container, Row, Col, Card, Button, Collapse, Modal, Pagination } from 'react-bootstrap';
 import { useGetHotelierBookingsQuery } from '../../slices/hotelierApiSlice';
 import { useCancelBookingMutation } from '../../slices/usersApiSlice';
-import Loader from '../../components/userComponents/Loader';
+import Loader from '../../components/generalComponents/Loader';
 import HotelierLayout from '../../components/hotelierComponents/HotelierLayout';
 import { FaChevronDown, FaTimes } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';

@@ -7,10 +7,9 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import { setCredentials } from "../../slices/authSlice";
 import {
   useGetUserProfileQuery,

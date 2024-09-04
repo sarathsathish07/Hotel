@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUploadHotelCertificateMutation, useGetHotelierProfileQuery } from "../../slices/hotelierApiSlice";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import bgImage from "../../assets/images/bgimage.jpg";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
 

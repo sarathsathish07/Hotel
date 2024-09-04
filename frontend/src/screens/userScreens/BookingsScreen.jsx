@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { Table, Container, Row, Col, Card, Button, Collapse, Form, Modal, Pagination } from "react-bootstrap";
 import Rating from 'react-rating';
 import { useGetBookingsQuery, useAddReviewMutation, useGetReviewsQuery, useCancelBookingMutation, useCreateChatRoomMutation } from "../../slices/usersApiSlice.js";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader.jsx";
 import Sidebar from "../../components/userComponents/Sidebar.jsx";
 import bgImage from "../../assets/images/bgimage.jpg";
 import Footer from '../../components/userComponents/Footer';

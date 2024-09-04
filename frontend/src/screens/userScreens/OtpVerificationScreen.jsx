@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import {
   useVerifyOtpMutation,
   useResendOtpMutation,

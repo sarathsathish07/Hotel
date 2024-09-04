@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { useGetHotelByHotelIdQuery } from "../../slices/hotelierApiSlice.js";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout.jsx";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader.jsx";
 
 const HotelDetailScreen = () => {
   const { id } = useParams();

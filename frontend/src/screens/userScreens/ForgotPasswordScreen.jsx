@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useSendPasswordResetEmailMutation } from '../../slices/usersApiSlice';
 import { toast } from 'react-toastify';
-import Loader from "../../components/userComponents/Loader";
+import Loader from '../../components/generalComponents/Loader';
 
 
 const ForgotPasswordScreen = () => {

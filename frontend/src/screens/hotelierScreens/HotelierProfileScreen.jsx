@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Card, Container, Row, Col, Image, Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader.jsx";
 import { setCredentials } from "../../slices/hotelierAuthSlice.js";
 import { useHotelierUpdateUserMutation, useGetHotelierProfileQuery } from "../../slices/hotelierApiSlice.js";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout.jsx";

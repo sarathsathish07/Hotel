@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAddRoomMutation } from "../../slices/hotelierApiSlice";
 import { toast } from "react-toastify";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 
 const AddRoomScreen = () => {
   const { hotelId } = useParams();

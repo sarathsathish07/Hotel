@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHotelierLoginMutation,useResendHotelierOtpMutation } from "../../slices/hotelierApiSlice.js";
 import { setCredentials } from "../../slices/hotelierAuthSlice.js";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader.jsx";
 import loginImage from "../../assets/images/hotel1.jpg";
 
 const HotelierLoginScreen = () => {

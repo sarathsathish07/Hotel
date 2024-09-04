@@ -4,7 +4,7 @@ import { Container, Row, Col, Image, Nav, Tab, Card, Button, Modal, Form } from 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useGetHotelByIdQuery, useCheckRoomAvailabilityMutation, useSaveBookingMutation, useGetReviewsByHotelIdQuery } from '../../slices/usersApiSlice';
-import Loader from '../../components/userComponents/Loader';
+import Loader from '../../components/generalComponents/Loader';
 import Footer from '../../components/userComponents/Footer';
 import { toast } from 'react-toastify';
 import Rating from 'react-rating';

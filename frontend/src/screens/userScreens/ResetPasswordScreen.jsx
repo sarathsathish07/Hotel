@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useResetPasswordMutation } from '../../slices/usersApiSlice';
 import { toast } from 'react-toastify';
-import Loader from '../../components/userComponents/Loader';
+import Loader from '../../components/generalComponents/Loader';
 
 const ResetPasswordScreen = () => {
   const [password, setPassword] = useState('');

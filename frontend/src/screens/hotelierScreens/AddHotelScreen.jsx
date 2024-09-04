@@ -4,7 +4,7 @@ import { useAddHotelMutation } from "../../slices/hotelierApiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 
 const AddHotelScreen = () => {
   const [name, setName] = useState("");

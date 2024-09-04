@@ -3,7 +3,7 @@ import { Container, Card, Row, Col, Button, Form, Accordion } from "react-bootst
 import { useGetHotelsDataMutation, useGetRoomsDataMutation } from "../../slices/usersApiSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 import bgImage from "../../assets/images/bg-1.png";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import Footer from "../../components/userComponents/Footer";
 import { toast } from "react-toastify";
 

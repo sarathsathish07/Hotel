@@ -5,7 +5,7 @@ import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Loader from "../../components/userComponents/Loader.jsx";
+import Loader from "../../components/generalComponents/Loader.jsx";
 
 const RegisteredHotelsScreen = () => {
   const { data: hotels, isLoading, isError, refetch } = useGetHotelsQuery();

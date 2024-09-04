@@ -7,7 +7,7 @@ import { setCredentials } from "../../slices/authSlice";
 import { jwtDecode } from 'jwt-decode';
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import loginImage from "../../assets/images/hotel1.jpg";
 
 const LoginScreen = () => {

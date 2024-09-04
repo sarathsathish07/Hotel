@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useGetRoomByRoomIdQuery } from '../../slices/usersApiSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { useSaveBookingMutation, useUpdateBookingStatusMutation } from '../../slices/usersApiSlice.js';
-import Loader from '../../components/userComponents/Loader.jsx';
+import Loader from '../../components/generalComponents/Loader.jsx';
 import { toast } from 'react-toastify';
 import { Container, Row, Col, Card, ListGroup, Button, Form } from 'react-bootstrap';
 import Footer from '../../components/userComponents/Footer';

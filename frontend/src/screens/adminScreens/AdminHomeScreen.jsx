@@ -9,7 +9,7 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Loader from '../../components/userComponents/Loader.jsx';
+import Loader from '../../components/generalComponents/Loader.jsx';
 
 ChartJS.register(...registerables);
 

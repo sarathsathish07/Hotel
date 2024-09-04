@@ -7,7 +7,7 @@ import {
 } from "../../slices/adminApiSlice";
 import AdminLayout from "../../components/adminComponents/AdminLayout";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 
 const AdminVerificationScreen = () => {
   const {

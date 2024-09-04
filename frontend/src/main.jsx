@@ -45,7 +45,7 @@ import EditRoomScreen from "./screens/hotelierScreens/EditRoomScreen.jsx";
 import WalletScreen from "./screens/userScreens/WalletScreen.jsx";
 import ChatScreen from "./screens/userScreens/ChatScreen.jsx";
 import HotelierChatScreen from "./screens/hotelierScreens/HotelierChatScreen.jsx";
-import ErrorBoundaryWrapper from "./components/userComponents/ErrorBoundary.jsx";
+import ErrorBoundaryWrapper from "./components/generalComponents/ErrorBoundary.jsx";
 import store from "./store.js";
 import { Provider } from "react-redux";
 

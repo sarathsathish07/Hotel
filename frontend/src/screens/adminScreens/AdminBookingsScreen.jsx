@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Table, Container, Row, Col, Card, Button, Collapse, Form as BootstrapForm, Pagination } from 'react-bootstrap';
 import { useGetAllBookingsQuery } from '../../slices/adminApiSlice';
-import Loader from '../../components/userComponents/Loader';
+import Loader from '../../components/generalComponents/Loader';
 import AdminLayout from '../../components/adminComponents/AdminLayout';
 import { FaChevronDown } from 'react-icons/fa';
 

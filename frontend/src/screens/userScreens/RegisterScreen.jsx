@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader";
+import Loader from "../../components/generalComponents/Loader";
 import { useRegisterMutation,useGoogleLoginMutation } from "../../slices/usersApiSlice";
 import registerImage from "../../assets/images/hotel1.jpg";
 import { jwtDecode } from 'jwt-decode';

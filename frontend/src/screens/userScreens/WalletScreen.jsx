@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAddCashToWalletMutation, useGetWalletTransactionsQuery, useGetWalletBalanceQuery } from '../../slices/usersApiSlice';
 import { Container, Nav, Row, Col, Card, ListGroup, Button, Form, Image } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import Loader from '../../components/userComponents/Loader';
 import Footer from '../../components/userComponents/Footer';
 import bgImage from "../../assets/images/bgimage.jpg";
 import { useSelector } from "react-redux";

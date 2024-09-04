@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../../slices/adminAuthSlice.js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Loader from "../../components/userComponents/Loader.jsx";
+import Loader from "../../components/generalComponents/Loader.jsx";
 
 function AdminLoginScreen() {
   const [email, setEmail] = useState("");
