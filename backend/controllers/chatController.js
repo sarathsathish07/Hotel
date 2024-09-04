@@ -1,7 +1,4 @@
 import expressAsyncHandler from 'express-async-handler';
-import ChatRoom from '../models/chatRoomModel.js';
-import Message from '../models/messageModel.js';
-import Hotel from '../models/hotelModel.js';
 import chatRoomService from '../services/chatRoomService.js';
 import messageService from '../services/messageService.js';
 

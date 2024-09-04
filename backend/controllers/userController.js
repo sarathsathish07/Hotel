@@ -1,24 +1,15 @@
 import expressAsyncHandler from 'express-async-handler';
-import * as userService from '../services/userService.js';
-import walletService from '../services/walletService.js';
-import reviewService from '../services/reviewService.js';
-import bookingService from '../services/bookingService.js';
-import notificationService from '../services/notificationService.js';
-import { generateToken } from '../services/userService.js';
+import userService from '../services/userService.js';
 import User from '../models/userModel.js';
-import Wallet from '../models/walletModel.js';
-import RatingReview from '../models/ratingReviewModel.js';
-import Booking from '../models/bookingModel.js';
 import Hotel from '../models/hotelModel.js';
 import Room from '../models/roomModel.js';
-import Notification from '../models/notificationModel.js';
-import HotelierNotification from '../models/hotelierNotifications.js';
+
 
 const authUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await userService.authenticateUser(email, password);
-    generateToken(res, user._id);
+    userService.generateToken(res, user._id);
     res.status(200).json({
       status: 'success',
       data: {
@@ -36,6 +27,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
     });
   }
 });
+
 
 const googleLogin = async (req, res) => {
   const { googleName: name, googleEmail: email } = req.body;
@@ -82,7 +74,6 @@ const googleLogin = async (req, res) => {
     });
   }
 };
-
 
 
 const registerUser = expressAsyncHandler(async (req, res) => {
@@ -364,198 +355,6 @@ const resetPassword = expressAsyncHandler(async (req, res) => {
 });
 
 
-const getWalletTransactions = expressAsyncHandler(async (req, res) => {
-  try {
-    const { user } = req;
-    const { data, message } = await walletService.getWalletTransactions(user._id);
-
-    res.status(200).json({
-      status: 'success',
-      data: data,
-      message: message,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-const addCashToWallet = expressAsyncHandler(async (req, res) => {
-  const { amount } = req.body;
-
-  try {
-    const newTransaction = await walletService.addCashToWallet(req.user._id, Number(amount));
-
-    res.status(201).json({
-      status: 'success',
-      data: newTransaction,
-      message: 'Amount added to wallet successfully',
-    });
-  } catch (error) {
-    res.status(error.message === 'Invalid amount' ? 400 : 500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-
-const getWalletBalance = expressAsyncHandler(async (req, res) => {
-  try {
-    const balance = await walletService.getWalletBalance(req.user._id);
-
-    res.status(200).json({
-      status: 'success',
-      data: { balance },
-      message: 'Wallet balance retrieved successfully',
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-const addReview = expressAsyncHandler(async (req, res) => {
-  const { rating, review, bookingId } = req.body;
-
-  try {
-    const newReview = await reviewService.addReview(rating, review, bookingId);
-
-    res.status(201).json({
-      status: 'success',
-      data: newReview,
-      message: 'Review added successfully',
-    });
-  } catch (error) {
-    res.status(error.message === 'Booking not found' ? 404 : 500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-const getReviews = expressAsyncHandler(async (req, res) => {
-  try {
-    const reviews = await reviewService.getReviews(req.params.hotelId);
-
-    res.status(200).json({
-      status: 'success',
-      data: reviews,
-      message: 'Reviews retrieved successfully',
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-const getBookingReviews = expressAsyncHandler(async (req, res) => {
-  try {
-    const reviews = await reviewService.getBookingReviews();
-
-    res.status(200).json({
-      status: 'success',
-      data: reviews,
-      message: 'Booking reviews retrieved successfully',
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-
-const cancelBooking = expressAsyncHandler(async (req, res) => {
-  try {
-    const { bookingId } = req.params;
-
-    const { refundAmount, refundPercentage } = await bookingService.cancelBooking(bookingId);
-
-    const io = req.app.get('io');
-    io.emit('newNotification', {
-      userId: req.user._id,
-      message: `Your booking has been cancelled and ${refundPercentage}% amount has been refunded to your wallet.`,
-      createdAt: new Date(),
-      isRead: false,
-    });
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        refundAmount,
-        refundPercentage,
-      },
-      message: `Booking successfully cancelled and ${refundPercentage}% amount refunded to wallet`,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-
-const getUnreadNotifications = expressAsyncHandler(async (req, res) => {
-  try {
-    const notifications = await notificationService.getUnreadNotifications(req.user._id);
-
-    res.status(200).json({
-      status: 'success',
-      data: notifications,
-      message: 'Unread notifications retrieved successfully',
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: 'Server error',
-    });
-  }
-});
-
-
-const markNotificationAsRead = expressAsyncHandler(async (req, res) => {
-  try {
-    const { id } = req.params;
-    await notificationService.markNotificationAsRead(id, req.user._id);
-
-    res.status(200).json({
-      status: 'success',
-      data: null,
-      message: 'Notification marked as read',
-    });
-  } catch (error) {
-    res.status(error.message === 'Notification not found' ? 404 : 401).json({
-      status: 'error',
-      data: null,
-      message: error.message,
-    });
-  }
-});
-
-
-
 export {
   authUser, 
   registerUser,
@@ -569,13 +368,4 @@ export {
   sendPasswordResetEmail,
   resetPassword,
   googleLogin,
-  getWalletTransactions,
-  addCashToWallet,
-  getWalletBalance,
-  addReview,
-  getReviews,
-  getBookingReviews,
-  cancelBooking,
-  getUnreadNotifications,
-  markNotificationAsRead 
 };

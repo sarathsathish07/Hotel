@@ -1,9 +1,5 @@
 import expressAsyncHandler from 'express-async-handler';
 import adminService from '../services/adminService.js';
-import User from '../models/userModel.js';
-import Hotel from '../models/hotelModel.js';
-import Hotelier from '../models/hotelierModel.js';
-import Booking from '../models/bookingModel.js';
 
 const authAdmin = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -159,6 +155,7 @@ const unblockUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
+
 const getAllHotels = expressAsyncHandler(async (req, res) => {
   try {
     const hotels = await adminService.getAllHotels();
@@ -175,6 +172,7 @@ const getAllHotels = expressAsyncHandler(async (req, res) => {
     });
   }
 });
+
 
 const listHotel = expressAsyncHandler(async (req, res) => {
   try {
@@ -193,6 +191,7 @@ const listHotel = expressAsyncHandler(async (req, res) => {
     });
   }
 });
+
 
 const unlistHotel = expressAsyncHandler(async (req, res) => {
   try {
@@ -253,11 +252,6 @@ const getSalesReport = expressAsyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
 export {
   authAdmin,
   logoutAdmin,
@@ -272,5 +266,4 @@ export {
   unlistHotel,
   getAdminStats,
   getSalesReport,
-
 };

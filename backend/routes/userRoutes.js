@@ -1,28 +1,23 @@
 import express from 'express';
-import { authUser,
+import { authUser, 
   registerUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
-  verifyOtp ,
-  resendOtp,
+  verifyOtp,
   getHotels,
+  resendOtp,
   getHotelById,
   sendPasswordResetEmail,
   resetPassword,
-  googleLogin,getWalletTransactions,
-  addCashToWallet,
-  getWalletBalance,
-  addReview,
-  getReviews,
-  getBookingReviews,
-  cancelBooking,
-  getUnreadNotifications,
-  markNotificationAsRead
+  googleLogin,
 } from '../controllers/userController.js';
-import { saveBooking,updateBookingStatus,getBookingsByUserId,checkRoomAvailability } from '../controllers/bookingController.js';
+import { saveBooking,updateBookingStatus,getBookingsByUserId,checkRoomAvailability,cancelBooking } from '../controllers/bookingController.js';
 import { getChatRooms,createChatRoom,getMessages,sendMessage,getUnreadMessages,markMessagesAsRead } from '../controllers/chatController.js';
+import { getReviews,getBookingReviews,addReview } from '../controllers/reviewController.js';
+import { getUnreadNotifications,markNotificationAsRead } from '../controllers/notificationController.js';
 import { getRoomsByHotelIds,getRoomByRoomId } from '../controllers/roomController.js';
+import { getWalletBalance,getWalletTransactions,addCashToWallet } from '../controllers/walletController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { multerUploadUserProfile,multerUploadMessageFile } from "../config/multerConfig.js";
 

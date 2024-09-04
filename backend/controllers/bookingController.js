@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler';
 import bookingService from '../services/bookingService.js';
-import Wallet from '../models/walletModel.js';
 import Notification from '../models/notificationModel.js';
 import Hotel from '../models/hotelModel.js';
 import HotelierNotification from '../models/hotelierNotifications.js';
@@ -203,7 +202,66 @@ const checkRoomAvailability = asyncHandler(async (req, res) => {
     });
   }
 });
+const cancelBooking = asyncHandler(async (req, res) => {
+  try {
+    const { bookingId } = req.params;
 
+    const { refundAmount, refundPercentage } = await bookingService.cancelBooking(bookingId);
+
+    const io = req.app.get('io');
+    io.emit('newNotification', {
+      userId: req.user._id,
+      message: `Your booking has been cancelled and ${refundPercentage}% amount has been refunded to your wallet.`,
+      createdAt: new Date(),
+      isRead: false,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        refundAmount,
+        refundPercentage,
+      },
+      message: `Booking successfully cancelled and ${refundPercentage}% amount refunded to wallet`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: null,
+      message: error.message,
+    });
+  }
+});
+const cancelBookingByHotelier = asyncHandler(async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    const { refundAmount, refundPercentage } = await bookingService.cancelBooking(bookingId);
+
+    const io = req.app.get('io');
+    io.emit('newNotification', {
+      userId: req.user._id,
+      message: `Your booking has been cancelled and ${refundPercentage}% amount has been refunded to your wallet.`,
+      createdAt: new Date(),
+      isRead: false,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        refundAmount,
+        refundPercentage,
+      },
+      message: `Booking successfully cancelled and ${refundPercentage}% amount refunded to wallet`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: null,
+      message: error.message,
+    });
+  }
+});
 
 
 
@@ -213,5 +271,7 @@ export { saveBooking ,
   getBookingsByUserId,
   getHotelierBookings,
   getAllBookings,
-  checkRoomAvailability
+  checkRoomAvailability,
+  cancelBooking,
+  cancelBookingByHotelier
 };

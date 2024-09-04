@@ -1,12 +1,15 @@
-import RoomRepository from '../repositories/roomRepository.js';
-import path from 'path';
+import RoomRepository from "../repositories/roomRepository.js";
 
 const addRoomHandler = async (hotelId, hotelierId, roomData) => {
   try {
     const room = await RoomRepository.createRoom(hotelId, hotelierId, roomData);
-    return { status: 'success', data: room, message: 'Room added successfully.' };
+    return {
+      status: "success",
+      data: room,
+      message: "Room added successfully.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -14,20 +17,28 @@ const getRoomByIdHandler = async (roomId) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: 'error', data: null, message: 'Room not found.' };
+      return { status: "error", data: null, message: "Room not found." };
     }
-    return { status: 'success', data: room, message: 'Room retrieved successfully.' };
+    return {
+      status: "success",
+      data: room,
+      message: "Room retrieved successfully.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
 const getRoomsByHotelIdsService = async (hotelIds) => {
   try {
     const rooms = await RoomRepository.findRoomsByHotelIds(hotelIds);
-    return { status: 'success', data: rooms, message: 'Rooms retrieved successfully.' };
+    return {
+      status: "success",
+      data: rooms,
+      message: "Rooms retrieved successfully.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: 'Error fetching rooms.' };
+    return { status: "error", data: null, message: "Error fetching rooms." };
   }
 };
 
@@ -35,7 +46,7 @@ const updateRoomData = async (roomId, updateData, files) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: 'error', data: null, message: 'Room not found.' };
+      return { status: "error", data: null, message: "Room not found." };
     }
 
     room.type = updateData.type || room.type;
@@ -44,27 +55,37 @@ const updateRoomData = async (roomId, updateData, files) => {
     room.occupancy = updateData.occupancy || room.occupancy;
     room.noOfRooms = updateData.noOfRooms || room.noOfRooms;
     room.description = updateData.description || room.description;
-    room.amenities = updateData.amenities ? updateData.amenities.split(",").map(item => item.trim()) : room.amenities;
-    
+    room.amenities = updateData.amenities
+      ? updateData.amenities.split(",").map((item) => item.trim())
+      : room.amenities;
+
     if (files && files.length > 0) {
-      const newImages = files.map(file => file.path.replace(/.*public[\\/]/, ""));
-      room.images.push(...newImages); 
+      const newImages = files.map((file) =>
+        file.path.replace(/.*public[\\/]/, "")
+      );
+      room.images.push(...newImages);
     }
 
     if (updateData.removeImages && updateData.removeImages.length > 0) {
-      room.images = room.images.filter(image => !updateData.removeImages.includes(image));
+      room.images = room.images.filter(
+        (image) => !updateData.removeImages.includes(image)
+      );
     }
 
     await room.save();
-    return { status: 'success', data: room, message: 'Room updated successfully.' };
+    return {
+      status: "success",
+      data: room,
+      message: "Room updated successfully.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
-export default { 
+export default {
   getRoomByIdHandler,
   getRoomsByHotelIdsService,
   updateRoomData,
-  addRoomHandler
+  addRoomHandler,
 };

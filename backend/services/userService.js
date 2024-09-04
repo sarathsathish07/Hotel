@@ -1,47 +1,55 @@
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
-import * as userRepository from '../repositories/userRepository.js';
-import jwt from 'jsonwebtoken';
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import * as userRepository from "../repositories/userRepository.js";
+import jwt from "jsonwebtoken";
 
 const generateToken = (res, userId) => {
   try {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
+      expiresIn: "30d",
     });
-    res.cookie('jwt', token, {
+    res.cookie("jwt", token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'None',
+      sameSite: "None",
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      path: '/',
+      path: "/",
     });
-    return { status: 'success', data: { token }, message: 'Token generated and cookie set.' };
+    return {
+      status: "success",
+      data: { token },
+      message: "Token generated and cookie set.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
 const sendOtpEmail = async (email, otp) => {
   try {
     let transporter = nodemailer.createTransport({
-      service: 'Gmail',
+      service: "Gmail",
       auth: {
-        user: 'sarathsathish77@gmail.com',
-        pass: 'pehs ltsj iktw pqtp',
+        user: "sarathsathish77@gmail.com",
+        pass: "pehs ltsj iktw pqtp",
       },
     });
 
     let mailOptions = {
-      from: 'sarathsathish77@gmail.com',
+      from: "sarathsathish77@gmail.com",
       to: email,
-      subject: 'OTP Verification',
+      subject: "OTP Verification",
       text: `Your OTP is: ${otp}`,
     };
 
     await transporter.sendMail(mailOptions);
-    return { status: 'success', data: null, message: 'OTP email sent successfully.' };
+    return {
+      status: "success",
+      data: null,
+      message: "OTP email sent successfully.",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -51,20 +59,36 @@ const authenticateUser = async (email, password) => {
 
     if (user && (await user.matchPassword(password))) {
       if (user.isBlocked) {
-        return { status: 'error', data: null, message: 'User is blocked' };
+        return { status: "error", data: null, message: "User is blocked" };
       }
       if (!user.otpVerified) {
         if (new Date() > user.otpExpiry) {
-          return { status: 'error', data: null, message: 'OTP has expired. Please request a new OTP.' };
+          return {
+            status: "error",
+            data: null,
+            message: "OTP has expired. Please request a new OTP.",
+          };
         }
-        return { status: 'error', data: null, message: 'Please verify your OTP before logging in' };
+        return {
+          status: "error",
+          data: null,
+          message: "Please verify your OTP before logging in",
+        };
       }
-      return { status: 'success', data: user, message: 'User authenticated successfully' };
+      return {
+        status: "success",
+        data: user,
+        message: "User authenticated successfully",
+      };
     } else {
-      return { status: 'error', data: null, message: 'Invalid email or password' };
+      return {
+        status: "error",
+        data: null,
+        message: "Invalid email or password",
+      };
     }
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -74,12 +98,21 @@ const registerNewUser = async (name, email, password) => {
 
     if (userExists && !userExists.otpVerified) {
       await resendOtp(email);
-      return { status: 'success', data: userExists, message: 'User already exists but is not verified. OTP has been resent.' };
+      return {
+        status: "success",
+        data: userExists,
+        message:
+          "User already exists but is not verified. OTP has been resent.",
+      };
     } else if (userExists) {
-      return { status: 'error', data: null, message: 'User already exists and is verified.' };
+      return {
+        status: "error",
+        data: null,
+        message: "User already exists and is verified.",
+      };
     } else {
       const otp = crypto.randomInt(100000, 999999);
-      const otpExpires = new Date(Date.now() + 10 * 60 * 1000); 
+      const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
       const user = await userRepository.createUser({
         name,
         email,
@@ -90,10 +123,14 @@ const registerNewUser = async (name, email, password) => {
       });
 
       await sendOtpEmail(user.email, otp);
-      return { status: 'success', data: user, message: 'User registered successfully' };
+      return {
+        status: "success",
+        data: user,
+        message: "User registered successfully",
+      };
     }
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -103,16 +140,20 @@ const verifyUserOtp = async (email, otp) => {
 
     if (user && user.otp.toString() === otp.trim()) {
       if (user.otpExpires && user.otpExpires < Date.now()) {
-        return { status: 'error', data: null, message: 'OTP has expired' };
+        return { status: "error", data: null, message: "OTP has expired" };
       }
       user.otpVerified = true;
       await userRepository.saveUser(user);
-      return { status: 'success', data: null, message: 'OTP verified successfully' };
+      return {
+        status: "success",
+        data: null,
+        message: "OTP verified successfully",
+      };
     } else {
-      return { status: 'error', data: null, message: 'Invalid OTP' };
+      return { status: "error", data: null, message: "Invalid OTP" };
     }
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -121,30 +162,34 @@ const resendOtp = async (email) => {
     const user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      return { status: 'error', data: null, message: 'User not found' };
+      return { status: "error", data: null, message: "User not found" };
     }
 
     const otp = crypto.randomInt(100000, 999999);
     user.otp = otp;
-    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); 
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
     await userRepository.saveUser(user);
     await sendOtpEmail(user.email, otp);
 
-    return { status: 'success', data: null, message: 'OTP resent successfully' };
+    return {
+      status: "success",
+      data: null,
+      message: "OTP resent successfully",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
 const logoutUser = (res) => {
   try {
-    res.cookie('jwt', '', {
+    res.cookie("jwt", "", {
       httpOnly: true,
       expires: new Date(0),
     });
-    return { status: 'success', data: null, message: 'User logged out' };
+    return { status: "success", data: null, message: "User logged out" };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -152,17 +197,17 @@ const getUserProfile = async (userId) => {
   try {
     const user = await userRepository.findUserById(userId);
     return {
-      status: 'success',
+      status: "success",
       data: {
         _id: user._id,
         name: user.name,
         email: user.email,
-        profileImageName: user.profileImageName
+        profileImageName: user.profileImageName,
       },
-      message: 'User profile retrieved successfully'
+      message: "User profile retrieved successfully",
     };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -170,13 +215,17 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
   try {
     const user = await userRepository.findUserById(userId);
     if (!user) {
-      return { status: 'error', data: null, message: 'User not found' };
+      return { status: "error", data: null, message: "User not found" };
     }
 
     if (updateData.currentPassword) {
       const isMatch = await user.matchPassword(updateData.currentPassword);
       if (!isMatch) {
-        return { status: 'error', data: null, message: 'Current password is incorrect' };
+        return {
+          status: "error",
+          data: null,
+          message: "Current password is incorrect",
+        };
       }
     }
 
@@ -190,9 +239,13 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
     }
 
     await userRepository.saveUser(user);
-    return { status: 'success', data: user, message: 'User profile updated successfully' };
+    return {
+      status: "success",
+      data: user,
+      message: "User profile updated successfully",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -201,35 +254,43 @@ const getSingleHotelById = async (id) => {
     const hotel = await userRepository.findHotelById(id);
     if (hotel) {
       const rooms = await userRepository.findRoomsByHotelId(id);
-      return { status: 'success', data: { ...hotel._doc, rooms }, message: 'Hotel retrieved successfully' };
+      return {
+        status: "success",
+        data: { ...hotel._doc, rooms },
+        message: "Hotel retrieved successfully",
+      };
     }
-    return { status: 'error', data: null, message: 'Hotel not found' };
+    return { status: "error", data: null, message: "Hotel not found" };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
 const sendEmail = async ({ to, subject, text }) => {
   try {
     let transporter = nodemailer.createTransport({
-      service: 'Gmail',
+      service: "Gmail",
       auth: {
-        user: 'sarathsathish77@gmail.com',
-        pass: 'pehs ltsj iktw pqtp',
+        user: "sarathsathish77@gmail.com",
+        pass: "pehs ltsj iktw pqtp",
       },
     });
 
     let mailOptions = {
-      from: 'sarathsathish77@gmail.com',
+      from: "sarathsathish77@gmail.com",
       to: to,
       subject: subject,
       text: text,
     };
 
     await transporter.sendMail(mailOptions);
-    return { status: 'success', data: null, message: 'Email sent successfully' };
+    return {
+      status: "success",
+      data: null,
+      message: "Email sent successfully",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
@@ -238,11 +299,11 @@ const sendPasswordResetEmailService = async (email) => {
     const user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      return { status: 'error', data: null, message: 'User not found' };
+      return { status: "error", data: null, message: "User not found" };
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpire = Date.now() + 30 * 60 * 1000; 
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpire = Date.now() + 30 * 60 * 1000;
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpire = resetTokenExpire;
@@ -257,16 +318,20 @@ const sendPasswordResetEmailService = async (email) => {
 
     await sendEmail({
       to: user.email,
-      subject: 'Password Reset Request',
+      subject: "Password Reset Request",
       text: message,
     });
 
-    return { status: 'success', data: null, message: 'Password reset email sent' };
+    return {
+      status: "success",
+      data: null,
+      message: "Password reset email sent",
+    };
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await userRepository.saveUser(user);
-    return { status: 'error', data: null, message: 'Email could not be sent' };
+    return { status: "error", data: null, message: "Email could not be sent" };
   }
 };
 
@@ -275,7 +340,11 @@ const resetPasswordService = async (resetToken, password) => {
     const user = await userRepository.findUserByResetToken(resetToken);
 
     if (!user) {
-      return { status: 'error', data: null, message: 'Invalid or expired token' };
+      return {
+        status: "error",
+        data: null,
+        message: "Invalid or expired token",
+      };
     }
 
     user.password = password;
@@ -283,13 +352,17 @@ const resetPasswordService = async (resetToken, password) => {
     user.resetPasswordExpire = undefined;
     await userRepository.saveUser(user);
 
-    return { status: 'success', data: null, message: 'Password reset successfully' };
+    return {
+      status: "success",
+      data: null,
+      message: "Password reset successfully",
+    };
   } catch (error) {
-    return { status: 'error', data: null, message: error.message };
+    return { status: "error", data: null, message: error.message };
   }
 };
 
-export {
+export default {
   authenticateUser,
   registerNewUser,
   verifyUserOtp,
@@ -300,5 +373,5 @@ export {
   resendOtp,
   getSingleHotelById,
   sendPasswordResetEmailService,
-  resetPasswordService
+  resetPasswordService,
 };

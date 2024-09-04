@@ -1,23 +1,23 @@
 import express from 'express';
 import { multerUploadCertificate, multerUploadUserProfile, multerUploadHotelImages, multerUploadRoomImages,multerUploadMessageFile } from "../config/multerConfig.js";
-import { authHotelierHandler, 
-  registerHotelierHandler, 
-  logoutHotelierHandler, 
-  getHotelierProfileHandler, 
-  updateHotelierProfileHandler, 
+import { authHotelierHandler,
+  registerHotelierHandler,
   verifyHotelierOtpHandler,
+  logoutHotelierHandler,
+  getHotelierProfileHandler,
+  updateHotelierProfileHandler,
+  uploadVerificationDetailsHandler,
   addHotelHandler,
   getHotelsHandler,
   getHotelByIdHandler,
   updateHotelHandler,
   resendHotelierOtpHandler,
-  uploadVerificationDetailsHandler,
   getHotelierStats,
-  getHotelierSalesReport ,
-  getUnreadHotelierNotifications,
-  markHotelierNotificationAsRead
+  getHotelierSalesReport,
  } from '../controllers/hotelierController.js';
  import { addRoom,getRoomById,updateRoomHandler } from '../controllers/roomController.js';
+ import { getUnreadHotelierNotifications,markHotelierNotificationAsRead } from '../controllers/notificationController.js';
+ import { cancelBookingByHotelier } from '../controllers/bookingController.js';
  import { getHotelierBookings } from '../controllers/bookingController.js';
 import { protect } from '../middleware/hotelierAuthMiddleware.js';
 import { getHotelMessages,sendHotelMessages,getHotelChatRooms,markHotelMessagesAsRead ,getHotelUnreadMessages} from '../controllers/chatController.js';
@@ -42,6 +42,7 @@ router.post('/add-room/:hotelId', protect, multerUploadRoomImages.array("images"
 router.put('/rooms/:roomId', protect, multerUploadRoomImages.array("images", 5), updateRoomHandler); 
 router.get('/rooms/:roomId',protect, getRoomById); 
 router.post('/salesReport',protect, getHotelierSalesReport ); 
+router.put('/cancel-booking/:bookingId', protect, cancelBookingByHotelier); 
 
 router.get('/chatrooms/:hotelId',protect, getHotelChatRooms); 
 router.route('/chatrooms/:chatRoomId/messages').get(protect, getHotelMessages).post(multerUploadMessageFile.single('file'),protect, sendHotelMessages); 

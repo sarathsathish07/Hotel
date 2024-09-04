@@ -1,13 +1,13 @@
-import asyncHandler from 'express-async-handler';
-import adminRepository from '../repositories/adminRepository.js';
-import nodemailer from 'nodemailer';
+import asyncHandler from "express-async-handler";
+import adminRepository from "../repositories/adminRepository.js";
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: "Gmail",
   auth: {
-    user: 'sarathsathish77@gmail.com',
-    pass: 'pehs ltsj iktw pqtp',
+    user: "sarathsathish77@gmail.com",
+    pass: "pehs ltsj iktw pqtp",
   },
 });
 
@@ -16,96 +16,99 @@ const generateAdminToken = (res, userId) => {
     expiresIn: "30d",
   });
 
-  res.cookie('jwtAdmin', token, {
+  res.cookie("jwtAdmin", token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'None',
+    sameSite: "None",
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    path: '/'
+    path: "/",
   });
 };
 
 const authenticateAdmin = asyncHandler(async (email, password) => {
-  const admin = await adminRepository.findAdminByEmailAndPassword(email, password);
+  const admin = await adminRepository.findAdminByEmailAndPassword(
+    email,
+    password
+  );
   return {
-    status: 'success',
+    status: "success",
     data: admin,
-    message: 'Admin authenticated successfully',
+    message: "Admin authenticated successfully",
   };
 });
 
 const logoutAdmin = asyncHandler(async (res) => {
-  res.cookie('jwtAdmin', '', {
+  res.cookie("jwtAdmin", "", {
     httpOnly: true,
     expires: new Date(),
   });
   return {
-    status: 'success',
+    status: "success",
     data: null,
-    message: 'Admin logged out successfully',
+    message: "Admin logged out successfully",
   };
 });
 
 const getAllUsers = asyncHandler(async () => {
   const users = await adminRepository.getAllUsers();
   return {
-    status: 'success',
+    status: "success",
     data: users,
-    message: 'Users retrieved successfully',
+    message: "Users retrieved successfully",
   };
 });
 
 const blockUser = asyncHandler(async (userId) => {
   const user = await adminRepository.updateUser(userId, { isBlocked: true });
   return {
-    status: 'success',
+    status: "success",
     data: user,
-    message: 'User blocked successfully',
+    message: "User blocked successfully",
   };
 });
 
 const unblockUser = asyncHandler(async (userId) => {
   const user = await adminRepository.updateUser(userId, { isBlocked: false });
   return {
-    status: 'success',
+    status: "success",
     data: user,
-    message: 'User unblocked successfully',
+    message: "User unblocked successfully",
   };
 });
 
 const getAllHotels = asyncHandler(async () => {
   const hotels = await adminRepository.getAllHotels();
   return {
-    status: 'success',
+    status: "success",
     data: hotels,
-    message: 'Hotels retrieved successfully',
+    message: "Hotels retrieved successfully",
   };
 });
 
 const listHotel = asyncHandler(async (hotelId) => {
   const hotel = await adminRepository.listHotel(hotelId);
   return {
-    status: 'success',
+    status: "success",
     data: hotel,
-    message: 'Hotel listed successfully',
+    message: "Hotel listed successfully",
   };
 });
 
 const unlistHotel = asyncHandler(async (hotelId) => {
   const hotel = await adminRepository.unlistHotel(hotelId);
   return {
-    status: 'success',
+    status: "success",
     data: hotel,
-    message: 'Hotel unlisted successfully',
+    message: "Hotel unlisted successfully",
   };
 });
 
 const getVerificationDetails = asyncHandler(async () => {
   const details = await adminRepository.getPendingHotelierVerifications();
   return {
-    status: 'success',
+    status: "success",
     data: details,
-    message: 'Verification details retrieved successfully',
+    message: "Verification details retrieved successfully",
   };
 });
 
@@ -113,30 +116,34 @@ const acceptVerification = asyncHandler(async (hotelId) => {
   const hotel = await adminRepository.findHotelById(hotelId);
   if (!hotel) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      message: 'Hotel not found',
+      message: "Hotel not found",
     };
   }
-  
-  hotel.verificationStatus = 'accepted';
+
+  hotel.verificationStatus = "accepted";
   await adminRepository.saveHotel(hotel);
-  
+
   const hotelier = await adminRepository.findHotelierById(hotel.hotelierId);
   if (!hotelier) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      message: 'Hotelier not found',
+      message: "Hotelier not found",
     };
   }
-  
-  await sendVerificationEmail(hotelier.email, 'Verification Accepted', 'Your verification request has been accepted.');
-  
+
+  await sendVerificationEmail(
+    hotelier.email,
+    "Verification Accepted",
+    "Your verification request has been accepted."
+  );
+
   return {
-    status: 'success',
+    status: "success",
     data: hotel,
-    message: 'Verification accepted successfully',
+    message: "Verification accepted successfully",
   };
 });
 
@@ -144,45 +151,45 @@ const rejectVerification = asyncHandler(async (hotelId, reason) => {
   const hotel = await adminRepository.findHotelById(hotelId);
   if (!hotel) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      message: 'Hotel not found',
+      message: "Hotel not found",
     };
   }
-  
-  hotel.verificationStatus = 'rejected';
+
+  hotel.verificationStatus = "rejected";
   await adminRepository.saveHotel(hotel);
-  
+
   const hotelier = await adminRepository.findHotelierById(hotel.hotelierId);
   if (!hotelier) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      message: 'Hotelier not found',
+      message: "Hotelier not found",
     };
   }
-  
+
   const message = `Your verification request has been rejected for the following reason: ${reason}`;
-  await sendVerificationEmail(hotelier.email, 'Verification Rejected', message);
-  
+  await sendVerificationEmail(hotelier.email, "Verification Rejected", message);
+
   return {
-    status: 'success',
+    status: "success",
     data: hotel,
-    message: 'Verification rejected successfully',
+    message: "Verification rejected successfully",
   };
 });
 
 const sendVerificationEmail = async (recipient, subject, message) => {
   try {
     await transporter.sendMail({
-      from: 'sarathsathish77@gmail.com',
+      from: "sarathsathish77@gmail.com",
       to: recipient,
       subject: subject,
       text: message,
     });
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Error sending email');
+    console.error("Error sending email:", error);
+    throw new Error("Error sending email");
   }
 };
 const getAdminStats = async () => {
@@ -199,29 +206,31 @@ const getAdminStats = async () => {
     totalHotels,
     totalRevenue: totalRevenue[0]?.totalRevenue || 0,
     monthlyBookings: monthlyBookings.map(({ _id, count }) => ({
-      month: `${_id.year}-${_id.month.toString().padStart(2, '0')}`,
-      count
+      month: `${_id.year}-${_id.month.toString().padStart(2, "0")}`,
+      count,
     })),
-    yearlyBookings: yearlyBookings.map(({ _id, count }) => ({ year: _id.year, count })),
+    yearlyBookings: yearlyBookings.map(({ _id, count }) => ({
+      year: _id.year,
+      count,
+    })),
   };
 };
 const getSalesReport = async (from, to) => {
   if (!from || !to) {
-    throw new Error('Date range is required');
+    throw new Error("Date range is required");
   }
 
   const fromDate = new Date(from);
   const toDate = new Date(to);
 
   if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-    throw new Error('Invalid date format');
+    throw new Error("Invalid date format");
   }
 
   const bookings = await adminRepository.getSalesData(fromDate, toDate);
 
   return bookings;
 };
-
 
 export default {
   authenticateAdmin,
@@ -238,5 +247,5 @@ export default {
   acceptVerification,
   rejectVerification,
   getAdminStats,
-  getSalesReport
+  getSalesReport,
 };

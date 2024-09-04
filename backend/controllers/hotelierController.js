@@ -1,13 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import hotelService from "../services/hotelService.js";
 import generateHotelierToken from "../utils/generateHotelierToken.js";
-import Hotel from "../models/hotelModel.js";
-import Booking from "../models/bookingModel.js";
-import Message from '../models/messageModel.js';
-import ChatRoom from '../models/chatRoomModel.js';
-import Room from "../models/roomModel.js";
-import HotelierNotification from "../models/hotelierNotifications.js";
-import notificationService from "../services/notificationService.js";
+
 
 
 
@@ -348,61 +342,7 @@ const getHotelierSalesReport = expressAsyncHandler(async (req, res) => {
 
 
 
-const getUnreadHotelierNotifications = expressAsyncHandler(async (req, res) => {
-  try {
-    const hotelierId = req.hotelier._id;
-    const notifications = await notificationService.getUnreadHotelierNotifications(hotelierId);
-    
-    res.status(200).json({
-      status: 'success',
-      data: notifications,
-      message: 'Unread notifications retrieved successfully',
-    });
-  } catch (error) {
-    console.error('Error fetching unread notifications:', error);
-    res.status(500).json({
-      status: 'error',
-      data: null,
-      message: 'Server error',
-    });
-  }
-});
 
-
-const markHotelierNotificationAsRead = expressAsyncHandler(async (req, res) => {
-  try {
-    const { id } = req.params;
-    const hotelierId = req.hotelier._id;
-    
-    await notificationService.markHotelierNotificationAsRead(id, hotelierId);
-    
-    res.status(200).json({
-      status: 'success',
-      data: null,
-      message: 'Notification marked as read',
-    });
-  } catch (error) {
-    if (error.message === 'Notification not found') {
-      res.status(404).json({
-        status: 'error',
-        data: null,
-        message: 'Notification not found',
-      });
-    } else if (error.message === 'Not authorized') {
-      res.status(401).json({
-        status: 'error',
-        data: null,
-        message: 'Not authorized',
-      });
-    } else {
-      res.status(500).json({
-        status: 'error',
-        data: null,
-        message: 'Server error',
-      });
-    }
-  }
-});
 
 
 
@@ -424,6 +364,4 @@ export {
   resendHotelierOtpHandler,
   getHotelierStats,
   getHotelierSalesReport,
-  getUnreadHotelierNotifications,
-  markHotelierNotificationAsRead
 };

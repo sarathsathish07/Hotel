@@ -1,11 +1,10 @@
-
-import reviewRepository from '../repositories/reviewRepository.js';
+import reviewRepository from "../repositories/reviewRepository.js";
 
 const addReview = async (rating, review, bookingId) => {
   const booking = await reviewRepository.findBookingById(bookingId);
 
   if (!booking) {
-    throw new Error('Booking not found');
+    throw new Error("Booking not found");
   }
 
   const newReview = {
@@ -27,4 +26,4 @@ const getBookingReviews = async () => {
   return await reviewRepository.findAllReviews();
 };
 
-export default { addReview,getReviews,getBookingReviews };
+export default { addReview, getReviews, getBookingReviews };

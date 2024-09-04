@@ -1,15 +1,18 @@
-
-import walletRepository from '../repositories/walletRepository.js';
+import walletRepository from "../repositories/walletRepository.js";
 
 const getWalletTransactions = async (userId) => {
   try {
     const wallet = await walletRepository.findWalletByUserId(userId);
 
     if (!wallet) {
-      return { status: 'success', data: [], message: 'No transactions found' };
+      return { status: "success", data: [], message: "No transactions found" };
     }
 
-    return { status: 'success', data: wallet.transactions, message: 'Wallet transactions retrieved successfully' };
+    return {
+      status: "success",
+      data: wallet.transactions,
+      message: "Wallet transactions retrieved successfully",
+    };
   } catch (error) {
     throw new Error(`Service error: ${error.message}`);
   }
@@ -17,7 +20,7 @@ const getWalletTransactions = async (userId) => {
 
 const addCashToWallet = async (userId, amount) => {
   if (amount <= 0) {
-    throw new Error('Invalid amount');
+    throw new Error("Invalid amount");
   }
 
   let wallet = await walletRepository.findWalletByUserId(userId);
@@ -35,7 +38,7 @@ const addCashToWallet = async (userId, amount) => {
   const newTransaction = {
     user: userId,
     amount,
-    transactionType: 'credit',
+    transactionType: "credit",
   };
 
   wallet.transactions.push(newTransaction);
@@ -49,4 +52,4 @@ const getWalletBalance = async (userId) => {
   return wallet ? wallet.balance : 0;
 };
 
-export default { getWalletTransactions,addCashToWallet,getWalletBalance  };
+export default { getWalletTransactions, addCashToWallet, getWalletBalance };

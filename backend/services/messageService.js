@@ -1,19 +1,21 @@
-
-import messageRepository from '../repositories/messageRepository.js';
-import chatRoomRepository from '../repositories/chatRoomRepository.js';
-import hotelRepository from '../repositories/hotelRepository.js';
+import messageRepository from "../repositories/messageRepository.js";
+import chatRoomRepository from "../repositories/chatRoomRepository.js";
+import hotelRepository from "../repositories/hotelRepository.js";
 
 const getMessagesByChatRoomId = async (chatRoomId) => {
   return await messageRepository.findMessagesByChatRoomId(chatRoomId);
 };
 const sendMessage = async (chatRoomId, messageData) => {
   const newMessage = await messageRepository.createMessage(messageData);
-  
+
   const lastMessageData = {
     lastMessage: messageData.content,
     lastMessageTime: Date.now(),
   };
-  await chatRoomRepository.updateChatRoomLastMessage(chatRoomId, lastMessageData);
+  await chatRoomRepository.updateChatRoomLastMessage(
+    chatRoomId,
+    lastMessageData
+  );
 
   return newMessage;
 };
@@ -25,10 +27,10 @@ const getUnreadMessages = async (userId) => {
 };
 const getHotelUnreadMessages = async (hotelierId) => {
   const hotels = await hotelRepository.findHotelsByHotelierId(hotelierId);
-  const hotelIds = hotels.map(hotel => hotel._id);
+  const hotelIds = hotels.map((hotel) => hotel._id);
 
   const chatRooms = await chatRoomRepository.findChatRoomsByHotelIds(hotelIds);
-  const chatRoomIds = chatRooms.map(room => room._id);
+  const chatRoomIds = chatRooms.map((room) => room._id);
 
   return await messageRepository.findUnreadMessagesByChatRoomIds(chatRoomIds);
 };
@@ -38,7 +40,13 @@ const markMessagesAsRead = async (chatRoomId) => {
 const getHotelMessages = async (chatRoomId) => {
   return await messageRepository.findMessagesByChatRoomId(chatRoomId);
 };
-const sendHotelMessage = async ({ chatRoomId, content, senderType, senderId, file }) => {
+const sendHotelMessage = async ({
+  chatRoomId,
+  content,
+  senderType,
+  senderId,
+  file,
+}) => {
   const newMessageData = {
     chatRoomId,
     createdAt: Date.now(),
@@ -69,7 +77,13 @@ const markHotelMessagesAsRead = async (chatRoomId) => {
   return await messageRepository.markMessagesAsReadHotel(chatRoomId);
 };
 
-
-export default { getMessagesByChatRoomId ,sendMessage,getUnreadMessages,getHotelUnreadMessages,markMessagesAsRead,
-  getHotelMessages,sendHotelMessage,markHotelMessagesAsRead
+export default {
+  getMessagesByChatRoomId,
+  sendMessage,
+  getUnreadMessages,
+  getHotelUnreadMessages,
+  markMessagesAsRead,
+  getHotelMessages,
+  sendHotelMessage,
+  markHotelMessagesAsRead,
 };
