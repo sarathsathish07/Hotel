@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Table, Container, Row, Col, Card, Button, Collapse, Form, Modal, Pagination } from "react-bootstrap";
+import { Table, Container, Row, Col, Card, Button, Collapse, Form, Modal, Pagination,InputGroup,FormControl } from "react-bootstrap";
 import Rating from 'react-rating';
 import { useGetBookingsQuery, useAddReviewMutation, useGetReviewsQuery, useCancelBookingMutation, useCreateChatRoomMutation } from "../../slices/usersApiSlice.js";
-import Loader from "../../components/generalComponents/Loader.jsx";
+import Loader from "../../components/userComponents/Loader";
 import Sidebar from "../../components/userComponents/Sidebar.jsx";
 import bgImage from "../../assets/images/bgimage.jpg";
 import Footer from '../../components/userComponents/Footer';
@@ -30,6 +30,7 @@ const BookingsScreen = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [bookingsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleRow = (bookingId) => {
     setExpandedRow(expandedRow === bookingId ? null : bookingId);
@@ -88,7 +89,16 @@ const BookingsScreen = () => {
   };
 
   if (bookingsLoading || reviewsLoading) return <Loader />;
-  const sortedBookings = [...bookings].sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+
+  const filteredBookings = bookings.filter(booking => {
+    const query = searchQuery.toLowerCase();
+    return (
+      booking?.hotelId?.name.toLowerCase().includes(query) ||
+      booking?.roomId?.type.toLowerCase().includes(query) ||
+      booking?.paymentMethod.toLowerCase().includes(query)
+    );
+  });
+  const sortedBookings = [...filteredBookings].sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
@@ -112,6 +122,15 @@ const BookingsScreen = () => {
           <Col md={9}>
             <Card>
               <Card.Header>My Bookings</Card.Header>
+              <InputGroup className="search-bar mx-2 my-3 w-50">
+                    <FormControl
+                      placeholder="Search by Hotel, Room, or Payment Method"
+                      aria-label="Search"
+                      aria-describedby="search-bookings"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </InputGroup>
               <Card.Body>
                 <Table responsive className="table-sm">
                   <thead>
