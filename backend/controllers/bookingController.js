@@ -3,6 +3,7 @@ import bookingService from '../services/bookingService.js';
 import Notification from '../models/notificationModel.js';
 import Hotel from '../models/hotelModel.js';
 import HotelierNotification from '../models/hotelierNotifications.js';
+import responseMessages from '../constants/responseMessages.js';
 
 const saveBooking = asyncHandler(async (req, res) => {
   const bookingData = {
@@ -18,21 +19,27 @@ const saveBooking = asyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: createdBooking,
-      message: 'Booking created successfully',
+      message: responseMessages.BOOKING_CREATED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
-    if (error.message === 'Insufficient wallet balance' || error.message === 'Hotel not found') {
+    if (error.message === 'Insufficient wallet balance') {
       res.status(400).json({
         status: 'error',
         data: null,
-        message: error.message,
+        message: responseMessages.INSUFFICIENT_WALLET_BALANCE,
+      });
+    } else if (error.message === 'Hotel not found') {
+      res.status(400).json({
+        status: 'error',
+        data: null,
+        message: responseMessages.HOTEL_NOT_FOUND,
       });
     } else {
       res.status(500).json({
         status: 'error',
         data: null,
-        message: 'Server error',
+        message: responseMessages.SERVER_ERROR,
       });
     }
   }
@@ -58,7 +65,7 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Booking not found',
+        message: responseMessages.BOOKING_NOT_FOUND,
       });
     }
 
@@ -67,7 +74,7 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Hotel not found',
+        message: responseMessages.HOTEL_NOT_FOUND,
       });
     }
 
@@ -84,14 +91,14 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: updatedBooking,
-      message: 'Booking status updated successfully',
+      message: responseMessages.BOOKING_STATUS_UPDATED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -103,13 +110,13 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'success',
         data: bookings,
-        message: 'Bookings retrieved successfully',
+        message: responseMessages.BOOKINGS_RETRIEVED_SUCCESSFULLY,
       });
     } else {
       res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Bookings not found',
+        message: responseMessages.BOOKINGS_NOT_FOUND,
       });
     }
   } catch (error) {
@@ -117,7 +124,7 @@ const getBookingsByUserId = asyncHandler(async (req, res) => {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -129,13 +136,13 @@ const getHotelierBookings = asyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'success',
         data: bookings,
-        message: 'Bookings retrieved successfully',
+        message: responseMessages.BOOKINGS_RETRIEVED_SUCCESSFULLY,
       });
     } else {
       res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Bookings not found',
+        message: responseMessages.BOOKINGS_NOT_FOUND,
       });
     }
   } catch (error) {
@@ -143,7 +150,7 @@ const getHotelierBookings = asyncHandler(async (req, res) => {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -155,13 +162,13 @@ const getAllBookings = asyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'success',
         data: bookings,
-        message: 'All bookings retrieved successfully',
+        message: responseMessages.BOOKINGS_RETRIEVED_SUCCESSFULLY,
       });
     } else {
       res.status(404).json({
         status: 'error',
         data: null,
-        message: 'No bookings found',
+        message: responseMessages.BOOKINGS_NOT_FOUND,
       });
     }
   } catch (error) {
@@ -169,7 +176,7 @@ const getAllBookings = asyncHandler(async (req, res) => {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -182,7 +189,7 @@ const checkRoomAvailability = asyncHandler(async (req, res) => {
       return res.status(400).json({
         status: 'error',
         data: null,
-        message: 'Missing required fields',
+        message: responseMessages.MISSING_REQUIRED_FIELDS,
       });
     }
 
@@ -191,17 +198,18 @@ const checkRoomAvailability = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: availability,
-      message: 'Room availability checked successfully',
+      message: responseMessages.ROOM_AVAILABILITY_CHECKED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
+
 const cancelBooking = asyncHandler(async (req, res) => {
   try {
     const { bookingId } = req.params;
@@ -222,7 +230,7 @@ const cancelBooking = asyncHandler(async (req, res) => {
         refundAmount,
         refundPercentage,
       },
-      message: `Booking successfully cancelled and ${refundPercentage}% amount refunded to wallet`,
+      message: responseMessages.BOOKING_CANCELLED_SUCCESSFULLY.replace('{refundPercentage}', refundPercentage),
     });
   } catch (error) {
     res.status(500).json({
@@ -232,6 +240,7 @@ const cancelBooking = asyncHandler(async (req, res) => {
     });
   }
 });
+
 const cancelBookingByHotelier = asyncHandler(async (req, res) => {
   try {
     const { bookingId } = req.params;
@@ -252,7 +261,7 @@ const cancelBookingByHotelier = asyncHandler(async (req, res) => {
         refundAmount,
         refundPercentage,
       },
-      message: `Booking successfully cancelled and ${refundPercentage}% amount refunded to wallet`,
+      message: responseMessages.HOTELIER_BOOKING_CANCELLED_SUCCESSFULLY.replace('{refundPercentage}', refundPercentage),
     });
   } catch (error) {
     res.status(500).json({
@@ -263,15 +272,4 @@ const cancelBookingByHotelier = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-export { saveBooking ,
-  updateBookingStatus,
-  getBookingsByUserId,
-  getHotelierBookings,
-  getAllBookings,
-  checkRoomAvailability,
-  cancelBooking,
-  cancelBookingByHotelier
-};
+export { saveBooking, updateBookingStatus, getBookingsByUserId, getHotelierBookings, getAllBookings, checkRoomAvailability, cancelBooking, cancelBookingByHotelier };

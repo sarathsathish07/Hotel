@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import RoomService from '../services/roomService.js';
+import responseMessages from '../constants/responseMessages.js';
 
 const addRoom = asyncHandler(async (req, res) => {
   const { hotelId } = req.params;
@@ -10,7 +11,7 @@ const addRoom = asyncHandler(async (req, res) => {
     return res.status(400).json({
       status: 'error',
       data: null,
-      message: 'No images uploaded',
+      message: responseMessages.error.noImagesUploaded,
     });
   }
 
@@ -34,19 +35,18 @@ const addRoom = asyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: createdRoom,
-      message: 'Room added successfully',
+      message: responseMessages.success.roomAdded,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Error adding room',
+      message: responseMessages.error.errorAddingRoom,
     });
   }
 });
 
-
-const getRoomById = async (req, res) => {
+const getRoomById = asyncHandler(async (req, res) => {
   const { roomId } = req.params;
   try {
     const room = await RoomService.getRoomByIdHandler(roomId);
@@ -54,13 +54,13 @@ const getRoomById = async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Room not found',
+        message: responseMessages.error.roomNotFound,
       });
     }
     res.status(200).json({
       status: 'success',
       data: room,
-      message: 'Room retrieved successfully',
+      message: responseMessages.success.roomRetrieved,
     });
   } catch (error) {
     res.status(500).json({
@@ -69,10 +69,9 @@ const getRoomById = async (req, res) => {
       message: error.message,
     });
   }
-};
+});
 
-
-const getRoomByRoomId = async (req, res) => {
+const getRoomByRoomId = asyncHandler(async (req, res) => {
   const { roomId } = req.params;
   try {
     const room = await RoomService.getRoomByIdHandler(roomId);
@@ -80,13 +79,13 @@ const getRoomByRoomId = async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Room not found',
+        message: responseMessages.error.roomNotFound,
       });
     }
     res.status(200).json({
       status: 'success',
       data: room,
-      message: 'Room retrieved successfully',
+      message: responseMessages.success.roomRetrieved,
     });
   } catch (error) {
     res.status(500).json({
@@ -95,31 +94,28 @@ const getRoomByRoomId = async (req, res) => {
       message: error.message,
     });
   }
-};
+});
 
-
-const getRoomsByHotelIds = async (req, res) => {
+const getRoomsByHotelIds = asyncHandler(async (req, res) => {
   const { hotelIds } = req.body;
   try {
     const rooms = await RoomService.getRoomsByHotelIdsService(hotelIds);
     res.status(200).json({
       status: 'success',
       data: rooms,
-      message: 'Rooms retrieved successfully',
+      message: responseMessages.success.roomsRetrieved,
     });
   } catch (error) {
     console.error('Error fetching rooms:', error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.error.serverError,
     });
   }
-};
+});
 
-
-
-const updateRoomHandler = async (req, res) => {
+const updateRoomHandler = asyncHandler(async (req, res) => {
   const { roomId } = req.params;
   const updateData = req.body;
 
@@ -128,23 +124,21 @@ const updateRoomHandler = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: updatedRoom,
-      message: 'Room updated successfully',
+      message: responseMessages.success.roomUpdated,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Error updating room',
+      message: responseMessages.error.errorUpdatingRoom,
     });
   }
-};
+});
 
-
-
-
-export { addRoom,
+export {
+  addRoom,
   getRoomById,
   getRoomsByHotelIds,
   updateRoomHandler,
   getRoomByRoomId
- };
+};

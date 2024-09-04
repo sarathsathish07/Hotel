@@ -1,17 +1,18 @@
 import walletRepository from "../repositories/walletRepository.js";
+import responseMessages from "../constants/responseMessages.js";
 
 const getWalletTransactions = async (userId) => {
   try {
     const wallet = await walletRepository.findWalletByUserId(userId);
 
     if (!wallet) {
-      return { status: "success", data: [], message: "No transactions found" };
+      return { status: "success", data: [], message: responseMessages.NO_TRANSACTIONS_FOUND };
     }
 
     return {
       status: "success",
       data: wallet.transactions,
-      message: "Wallet transactions retrieved successfully",
+      message: responseMessages.WALLET_TRANSACTIONS_RETRIEVED,
     };
   } catch (error) {
     throw new Error(`Service error: ${error.message}`);
@@ -20,7 +21,7 @@ const getWalletTransactions = async (userId) => {
 
 const addCashToWallet = async (userId, amount) => {
   if (amount <= 0) {
-    throw new Error("Invalid amount");
+    throw new Error(responseMessages.INVALID_AMOUNT);
   }
 
   let wallet = await walletRepository.findWalletByUserId(userId);
@@ -45,8 +46,13 @@ const addCashToWallet = async (userId, amount) => {
 
   await walletRepository.saveWallet(wallet);
 
-  return newTransaction;
+  return {
+    status: "success",
+    data: newTransaction,
+    message: responseMessages.TRANSACTION_ADDED,
+  };
 };
+
 const getWalletBalance = async (userId) => {
   const wallet = await walletRepository.findWalletByUserId(userId);
   return wallet ? wallet.balance : 0;

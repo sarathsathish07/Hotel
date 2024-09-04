@@ -1,7 +1,6 @@
 import expressAsyncHandler from 'express-async-handler';
 import walletService from '../services/walletService.js';
-
-
+import responseMessages from '../constants/responseMessages.js';
 
 const getWalletTransactions = expressAsyncHandler(async (req, res) => {
   try {
@@ -11,13 +10,13 @@ const getWalletTransactions = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: data,
-      message: message,
+      message: responseMessages.WALLET_TRANSACTIONS_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.WALLET_TRANSACTIONS_ERROR,
     });
   }
 });
@@ -31,18 +30,16 @@ const addCashToWallet = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: newTransaction,
-      message: 'Amount added to wallet successfully',
+      message: responseMessages.CASH_ADDED_SUCCESS,
     });
   } catch (error) {
     res.status(error.message === 'Invalid amount' ? 400 : 500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: error.message === 'Invalid amount' ? responseMessages.INVALID_AMOUNT_ERROR : responseMessages.WALLET_TRANSACTIONS_ERROR,
     });
   }
 });
-
-
 
 const getWalletBalance = expressAsyncHandler(async (req, res) => {
   try {
@@ -51,19 +48,19 @@ const getWalletBalance = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: { balance },
-      message: 'Wallet balance retrieved successfully',
+      message: responseMessages.WALLET_BALANCE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.WALLET_BALANCE_ERROR,
     });
   }
 });
 
-export  {
+export {
   getWalletTransactions,
   addCashToWallet,
   getWalletBalance
-}
+};

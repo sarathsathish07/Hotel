@@ -12,6 +12,7 @@ import hotelRepository from "../repositories/hotelRepository.js";
 import Room from "../models/roomModel.js";
 import Booking from "../models/bookingModel.js";
 import Hotel from "../models/hotelModel.js";
+import responseMessages from "../constants/responseMessages.js";
 
 const checkAvailability = async (
   roomId,
@@ -23,7 +24,7 @@ const checkAvailability = async (
   try {
     const room = await Room.findById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: "Room not found" };
+      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
     }
 
     const roomsRequired = Math.ceil(guestCount / room.occupancy);
@@ -31,7 +32,7 @@ const checkAvailability = async (
       return {
         status: "error",
         data: null,
-        message: `You need at least ${roomsRequired} rooms for ${guestCount} guests.`,
+        message: responseMessages.NEED_MORE_ROOMS(roomsRequired, guestCount),
       };
     }
 
@@ -52,17 +53,17 @@ const checkAvailability = async (
       return {
         status: "error",
         data: null,
-        message: "Not enough rooms available for the selected dates.",
+        message: responseMessages.ROOM_NOT_AVAILABLE,
       };
     }
 
     return {
       status: "success",
       data: { isAvailable: true },
-      message: "Rooms are available.",
+      message: responseMessages.ROOM_AVAILABLE,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.ERROR };
   }
 };
 
@@ -74,7 +75,7 @@ const updateBookingStatusService = async (
   try {
     const booking = await findBookingById(bookingId);
     if (!booking) {
-      return { status: "error", data: null, message: "Booking not found" };
+      return { status: "error", data: null, message: responseMessages.BOOKING_NOT_FOUND };
     }
     booking.paymentId = paymentId;
     booking.paymentStatus = paymentStatus;
@@ -83,10 +84,10 @@ const updateBookingStatusService = async (
     return {
       status: "success",
       data: updatedBooking,
-      message: "Booking status updated successfully",
+      message: responseMessages.BOOKING_UPDATED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.ERROR };
   }
 };
 
@@ -97,7 +98,7 @@ const createBooking = async (bookingData, userId) => {
 
     const wallet = await walletRepository.findWalletByUserId(userId);
     if (!wallet || wallet.balance < bookingData.totalAmount) {
-      throw new Error("Insufficient wallet balance");
+      throw new Error(responseMessages.INSUFFICIENT_WALLET_BALANCE);
     }
 
     wallet.balance -= bookingData.totalAmount;
@@ -110,7 +111,7 @@ const createBooking = async (bookingData, userId) => {
 
     const userNotification = {
       userId,
-      message: "Your booking has been confirmed via wallet payment.",
+      message: responseMessages.BOOKING_CONFIRMED,
       createdAt: new Date(),
       isRead: false,
     };
@@ -120,12 +121,12 @@ const createBooking = async (bookingData, userId) => {
       "hotelierId"
     );
     if (!hotel) {
-      throw new Error("Hotel not found");
+      throw new Error(responseMessages.HOTEL_NOT_FOUND);
     }
 
     const hotelierNotification = {
       hotelierId: hotel.hotelierId._id,
-      message: `You have a new booking for your hotel "${hotel.name}".`,
+      message: responseMessages.NEW_HOTELIER_BOOKING(hotel.name),
       createdAt: new Date(),
       isRead: false,
     };
@@ -143,10 +144,10 @@ const getBookingsByUserIdService = async (userId) => {
     return {
       status: "success",
       data: bookings,
-      message: "Bookings retrieved successfully",
+      message: responseMessages.BOOKINGS_RETRIEVED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.ERROR };
   }
 };
 
@@ -156,10 +157,10 @@ const getHotelierBookingsService = async (hotelierId) => {
     return {
       status: "success",
       data: bookings,
-      message: "Hotelier bookings retrieved successfully",
+      message: responseMessages.HOTELIER_BOOKINGS_RETRIEVED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.ERROR };
   }
 };
 
@@ -169,10 +170,10 @@ const getAllBookingsService = async () => {
     return {
       status: "success",
       data: bookings,
-      message: "All bookings retrieved successfully",
+      message: responseMessages.ALL_BOOKINGS_RETRIEVED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.ERROR };
   }
 };
 
@@ -180,7 +181,7 @@ const cancelBooking = async (bookingId) => {
   const booking = await findBookingById(bookingId);
 
   if (!booking) {
-    throw new Error("Booking not found");
+    throw new Error(responseMessages.BOOKING_NOT_FOUND);
   }
 
   const today = new Date();
@@ -196,7 +197,7 @@ const cancelBooking = async (bookingId) => {
   }
 
   booking.bookingStatus = "cancelled";
-  booking.cancelMessage = `Your booking has been cancelled and ${refundPercentage}% amount has been refunded to your wallet.`;
+  booking.cancelMessage = responseMessages.BOOKING_CANCELLED_REFUND(refundPercentage);
   await saveBooking(booking);
 
   const wallet = await walletRepository.findWalletByUserId(booking.userId);
@@ -214,7 +215,7 @@ const cancelBooking = async (bookingId) => {
 
   const userNotification = {
     userId: booking.userId,
-    message: `Your booking has been cancelled and ${refundPercentage}% amount has been refunded to your wallet.`,
+    message: responseMessages.BOOKING_CANCELLED_REFUND(refundPercentage),
     createdAt: new Date(),
     isRead: false,
   };
@@ -225,7 +226,7 @@ const cancelBooking = async (bookingId) => {
   if (hotel) {
     const hotelierNotification = {
       hotelierId: hotel.hotelierId._id,
-      message: `A booking for your hotel "${hotel.name}" has been cancelled.`,
+      message: responseMessages.CANCELLED_HOTELIER_BOOKING(hotel.name),
       createdAt: new Date(),
       isRead: false,
     };

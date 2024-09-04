@@ -1,9 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import hotelService from "../services/hotelService.js";
 import generateHotelierToken from "../utils/generateHotelierToken.js";
-
-
-
+import responseMessages from "../constants/responseMessages.js";
 
 const authHotelierHandler = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -17,17 +15,16 @@ const authHotelierHandler = expressAsyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      message: 'Hotelier authenticated successfully',
+      message: responseMessages.success.hotelierAuthenticated,
     });
   } catch (error) {
     res.status(401).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.invalidCredentials,
     });
   }
 });
-
 
 const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -37,7 +34,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'success',
         data: null,
-        message: message,
+        message: responseMessages.success.hotelierRegistered,
         otpSent: true,
       });
     } else {
@@ -48,7 +45,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
           name: user.name,
           email: user.email,
         },
-        message: message,
+        message: responseMessages.success.hotelierRegistered,
         otpSent: true,
       });
     }
@@ -56,7 +53,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.otpFailed,
     });
   }
 });
@@ -68,17 +65,16 @@ const verifyHotelierOtpHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: message,
+      message: responseMessages.success.otpVerified,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.otpFailed,
     });
   }
 });
-
 
 const resendHotelierOtpHandler = expressAsyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -87,13 +83,13 @@ const resendHotelierOtpHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'OTP resent successfully',
+      message: responseMessages.success.otpResent,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.resendOtpFailed,
     });
   }
 });
@@ -104,17 +100,16 @@ const logoutHotelierHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: response,
-      message: 'Hotelier logged out successfully',
+      message: responseMessages.success.hotelierLoggedOut,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
 
 const getHotelierProfileHandler = expressAsyncHandler(async (req, res) => {
   try {
@@ -122,13 +117,13 @@ const getHotelierProfileHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: user,
-      message: 'Hotelier profile retrieved successfully',
+      message: responseMessages.success.profileRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.error.serverError,
     });
   }
 });
@@ -148,44 +143,42 @@ const updateHotelierProfileHandler = expressAsyncHandler(async (req, res) => {
         email: updatedHotelier.email,
         profileImageName: updatedHotelier.profileImageName
       },
-      message: 'Hotelier profile updated successfully',
+      message: responseMessages.success.profileUpdated,
     });
   } catch (error) {
     res.status(404).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.serverError,
     });
   }
 });
-
 
 const uploadVerificationDetailsHandler = expressAsyncHandler(async (req, res) => {
   const hotelId = req.params.hotelId;
   const certificatePath = req.file.path.replace(/.*public[\\/]/, "");
 
   try {
-    await hotelService.uploadCertificates(hotelId, certificatePath);
+    await hotelService.uploadCertificate(hotelId, certificatePath);
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Verification details submitted successfully',
+      message: responseMessages.success.verificationDetailsSubmitted,
     });
   } catch (error) {
     res.status(404).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.uploadFailed,
     });
   }
 });
-
 
 const addHotelHandler = expressAsyncHandler(async (req, res) => {
   const { name, city, address, description, amenities, latitude, longitude } = req.body;
 
   const images = req.files.map((file) => {
-    return file.path.replace(/.*public[\\/]/, ""); 
+    return file.path.replace(/.*public[\\/]/, "");
   });
 
   try {
@@ -203,18 +196,16 @@ const addHotelHandler = expressAsyncHandler(async (req, res) => {
     res.status(response.status).json({
       status: 'success',
       data: response.data,
-      message: 'Hotel added successfully',
+      message: responseMessages.success.hotelAdded,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
-
 
 const getHotelsHandler = expressAsyncHandler(async (req, res) => {
   try {
@@ -224,19 +215,16 @@ const getHotelsHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: hotelsWithUnreadMessages,
-      message: 'Hotels retrieved successfully',
+      message: responseMessages.success.hotelsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
-
-
 
 const getHotelByIdHandler = expressAsyncHandler(async (req, res) => {
   try {
@@ -246,40 +234,57 @@ const getHotelByIdHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: hotelDetails,
-      message: 'Hotel details retrieved successfully',
+      message: responseMessages.success.hotelDetailsRetrieved,
     });
   } catch (error) {
     console.error("Error in handler:", error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.error.serverError,
     });
   }
 });
 
-
 const updateHotelHandler = async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
+  const hotelId = req.params.id;
+  const { name, city, address, description, amenities, latitude, longitude } = req.body;
+
+  const images = req.files.map((file) => {
+    return file.path.replace(/.*public[\\/]/, "");
+  });
 
   try {
-    const updatedHotel = await hotelService.updateHotelData(id, updateData, req.files);
+    const updatedHotel = await hotelService.updateHotelData(
+      hotelId,
+      req.hotelier._id,
+      {
+        name,
+        city,
+        address,
+        images,
+        description,
+        amenities: amenities.split(",").map((amenity) => amenity.trim()),
+        latitude,
+        longitude,
+      }
+    );
     res.status(200).json({
       status: 'success',
       data: updatedHotel,
-      message: 'Hotel updated successfully',
+      message: responseMessages.success.hotelUpdated,
     });
   } catch (error) {
+    console.error("Error in handler:", error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Error updating hotel',
+      message: responseMessages.error.serverError,
     });
   }
 };
 
-const getHotelierStats = expressAsyncHandler(async (req, res) => {
+const getStatsHandler = expressAsyncHandler(async (req, res) => {
   try {
     const hotelierId = req.hotelier._id;
     const stats = await hotelService.getHotelierStats(hotelierId);
@@ -287,72 +292,49 @@ const getHotelierStats = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: stats,
-      message: 'Hotelier stats retrieved successfully',
+      message: responseMessages.success.statsRetrieved,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.error.serverError,
     });
   }
 });
 
-const getHotelierSalesReport = expressAsyncHandler(async (req, res) => {
-  const { from, to } = req.body;
-  const hotelierId = req.hotelier._id;
-
-  if (!from || !to) {
-    return res.status(400).json({
-      status: 'error',
-      data: null,
-      message: 'Date range is required',
-    });
-  }
-
-  const fromDate = new Date(from);
-  const toDate = new Date(to);
-
-  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-    return res.status(400).json({
-      status: 'error',
-      data: null,
-      message: 'Invalid date format',
-    });
-  }
-
+const getSalesReportHandler = expressAsyncHandler(async (req, res) => {
   try {
-    const salesReport = await hotelService.getHotelierSalesReport(hotelierId, fromDate, toDate);
+    const { startDate, endDate } = req.query;
+    if (!startDate || !endDate) {
+      return res.status(400).json({
+        status: 'error',
+        data: null,
+        message: responseMessages.error.invalidDateRange,
+      });
+    }
+
+    const salesReport = await hotelService.getHotelierSalesReport (startDate, endDate);
 
     res.status(200).json({
       status: 'success',
       data: salesReport,
-      message: 'Sales report retrieved successfully',
+      message: responseMessages.success.salesReportRetrieved,
     });
   } catch (error) {
-    console.error('Error fetching sales report:', error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Internal server error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
-
-
-
-
-
-
-
-
 
 export {
   authHotelierHandler,
   registerHotelierHandler,
   verifyHotelierOtpHandler,
+  resendHotelierOtpHandler,
   logoutHotelierHandler,
   getHotelierProfileHandler,
   updateHotelierProfileHandler,
@@ -361,7 +343,6 @@ export {
   getHotelsHandler,
   getHotelByIdHandler,
   updateHotelHandler,
-  resendHotelierOtpHandler,
-  getHotelierStats,
-  getHotelierSalesReport,
+  getStatsHandler,
+  getSalesReportHandler,
 };

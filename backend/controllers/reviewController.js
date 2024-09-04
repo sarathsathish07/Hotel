@@ -1,8 +1,6 @@
 import expressAsyncHandler from 'express-async-handler';
 import reviewService from '../services/reviewService.js';
-
-
-
+import responseMessages from '../constants/responseMessages.js';
 
 const addReview = expressAsyncHandler(async (req, res) => {
   const { rating, review, bookingId } = req.body;
@@ -13,17 +11,16 @@ const addReview = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: newReview,
-      message: 'Review added successfully',
+      message: responseMessages.success.reviewAdded,
     });
   } catch (error) {
     res.status(error.message === 'Booking not found' ? 404 : 500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: error.message === 'Booking not found' ? responseMessages.error.bookingNotFound : responseMessages.error.serverError,
     });
   }
 });
-
 
 const getReviews = expressAsyncHandler(async (req, res) => {
   try {
@@ -32,13 +29,13 @@ const getReviews = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: reviews,
-      message: 'Reviews retrieved successfully',
+      message: responseMessages.success.reviewsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.serverError,
     });
   }
 });
@@ -50,20 +47,19 @@ const getBookingReviews = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: reviews,
-      message: 'Booking reviews retrieved successfully',
+      message: responseMessages.success.bookingReviewsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.error.serverError,
     });
   }
 });
 
-
-export  {
+export {
   addReview,
   getReviews,
   getBookingReviews
-}
+};

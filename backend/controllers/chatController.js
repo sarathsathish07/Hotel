@@ -1,6 +1,7 @@
 import expressAsyncHandler from 'express-async-handler';
 import chatRoomService from '../services/chatRoomService.js';
 import messageService from '../services/messageService.js';
+import responseMessages from '../constants/responseMessages.js';
 
 const getChatRooms = expressAsyncHandler(async (req, res) => {
   try {
@@ -9,18 +10,17 @@ const getChatRooms = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: chatRooms,
-      message: 'Chat rooms retrieved successfully',
+      message: responseMessages.CHAT_ROOMS_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const createChatRoom = expressAsyncHandler(async (req, res) => {
   try {
@@ -30,14 +30,14 @@ const createChatRoom = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: chatRoom,
-      message: 'Chat room created successfully',
+      message: responseMessages.CHAT_ROOM_CREATED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -49,18 +49,17 @@ const getMessages = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: messages,
-      message: 'Messages retrieved successfully',
+      message: responseMessages.MESSAGES_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const sendMessage = expressAsyncHandler(async (req, res) => {
   try {
@@ -94,14 +93,14 @@ const sendMessage = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: newMessage,
-      message: 'Message sent successfully',
+      message: responseMessages.MESSAGE_SENT_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -113,18 +112,17 @@ const getUnreadMessages = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: unreadMessages,
-      message: 'Unread messages retrieved successfully',
+      message: responseMessages.UNREAD_MESSAGES_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const getHotelUnreadMessages = expressAsyncHandler(async (req, res) => {
   try {
@@ -133,14 +131,14 @@ const getHotelUnreadMessages = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: unreadMessages,
-      message: 'Unread messages retrieved successfully',
+      message: responseMessages.UNREAD_MESSAGES_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
@@ -154,18 +152,17 @@ const markMessagesAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Messages marked as read',
+      message: responseMessages.MESSAGES_MARKED_AS_READ,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const getHotelChatRooms = expressAsyncHandler(async (req, res) => {
   try {
@@ -174,19 +171,17 @@ const getHotelChatRooms = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: chatRoomsWithUnreadCount,
-      message: 'Chat rooms retrieved successfully',
+      message: responseMessages.CHAT_ROOMS_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
-
 
 const getHotelMessages = expressAsyncHandler(async (req, res) => {
   try {
@@ -195,18 +190,17 @@ const getHotelMessages = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: messages,
-      message: 'Messages retrieved successfully',
+      message: responseMessages.MESSAGES_RETRIEVED_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const sendHotelMessages = expressAsyncHandler(async (req, res) => {
   try {
@@ -230,18 +224,17 @@ const sendHotelMessages = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: newMessage,
-      message: 'Message sent successfully',
+      message: responseMessages.MESSAGE_SENT_SUCCESSFULLY,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
-
 
 const markHotelMessagesAsRead = expressAsyncHandler(async (req, res) => {
   try {
@@ -252,20 +245,28 @@ const markHotelMessagesAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Messages marked as read',
+      message: responseMessages.MESSAGES_MARKED_AS_READ,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server Error',
+      message: responseMessages.SERVER_ERROR,
     });
   }
 });
 
-
-
-export { getChatRooms, createChatRoom, getMessages, sendMessage,getHotelMessages,sendHotelMessages,getHotelChatRooms,getUnreadMessages,markMessagesAsRead,
-  markHotelMessagesAsRead,getHotelUnreadMessages
- };
+export {
+  getChatRooms,
+  createChatRoom,
+  getMessages,
+  sendMessage,
+  getHotelMessages,
+  sendHotelMessages,
+  getHotelChatRooms,
+  getUnreadMessages,
+  markMessagesAsRead,
+  markHotelMessagesAsRead,
+  getHotelUnreadMessages
+};

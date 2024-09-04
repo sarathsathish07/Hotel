@@ -7,11 +7,11 @@ import { authUser,
   verifyOtp,
   getHotels,
   resendOtp,
-  getHotelById,
   sendPasswordResetEmail,
   resetPassword,
   googleLogin,
 } from '../controllers/userController.js';
+import { getHotelByIdHandler } from '../controllers/hotelierController.js';
 import { saveBooking,updateBookingStatus,getBookingsByUserId,checkRoomAvailability,cancelBooking } from '../controllers/bookingController.js';
 import { getChatRooms,createChatRoom,getMessages,sendMessage,getUnreadMessages,markMessagesAsRead } from '../controllers/chatController.js';
 import { getReviews,getBookingReviews,addReview } from '../controllers/reviewController.js';
@@ -36,7 +36,7 @@ router.route('/profile').get(protect,getUserProfile).put( multerUploadUserProfil
 router.get('/hotels',getHotels ) 
 router.post('/rooms', getRoomsByHotelIds); 
 router.get('/rooms/:roomId',protect, getRoomByRoomId); 
-router.get('/hotels/:id', getHotelById); 
+router.get('/hotels/:id', getHotelByIdHandler); 
 router.get('/reviews/:hotelId',getReviews ); 
 router.get('/reviews',protect,getBookingReviews ); 
 router.post('/booking',protect, saveBooking); 

@@ -1,8 +1,6 @@
 import expressAsyncHandler from 'express-async-handler';
-
 import notificationService from '../services/notificationService.js';
-
-
+import responseMessages from '../constants/responseMessages.js';
 
 const getUnreadNotifications = expressAsyncHandler(async (req, res) => {
   try {
@@ -11,17 +9,16 @@ const getUnreadNotifications = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: notifications,
-      message: 'Unread notifications retrieved successfully',
+      message: responseMessages.success.unreadNotificationsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
 
 const markNotificationAsRead = expressAsyncHandler(async (req, res) => {
   try {
@@ -31,13 +28,13 @@ const markNotificationAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Notification marked as read',
+      message: responseMessages.success.notificationMarkedAsRead,
     });
   } catch (error) {
     res.status(error.message === 'Notification not found' ? 404 : 401).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: error.message === 'Notification not found' ? responseMessages.error.notificationNotFound : responseMessages.error.serverError,
     });
   }
 });
@@ -50,18 +47,17 @@ const getUnreadHotelierNotifications = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: notifications,
-      message: 'Unread notifications retrieved successfully',
+      message: responseMessages.success.unreadNotificationsRetrieved,
     });
   } catch (error) {
     console.error('Error fetching unread notifications:', error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: 'Server error',
+      message: responseMessages.error.serverError,
     });
   }
 });
-
 
 const markHotelierNotificationAsRead = expressAsyncHandler(async (req, res) => {
   try {
@@ -73,26 +69,26 @@ const markHotelierNotificationAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Notification marked as read',
+      message: responseMessages.success.notificationMarkedAsRead,
     });
   } catch (error) {
     if (error.message === 'Notification not found') {
       res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Notification not found',
+        message: responseMessages.error.notificationNotFound,
       });
     } else if (error.message === 'Not authorized') {
       res.status(401).json({
         status: 'error',
         data: null,
-        message: 'Not authorized',
+        message: responseMessages.error.notAuthorized,
       });
     } else {
       res.status(500).json({
         status: 'error',
         data: null,
-        message: 'Server error',
+        message: responseMessages.error.serverError,
       });
     }
   }
@@ -103,4 +99,4 @@ export {
   markNotificationAsRead,
   getUnreadHotelierNotifications,
   markHotelierNotificationAsRead
-}
+};

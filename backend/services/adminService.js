@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import adminRepository from "../repositories/adminRepository.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import responseMessages from "../constants/responseMessages.js";
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -33,7 +34,7 @@ const authenticateAdmin = asyncHandler(async (email, password) => {
   return {
     status: "success",
     data: admin,
-    message: "Admin authenticated successfully",
+    message: responseMessages.ADMIN_AUTH_SUCCESS,
   };
 });
 
@@ -45,7 +46,7 @@ const logoutAdmin = asyncHandler(async (res) => {
   return {
     status: "success",
     data: null,
-    message: "Admin logged out successfully",
+    message: responseMessages.ADMIN_LOGOUT_SUCCESS,
   };
 });
 
@@ -54,7 +55,7 @@ const getAllUsers = asyncHandler(async () => {
   return {
     status: "success",
     data: users,
-    message: "Users retrieved successfully",
+    message: responseMessages.USERS_RETRIEVED_SUCCESS,
   };
 });
 
@@ -63,7 +64,7 @@ const blockUser = asyncHandler(async (userId) => {
   return {
     status: "success",
     data: user,
-    message: "User blocked successfully",
+    message: responseMessages.USER_BLOCK_SUCCESS,
   };
 });
 
@@ -72,7 +73,7 @@ const unblockUser = asyncHandler(async (userId) => {
   return {
     status: "success",
     data: user,
-    message: "User unblocked successfully",
+    message: responseMessages.USER_UNBLOCK_SUCCESS,
   };
 });
 
@@ -81,7 +82,7 @@ const getAllHotels = asyncHandler(async () => {
   return {
     status: "success",
     data: hotels,
-    message: "Hotels retrieved successfully",
+    message: responseMessages.HOTELS_RETRIEVED_SUCCESS,
   };
 });
 
@@ -90,7 +91,7 @@ const listHotel = asyncHandler(async (hotelId) => {
   return {
     status: "success",
     data: hotel,
-    message: "Hotel listed successfully",
+    message: responseMessages.HOTEL_LIST_SUCCESS,
   };
 });
 
@@ -99,7 +100,7 @@ const unlistHotel = asyncHandler(async (hotelId) => {
   return {
     status: "success",
     data: hotel,
-    message: "Hotel unlisted successfully",
+    message: responseMessages.HOTEL_UNLIST_SUCCESS,
   };
 });
 
@@ -108,7 +109,7 @@ const getVerificationDetails = asyncHandler(async () => {
   return {
     status: "success",
     data: details,
-    message: "Verification details retrieved successfully",
+    message: responseMessages.VERIFICATION_DETAILS_RETRIEVED_SUCCESS,
   };
 });
 
@@ -118,7 +119,7 @@ const acceptVerification = asyncHandler(async (hotelId) => {
     return {
       status: "error",
       data: null,
-      message: "Hotel not found",
+      message: responseMessages.HOTEL_NOT_FOUND,
     };
   }
 
@@ -130,20 +131,20 @@ const acceptVerification = asyncHandler(async (hotelId) => {
     return {
       status: "error",
       data: null,
-      message: "Hotelier not found",
+      message: responseMessages.HOTELIER_NOT_FOUND,
     };
   }
 
   await sendVerificationEmail(
     hotelier.email,
-    "Verification Accepted",
-    "Your verification request has been accepted."
+    responseMessages.VERIFICATION_ACCEPTED_SUBJECT,
+    responseMessages.VERIFICATION_ACCEPTED_SUCCESS
   );
 
   return {
     status: "success",
     data: hotel,
-    message: "Verification accepted successfully",
+    message: responseMessages.VERIFICATION_ACCEPTED_SUCCESS,
   };
 });
 
@@ -153,7 +154,7 @@ const rejectVerification = asyncHandler(async (hotelId, reason) => {
     return {
       status: "error",
       data: null,
-      message: "Hotel not found",
+      message: responseMessages.HOTEL_NOT_FOUND,
     };
   }
 
@@ -165,17 +166,21 @@ const rejectVerification = asyncHandler(async (hotelId, reason) => {
     return {
       status: "error",
       data: null,
-      message: "Hotelier not found",
+      message: responseMessages.HOTELIER_NOT_FOUND,
     };
   }
 
   const message = `Your verification request has been rejected for the following reason: ${reason}`;
-  await sendVerificationEmail(hotelier.email, "Verification Rejected", message);
+  await sendVerificationEmail(
+    hotelier.email,
+    responseMessages.VERIFICATION_REJECTED_SUBJECT,
+    message
+  );
 
   return {
     status: "success",
     data: hotel,
-    message: "Verification rejected successfully",
+    message: responseMessages.VERIFICATION_REJECTED_SUCCESS,
   };
 });
 
@@ -188,10 +193,11 @@ const sendVerificationEmail = async (recipient, subject, message) => {
       text: message,
     });
   } catch (error) {
-    console.error("Error sending email:", error);
-    throw new Error("Error sending email");
+    console.error(responseMessages.EMAIL_SEND_ERROR, error);
+    throw new Error(responseMessages.EMAIL_SEND_ERROR);
   }
 };
+
 const getAdminStats = async () => {
   const totalUsers = await adminRepository.countTotalUsers();
   const totalHoteliers = await adminRepository.countTotalHoteliers();
@@ -215,16 +221,17 @@ const getAdminStats = async () => {
     })),
   };
 };
+
 const getSalesReport = async (from, to) => {
   if (!from || !to) {
-    throw new Error("Date range is required");
+    throw new Error(responseMessages.DATE_RANGE_REQUIRED);
   }
 
   const fromDate = new Date(from);
   const toDate = new Date(to);
 
   if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-    throw new Error("Invalid date format");
+    throw new Error(responseMessages.INVALID_DATE_FORMAT);
   }
 
   const bookings = await adminRepository.getSalesData(fromDate, toDate);

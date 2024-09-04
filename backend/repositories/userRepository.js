@@ -3,32 +3,62 @@ import Hotel from '../models/hotelModel.js';
 import Room from '../models/roomModel.js';
 
 const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
+  try {
+    return await User.findOne({ email }).exec();
+  } catch (error) {
+    throw new Error(`Error finding user by email: ${error.message}`);
+  }
 };
 
 const createUser = async (userData) => {
-  return await User.create(userData);
+  try {
+    return await User.create(userData);
+  } catch (error) {
+    throw new Error(`Error creating user: ${error.message}`);
+  }
 };
 
 const findUserById = async (id) => {
-  return await User.findById(id);
-};  
+  try {
+    return await User.findById(id).exec();
+  } catch (error) {
+    throw new Error(`Error finding user by ID: ${error.message}`);
+  }
+};
 
 const saveUser = async (user) => {
-  return await user.save();
+  try {
+    return await user.save();
+  } catch (error) {
+    throw new Error(`Error saving user: ${error.message}`);
+  }
 };
+
 const findHotelById = async (id) => {
-  return await Hotel.findById(id).exec();
+  try {
+    return await Hotel.findById(id).exec();
+  } catch (error) {
+    throw new Error(`Error finding hotel by ID: ${error.message}`);
+  }
 };
 
 const findRoomsByHotelId = async (hotelId) => {
-  return await Room.find({ hotelId }).exec();
+  try {
+    return await Room.find({ hotelId }).exec();
+  } catch (error) {
+    throw new Error(`Error finding rooms by hotel ID: ${error.message}`);
+  }
 };
+
 const findUserByResetToken = async (resetToken) => {
-  return await User.findOne({
-    resetPasswordToken: resetToken,
-    resetPasswordExpire: { $gt: Date.now() },
-  });
+  try {
+    return await User.findOne({
+      resetPasswordToken: resetToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    }).exec();
+  } catch (error) {
+    throw new Error(`Error finding user by reset token: ${error.message}`);
+  }
 };
 
 export {

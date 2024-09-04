@@ -24,33 +24,39 @@ const getAllUsers = asyncHandler(async () => {
 
 const updateUser = asyncHandler(async (userId, userData) => {
   const user = await User.findById(userId);
-  if (user) {
-    user.name = userData.name || user.name;
-    user.email = userData.email || user.email;
-    user.isBlocked = userData.isBlocked !== undefined ? userData.isBlocked : user.isBlocked;
-    return await user.save();
-  } else {
+  if (!user) {
     throw new Error('User not found');
   }
+
+  user.name = userData.name || user.name;
+  user.email = userData.email || user.email;
+  user.isBlocked = userData.isBlocked !== undefined ? userData.isBlocked : user.isBlocked;
+
+  return await user.save();
 });
 
-
 const deleteUserById = asyncHandler(async (userId) => {
-  return await User.findByIdAndDelete(userId);
+  const user = await User.findByIdAndDelete(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user;
 });
 
 const createUser = asyncHandler(async (name, email, password) => {
   const userExist = await User.findOne({ email });
   if (userExist) {
     throw new Error('User already exists');
-  } else {
-    const user = await User.create({
-      name,
-      email,
-      password,
-    });
-    return user;
   }
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+  });
+
+  return user;
 });
 
 const getPendingHotelierVerifications = asyncHandler(async () => {
@@ -60,90 +66,108 @@ const getPendingHotelierVerifications = asyncHandler(async () => {
 const getAllHotels = asyncHandler(async () => {
   return await Hotel.find({});
 });
+
 const listHotel = asyncHandler(async (hotelId) => {
   const hotel = await Hotel.findById(hotelId);
-
-  if (hotel) {
-    hotel.isListed = true;
-    await hotel.save();
-    return { message: 'Hotel listed successfully' };
-  } else {
+  if (!hotel) {
     throw new Error('Hotel not found');
   }
+
+  hotel.isListed = true;
+  await hotel.save();
+
+  return { message: 'Hotel listed successfully' };
 });
 
 const unlistHotel = asyncHandler(async (hotelId) => {
   const hotel = await Hotel.findById(hotelId);
-
-  if (hotel) {
-    hotel.isListed = false;
-    await hotel.save();
-    return { message: 'Hotel unlisted successfully' };
-  } else {
+  if (!hotel) {
     throw new Error('Hotel not found');
   }
+
+  hotel.isListed = false;
+  await hotel.save();
+
+  return { message: 'Hotel unlisted successfully' };
 });
-const findHotelierById = async (id) => {
-  return await Hotelier.findById(id);
-};
-const findHotelById = async (id) => {
-  return await Hotel.findById(id);
-};
 
-const saveHotelier = async (hotelier) => {
+const findHotelierById = asyncHandler(async (id) => {
+  const hotelier = await Hotelier.findById(id);
+  if (!hotelier) {
+    throw new Error('Hotelier not found');
+  }
+
+  return hotelier;
+});
+
+const findHotelById = asyncHandler(async (id) => {
+  const hotel = await Hotel.findById(id);
+  if (!hotel) {
+    throw new Error('Hotel not found');
+  }
+
+  return hotel;
+});
+
+const saveHotelier = asyncHandler(async (hotelier) => {
   return await hotelier.save();
-};
-const saveHotel = async (hotel) => {
+});
+
+const saveHotel = asyncHandler(async (hotel) => {
   return await hotel.save();
-};
-const countTotalUsers = async () => {
+});
+
+const countTotalUsers = asyncHandler(async () => {
   return await User.countDocuments();
-};
+});
 
-const countTotalHoteliers = async () => {
+const countTotalHoteliers = asyncHandler(async () => {
   return await Hotelier.countDocuments();
-};
+});
 
-const countTotalHotels = async () => {
+const countTotalHotels = asyncHandler(async () => {
   return await Hotel.countDocuments();
-};
+});
 
-const calculateTotalRevenue = async () => {
-  return await Booking.aggregate([
+const calculateTotalRevenue = asyncHandler(async () => {
+  const result = await Booking.aggregate([
     { $match: { bookingStatus: 'confirmed' } },
-    { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } }
+    { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } },
   ]);
-};
 
-const getMonthlyBookings = async () => {
+  return result.length > 0 ? result[0].totalRevenue : 0;
+});
+
+const getMonthlyBookings = asyncHandler(async () => {
   return await Booking.aggregate([
     { $match: { bookingStatus: 'confirmed' } },
     {
       $group: {
         _id: {
-          month: { $month: "$bookingDate" },
-          year: { $year: "$bookingDate" }
+          month: { $month: '$bookingDate' },
+          year: { $year: '$bookingDate' },
         },
-        count: { $sum: 1 }
-      }
+        count: { $sum: 1 },
+      },
     },
-    { $sort: { "_id.year": 1, "_id.month": 1 } }
+    { $sort: { '_id.year': 1, '_id.month': 1 } },
   ]);
-};
+});
 
-const getYearlyBookings = async () => {
+const getYearlyBookings = asyncHandler(async () => {
   return await Booking.aggregate([
     { $match: { bookingStatus: 'confirmed' } },
     {
       $group: {
-        _id: { year: { $year: "$bookingDate" } },
-        count: { $sum: 1 }
-      }
+        _id: { year: { $year: '$bookingDate' } },
+        count: { $sum: 1 },
+      },
     },
-    { $sort: { "_id.year": 1 } }
+    { $sort: { '_id.year': 1 } },
   ]);
-};
-const getSalesData = async (fromDate, toDate) => {
+});
+
+const getSalesData = asyncHandler(async (fromDate, toDate) => {
   return await Booking.aggregate([
     {
       $match: {
@@ -201,13 +225,11 @@ const getSalesData = async (fromDate, toDate) => {
         paymentId: { $first: '$paymentId' },
       },
     },
-    {
-      $sort: { _id: 1 },
-    },
+    { $sort: { _id: 1 } },
   ]);
-};
+});
 
-export default{
+export default {
   findAdminByEmailAndPassword,
   getAllUsers,
   updateUser,
@@ -227,5 +249,5 @@ export default{
   calculateTotalRevenue,
   getMonthlyBookings,
   getYearlyBookings,
-  getSalesData
+  getSalesData,
 };

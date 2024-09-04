@@ -1,4 +1,5 @@
 import RoomRepository from "../repositories/roomRepository.js";
+import responseMessages from "../constants/responseMessages.js";
 
 const addRoomHandler = async (hotelId, hotelierId, roomData) => {
   try {
@@ -6,7 +7,7 @@ const addRoomHandler = async (hotelId, hotelierId, roomData) => {
     return {
       status: "success",
       data: room,
-      message: "Room added successfully.",
+      message: responseMessages.ROOM_ADDED_SUCCESS,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -17,12 +18,12 @@ const getRoomByIdHandler = async (roomId) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: "Room not found." };
+      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
     }
     return {
       status: "success",
       data: room,
-      message: "Room retrieved successfully.",
+      message: responseMessages.ROOM_RETRIEVED_SUCCESS,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -35,10 +36,10 @@ const getRoomsByHotelIdsService = async (hotelIds) => {
     return {
       status: "success",
       data: rooms,
-      message: "Rooms retrieved successfully.",
+      message: responseMessages.ROOMS_RETRIEVED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: "Error fetching rooms." };
+    return { status: "error", data: null, message: responseMessages.ERROR_FETCHING_ROOMS };
   }
 };
 
@@ -46,7 +47,7 @@ const updateRoomData = async (roomId, updateData, files) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: "Room not found." };
+      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
     }
 
     room.type = updateData.type || room.type;
@@ -76,7 +77,7 @@ const updateRoomData = async (roomId, updateData, files) => {
     return {
       status: "success",
       data: room,
-      message: "Room updated successfully.",
+      message: responseMessages.ROOM_UPDATE_SUCCESS,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };

@@ -2,6 +2,7 @@ import hotelRepository from "../repositories/hotelRepository.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import responseMessages from "../constants/responseMessages.js";
 
 const generateHotelierToken = (res, userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET_HOTELIER, {
@@ -50,10 +51,10 @@ const fetchAcceptedHotels = async (
     return {
       status: "success",
       data: hotels,
-      message: "Hotels fetched successfully.",
+      message: responseMessages.FETCH_ACCEPTED_HOTELS_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: responseMessages.FETCH_ACCEPTED_HOTELS_ERROR };
   }
 };
 
@@ -75,8 +76,9 @@ const sendHotelierOtpEmail = async (email, otp) => {
     };
 
     await transporter.sendMail(mailOptions);
+    return { status: "success", message: responseMessages.OTP_SENT_SUCCESS };
   } catch (error) {
-    throw new Error("Failed to send OTP email");
+    throw new Error(responseMessages.OTP_SEND_ERROR);
   }
 };
 
@@ -89,25 +91,25 @@ const authHotelier = async (email, password) => {
           return {
             status: "error",
             data: null,
-            message: "OTP has expired. Please request a new OTP.",
+            message: responseMessages.LOGIN_OTP_EXPIRED,
           };
         }
         return {
           status: "error",
           data: null,
-          message: "Please verify your OTP before logging in.",
+          message: responseMessages.LOGIN_OTP_NOT_VERIFIED,
         };
       }
       return {
         status: "success",
         data: hotelier,
-        message: "Login successful.",
+        message: responseMessages.LOGIN_SUCCESS,
       };
     } else {
       return {
         status: "error",
         data: null,
-        message: "Invalid email or password.",
+        message: responseMessages.LOGIN_INVALID_CREDENTIALS,
       };
     }
   } catch (error) {
@@ -124,14 +126,13 @@ const registerHotelier = async (name, email, password) => {
       return {
         status: "success",
         data: userExists,
-        message:
-          "User already exists but is not verified. OTP has been resent.",
+        message: responseMessages.REGISTER_OTP_RESENT,
       };
     } else if (userExists) {
       return {
         status: "error",
         data: null,
-        message: "User already exists and is verified.",
+        message: responseMessages.REGISTER_ALREADY_VERIFIED,
       };
     } else {
       const otp = crypto.randomInt(100000, 999999);
@@ -150,7 +151,7 @@ const registerHotelier = async (name, email, password) => {
       return {
         status: "success",
         data: user,
-        message: "User registered successfully.",
+        message: responseMessages.REGISTER_SUCCESS,
       };
     }
   } catch (error) {
@@ -163,7 +164,7 @@ const verifyHotelierOtp = async (email, otp) => {
     const hotelier = await hotelRepository.findHotelierByEmail(email);
     if (hotelier) {
       if (new Date() > hotelier.otpExpiry) {
-        return { status: "error", data: null, message: "OTP has expired." };
+        return { status: "error", data: null, message: responseMessages.OTP_VERIFY_EXPIRED };
       }
 
       if (hotelier.otp.toString() === otp.trim()) {
@@ -172,13 +173,13 @@ const verifyHotelierOtp = async (email, otp) => {
         return {
           status: "success",
           data: null,
-          message: "OTP verified successfully.",
+          message: responseMessages.OTP_VERIFY_SUCCESS,
         };
       } else {
-        return { status: "error", data: null, message: "Invalid OTP." };
+        return { status: "error", data: null, message: responseMessages.OTP_VERIFY_INVALID };
       }
     } else {
-      return { status: "error", data: null, message: "Hotelier not found." };
+      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
     }
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -189,7 +190,7 @@ const resendOtp = async (email) => {
   try {
     const hotelier = await hotelRepository.findHotelierByEmail(email);
     if (!hotelier) {
-      throw new Error("Hotelier not found.");
+      throw new Error(responseMessages.PROFILE_NOT_FOUND);
     }
 
     const otp = crypto.randomInt(100000, 999999);
@@ -200,17 +201,17 @@ const resendOtp = async (email) => {
     await hotelRepository.saveHotelier(hotelier);
     await sendHotelierOtpEmail(hotelier.email, otp);
   } catch (error) {
-    throw new Error("Failed to resend OTP.");
+    throw new Error(responseMessages.OTP_SEND_ERROR);
   }
 };
 
-const logoutHotelier = async () => {
+const logoutHotelier = async (res) => {
   try {
     res.cookie("jwtHotelier", "", {
       httpOnly: true,
       expires: new Date(0),
     });
-    return { status: "success", data: null, message: "Hotelier logged out." };
+    return { status: "success", data: null, message: responseMessages.LOGOUT_SUCCESS };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
@@ -228,7 +229,7 @@ const getHotelierProfile = async (userId) => {
         profileImageName: user.profileImageName,
         verificationStatus: user.verificationStatus,
       },
-      message: "Hotelier profile retrieved successfully.",
+      message: responseMessages.PROFILE_FETCH_SUCCESS,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -239,63 +240,46 @@ const updateHotelierProfile = async (hotelierId, updateData, profileImage) => {
   try {
     const hotelier = await hotelRepository.findHotelierById(hotelierId);
     if (!hotelier) {
-      return { status: "error", data: null, message: "Hotelier not found." };
+      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
     }
 
-    hotelier.name = updateData.name || hotelier.name;
-    hotelier.email = updateData.email || hotelier.email;
-    if (updateData.password) {
-      hotelier.password = updateData.password;
-    }
+    Object.assign(hotelier, updateData);
+
     if (profileImage) {
-      hotelier.profileImageName =
-        profileImage.filename || hotelier.profileImageName;
+      hotelier.profileImageName = profileImage;
     }
 
-    const updatedHotelier = await hotelRepository.saveHotelier(hotelier);
-    return {
-      status: "success",
-      data: updatedHotelier,
-      message: "Hotelier profile updated successfully.",
-    };
+    await hotelRepository.saveHotelier(hotelier);
+    return { status: "success", data: hotelier, message: responseMessages.PROFILE_UPDATE_SUCCESS };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
 };
 
-const uploadCertificates = async (hotelId, certificatePath) => {
+const uploadCertificate = async (hotelierId, certificate) => {
   try {
-    const hotel = await hotelRepository.findHotelById(hotelId);
-    if (!hotel) {
-      return { status: "error", data: null, message: "Hotel not found." };
+    const hotelier = await hotelRepository.findHotelierById(hotelierId);
+    if (!hotelier) {
+      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
     }
 
-    hotel.certificate = certificatePath.replace("backend/public/", "");
-    hotel.verificationStatus = "pending";
-    const updatedHotel = await hotel.save();
-    return {
-      status: "success",
-      data: updatedHotel,
-      message: "Certificate uploaded successfully.",
-    };
+    hotelier.certificate = certificate;
+    await hotelRepository.saveHotelier(hotelier);
+    return { status: "success", data: hotelier, message: responseMessages.CERTIFICATE_UPLOAD_SUCCESS };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
 };
-
 const addHotel = async (hotelierId, hotelData) => {
   try {
-    const createdHotel = await hotelRepository.createHotel(
-      hotelierId,
-      hotelData
-    );
+    const createdHotel = await hotelRepository.createHotel(hotelierId, hotelData);
     return {
       status: "success",
       data: createdHotel,
-      message: "Hotel added successfully.",
+      message: responseMessages.HOTEL_ADD_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
   }
 };
 
@@ -305,10 +289,10 @@ const getHotels = async (hotelierId) => {
     return {
       status: "success",
       data: hotels,
-      message: "Hotels retrieved successfully.",
+      message: responseMessages.HOTELS_FETCH_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
   }
 };
 
@@ -316,7 +300,7 @@ const getHotelById = async (hotelId) => {
   try {
     const hotel = await hotelRepository.findHotelById(hotelId);
     if (!hotel) {
-      return { status: "error", data: null, message: "Hotel not found." };
+      return { status: "error", data: null, message: responseMessages.HOTEL_NOT_FOUND };
     }
 
     const rooms = await hotelRepository.findRoomById({ hotelId });
@@ -324,10 +308,10 @@ const getHotelById = async (hotelId) => {
     return {
       status: "success",
       data: { ...hotel._doc, rooms },
-      message: "Hotel details retrieved successfully.",
+      message: responseMessages.HOTEL_DETAILS_FETCH_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
   }
 };
 
@@ -335,7 +319,7 @@ const updateHotelData = async (hotelId, updateData, files) => {
   try {
     const hotel = await hotelRepository.findHotelById(hotelId);
     if (!hotel) {
-      return { status: "error", data: null, message: "Hotel not found." };
+      return { status: "error", data: null, message: responseMessages.HOTEL_NOT_FOUND };
     }
 
     hotel.name = updateData.name || hotel.name;
@@ -349,35 +333,31 @@ const updateHotelData = async (hotelId, updateData, files) => {
     hotel.longitude = updateData.longitude || hotel.longitude;
 
     if (files && files.length > 0) {
-      const newImages = files.map((file) =>
-        file.path.replace(/.*public[\\/]/, "")
-      );
+      const newImages = files.map((file) => file.path.replace(/.*public[\\/]/, ""));
       hotel.images.push(...newImages);
     }
 
     if (updateData.removeImages && updateData.removeImages.length > 0) {
-      hotel.images = hotel.images.filter(
-        (image) => !updateData.removeImages.includes(image)
-      );
+      hotel.images = hotel.images.filter((image) => !updateData.removeImages.includes(image));
     }
 
     const updatedHotel = await hotel.save();
     return {
       status: "success",
       data: updatedHotel,
-      message: "Hotel data updated successfully.",
+      message: responseMessages.HOTEL_UPDATE_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message };
+    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
   }
 };
+
 const getHotelsWithUnreadMessages = async (hotelierId) => {
   const hotels = await hotelRepository.findHotelsByHotelierId(hotelierId);
 
   const hotelData = await Promise.all(
     hotels.map(async (hotel) => {
-      const unreadMessagesCount =
-        await hotelRepository.countUnreadMessagesForHotels([hotel._id]);
+      const unreadMessagesCount = await hotelRepository.countUnreadMessagesForHotels([hotel._id]);
 
       return {
         ...hotel._doc,
@@ -388,19 +368,19 @@ const getHotelsWithUnreadMessages = async (hotelierId) => {
 
   return hotelData;
 };
+
 const getHotelDetailsById = async (hotelId) => {
   const hotel = await hotelRepository.findHotelById(hotelId);
 
   if (!hotel) {
-    throw new Error("Hotel not found");
+    throw new Error(responseMessages.HOTEL_NOT_FOUND);
   }
 
   const rooms = await hotelRepository.findRoomsByHotelId(hotelId);
   const chatRooms = await hotelRepository.findChatRoomsByHotelId(hotelId);
   const chatRoomIds = chatRooms.map((chatRoom) => chatRoom._id);
 
-  const unreadMessagesCount =
-    await hotelRepository.countUnreadMessagesForChatRooms(chatRoomIds);
+  const unreadMessagesCount = await hotelRepository.countUnreadMessagesForChatRooms(chatRoomIds);
 
   return {
     ...hotel.toObject(),
@@ -408,6 +388,7 @@ const getHotelDetailsById = async (hotelId) => {
     unreadMessagesCount,
   };
 };
+
 const getHotelierStats = async (hotelierId) => {
   const totalHotels = await hotelRepository.countTotalHotels(hotelierId);
   const totalBookings = await hotelRepository.countTotalBookings(hotelierId);
@@ -429,27 +410,30 @@ const getHotelierStats = async (hotelierId) => {
     })),
   };
 };
+
 const getHotelierSalesReport = async (hotelierId, fromDate, toDate) => {
   return hotelRepository.getSalesReport(hotelierId, fromDate, toDate);
 };
 
-export default {
+export  default {
+  generateHotelierToken,
   fetchAcceptedHotels,
+  sendHotelierOtpEmail,
   authHotelier,
   registerHotelier,
   verifyHotelierOtp,
+  resendOtp,
   logoutHotelier,
   getHotelierProfile,
   updateHotelierProfile,
-  uploadCertificates,
+  uploadCertificate,
   addHotel,
   getHotels,
   getHotelById,
   updateHotelData,
-  resendOtp,
-  generateHotelierToken,
   getHotelsWithUnreadMessages,
   getHotelDetailsById,
   getHotelierStats,
-  getHotelierSalesReport,
+  getHotelierSalesReport
+
 };

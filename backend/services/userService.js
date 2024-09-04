@@ -2,6 +2,7 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import * as userRepository from "../repositories/userRepository.js";
 import jwt from "jsonwebtoken";
+import responseMessages from "../constants/responseMessages.js";
 
 const generateToken = (res, userId) => {
   try {
@@ -18,7 +19,7 @@ const generateToken = (res, userId) => {
     return {
       status: "success",
       data: { token },
-      message: "Token generated and cookie set.",
+      message: responseMessages.TOKEN_GENERATED,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -46,7 +47,7 @@ const sendOtpEmail = async (email, otp) => {
     return {
       status: "success",
       data: null,
-      message: "OTP email sent successfully.",
+      message: responseMessages.OTP_EMAIL_SENT,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -59,32 +60,32 @@ const authenticateUser = async (email, password) => {
 
     if (user && (await user.matchPassword(password))) {
       if (user.isBlocked) {
-        return { status: "error", data: null, message: "User is blocked" };
+        return { status: "error", data: null, message: responseMessages.USER_BLOCKED };
       }
       if (!user.otpVerified) {
         if (new Date() > user.otpExpiry) {
           return {
             status: "error",
             data: null,
-            message: "OTP has expired. Please request a new OTP.",
+            message: responseMessages.OTP_EXPIRED,
           };
         }
         return {
           status: "error",
           data: null,
-          message: "Please verify your OTP before logging in",
+          message: responseMessages.OTP_NOT_VERIFIED,
         };
       }
       return {
         status: "success",
         data: user,
-        message: "User authenticated successfully",
+        message: responseMessages.USER_AUTHENTICATED,
       };
     } else {
       return {
         status: "error",
         data: null,
-        message: "Invalid email or password",
+        message: responseMessages.INVALID_EMAIL_OR_PASSWORD,
       };
     }
   } catch (error) {
@@ -101,14 +102,13 @@ const registerNewUser = async (name, email, password) => {
       return {
         status: "success",
         data: userExists,
-        message:
-          "User already exists but is not verified. OTP has been resent.",
+        message: responseMessages.USER_ALREADY_EXISTS_UNVERIFIED,
       };
     } else if (userExists) {
       return {
         status: "error",
         data: null,
-        message: "User already exists and is verified.",
+        message: responseMessages.USER_ALREADY_EXISTS_VERIFIED,
       };
     } else {
       const otp = crypto.randomInt(100000, 999999);
@@ -126,7 +126,7 @@ const registerNewUser = async (name, email, password) => {
       return {
         status: "success",
         data: user,
-        message: "User registered successfully",
+        message: responseMessages.USER_REGISTERED,
       };
     }
   } catch (error) {
@@ -140,17 +140,17 @@ const verifyUserOtp = async (email, otp) => {
 
     if (user && user.otp.toString() === otp.trim()) {
       if (user.otpExpires && user.otpExpires < Date.now()) {
-        return { status: "error", data: null, message: "OTP has expired" };
+        return { status: "error", data: null, message: responseMessages.OTP_EXPIRED };
       }
       user.otpVerified = true;
       await userRepository.saveUser(user);
       return {
         status: "success",
         data: null,
-        message: "OTP verified successfully",
+        message: responseMessages.OTP_INVALID,
       };
     } else {
-      return { status: "error", data: null, message: "Invalid OTP" };
+      return { status: "error", data: null, message: responseMessages.OTP_INVALID };
     }
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -162,7 +162,7 @@ const resendOtp = async (email) => {
     const user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      return { status: "error", data: null, message: "User not found" };
+      return { status: "error", data: null, message: responseMessages.USER_NOT_FOUND };
     }
 
     const otp = crypto.randomInt(100000, 999999);
@@ -174,7 +174,7 @@ const resendOtp = async (email) => {
     return {
       status: "success",
       data: null,
-      message: "OTP resent successfully",
+      message: responseMessages.OTP_RESENT,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -187,7 +187,7 @@ const logoutUser = (res) => {
       httpOnly: true,
       expires: new Date(0),
     });
-    return { status: "success", data: null, message: "User logged out" };
+    return { status: "success", data: null, message: responseMessages.PROFILE_UPDATED };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
@@ -204,7 +204,7 @@ const getUserProfile = async (userId) => {
         email: user.email,
         profileImageName: user.profileImageName,
       },
-      message: "User profile retrieved successfully",
+      message: responseMessages.PROFILE_UPDATED,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -215,7 +215,7 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
   try {
     const user = await userRepository.findUserById(userId);
     if (!user) {
-      return { status: "error", data: null, message: "User not found" };
+      return { status: "error", data: null, message: responseMessages.USER_NOT_FOUND };
     }
 
     if (updateData.currentPassword) {
@@ -224,7 +224,7 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
         return {
           status: "error",
           data: null,
-          message: "Current password is incorrect",
+          message: responseMessages.CURRENT_PASSWORD_INCORRECT,
         };
       }
     }
@@ -242,7 +242,7 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
     return {
       status: "success",
       data: user,
-      message: "User profile updated successfully",
+      message: responseMessages.PROFILE_UPDATED,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -251,49 +251,16 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
 
 const getSingleHotelById = async (id) => {
   try {
-    const hotel = await userRepository.findHotelById(id);
-    if (hotel) {
-      const rooms = await userRepository.findRoomsByHotelId(id);
-      return {
-        status: "success",
-        data: { ...hotel._doc, rooms },
-        message: "Hotel retrieved successfully",
-      };
-    }
-    return { status: "error", data: null, message: "Hotel not found" };
-  } catch (error) {
-    return { status: "error", data: null, message: error.message };
-  }
-};
-
-const sendEmail = async ({ to, subject, text }) => {
-  try {
-    let transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: "sarathsathish77@gmail.com",
-        pass: "pehs ltsj iktw pqtp",
-      },
-    });
-
-    let mailOptions = {
-      from: "sarathsathish77@gmail.com",
-      to: to,
-      subject: subject,
-      text: text,
-    };
-
-    await transporter.sendMail(mailOptions);
+    const hotel = await hotelRepository.findHotelById(id);
     return {
       status: "success",
-      data: null,
-      message: "Email sent successfully",
+      data: hotel,
+      message: responseMessages.HOTEL_RETRIEVED,
     };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
 };
-
 const sendPasswordResetEmailService = async (email) => {
   try {
     const user = await userRepository.findUserByEmail(email);
@@ -311,10 +278,10 @@ const sendPasswordResetEmailService = async (email) => {
 
     const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
 
-    const message = `
-      You requested a password reset. Please make a PUT request to:
-      ${resetUrl}
-    `;
+    const message = 
+      `You requested a password reset. Please make a PUT request to:
+      ${resetUrl}`
+    ;
 
     await sendEmail({
       to: user.email,
@@ -363,15 +330,16 @@ const resetPasswordService = async (resetToken, password) => {
 };
 
 export default {
+  generateToken,
+  sendOtpEmail,
   authenticateUser,
   registerNewUser,
   verifyUserOtp,
+  resendOtp,
   logoutUser,
   getUserProfile,
   updateUserProfileService,
-  generateToken,
-  resendOtp,
   getSingleHotelById,
-  sendPasswordResetEmailService,
   resetPasswordService,
+  sendPasswordResetEmailService
 };

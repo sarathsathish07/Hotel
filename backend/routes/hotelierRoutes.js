@@ -12,8 +12,8 @@ import { authHotelierHandler,
   getHotelByIdHandler,
   updateHotelHandler,
   resendHotelierOtpHandler,
-  getHotelierStats,
-  getHotelierSalesReport,
+  getStatsHandler,
+  getSalesReportHandler,
  } from '../controllers/hotelierController.js';
  import { addRoom,getRoomById,updateRoomHandler } from '../controllers/roomController.js';
  import { getUnreadHotelierNotifications,markHotelierNotificationAsRead } from '../controllers/notificationController.js';
@@ -36,12 +36,12 @@ router.post("/add-hotel",protect, multerUploadHotelImages.array("images", 5),add
 router.get('/unreadHotelmessages', protect, getHotelUnreadMessages); 
 router.get('/get-hotels',protect, getHotelsHandler); 
 router.get('/bookings',protect, getHotelierBookings); 
-router.get('/dashboard',protect,getHotelierStats), 
+router.get('/dashboard',protect,getStatsHandler), 
 router.route('/hotels/:id').get(protect,getHotelByIdHandler).put(protect,multerUploadHotelImages.array("images", 5), updateHotelHandler); 
 router.post('/add-room/:hotelId', protect, multerUploadRoomImages.array("images", 5), addRoom); 
 router.put('/rooms/:roomId', protect, multerUploadRoomImages.array("images", 5), updateRoomHandler); 
 router.get('/rooms/:roomId',protect, getRoomById); 
-router.post('/salesReport',protect, getHotelierSalesReport ); 
+router.post('/salesReport',protect, getSalesReportHandler ); 
 router.put('/cancel-booking/:bookingId', protect, cancelBookingByHotelier); 
 
 router.get('/chatrooms/:hotelId',protect, getHotelChatRooms); 

@@ -1,10 +1,11 @@
-
 import Booking from '../models/bookingModel.js';
 import RatingReview from '../models/ratingReviewModel.js';
 
 const findBookingById = async (bookingId) => {
   try {
-    return await Booking.findById(bookingId).populate('userId hotelId').exec();
+    return await Booking.findById(bookingId)
+      .populate('userId hotelId')
+      .exec();
   } catch (error) {
     throw new Error(`Database error: ${error.message}`);
   }
@@ -12,19 +13,22 @@ const findBookingById = async (bookingId) => {
 
 const createReview = async (reviewData) => {
   try {
-    const newReview = new RatingReview(reviewData);
-    return await newReview.save();
+    return await RatingReview.create(reviewData);
   } catch (error) {
     throw new Error(`Database error: ${error.message}`);
   }
 };
+
 const findReviewsByHotelId = async (hotelId) => {
   try {
-    return await RatingReview.find({ hotelId }).populate('userId', 'name').exec();
+    return await RatingReview.find({ hotelId })
+      .populate('userId', 'name')
+      .exec();
   } catch (error) {
     throw new Error(`Database error: ${error.message}`);
   }
 };
+
 const findAllReviews = async () => {
   try {
     return await RatingReview.find()
@@ -36,4 +40,9 @@ const findAllReviews = async () => {
   }
 };
 
-export default { findBookingById, createReview,findReviewsByHotelId,findAllReviews  };
+export default { 
+  findBookingById, 
+  createReview, 
+  findReviewsByHotelId, 
+  findAllReviews 
+};

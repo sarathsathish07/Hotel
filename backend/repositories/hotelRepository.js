@@ -4,6 +4,7 @@ import ChatRoom from '../models/chatRoomModel.js';
 import Room from '../models/roomModel.js';
 import Booking from '../models/bookingModel.js';
 
+// Get accepted hotels with sorting and filtering
 const getAcceptedHotels = async (sortCriteria, filterCriteria) => {
   const pipeline = [
     {
@@ -57,81 +58,101 @@ const getAcceptedHotels = async (sortCriteria, filterCriteria) => {
   return await Hotel.aggregate(pipeline);
 };
 
-
+// Find hotelier by email
 const findHotelierByEmail = async (email) => {
   return await Hotelier.findOne({ email });
 };
 
+// Create a new hotelier
 const createHotelier = async (hotelierData) => {
   return await Hotelier.create(hotelierData);
 };
 
+// Create a new hotel
 const createHotel = async (hotelierId, hotelData) => {
   const hotel = new Hotel({ ...hotelData, hotelierId });
   return await hotel.save();
 };
 
+// Find hotels by hotelier ID
 const findHotelsByHotelierId = async (hotelierId) => {
   return await Hotel.find({ hotelierId });
 };
 
+// Find a hotel by ID
 const findHotelById = async (hotelId) => {
   return await Hotel.findById(hotelId);
 };
+
+// Find rooms by hotel ID
 const findRoomById = async (hotelId) => {
   return await Room.find({ hotelId });
 };
 
+// Find hotelier by ID
 const findHotelierById = async (id) => {
   return await Hotelier.findById(id);
 };
 
+// Save hotelier data
 const saveHotelier = async (user) => {
   return await user.save();
 };
+
+// Count unread messages for a list of hotel IDs
 const countUnreadMessagesForHotels = async (hotelIds) => {
   const chatRooms = await ChatRoom.find({ hotelId: { $in: hotelIds } });
   const chatRoomIds = chatRooms.map(chatRoom => chatRoom._id);
 
-  const unreadMessagesCount = await Message.countDocuments({
+  return await Message.countDocuments({
     chatRoomId: { $in: chatRoomIds },
     senderType: 'User',
     read: false,
   });
-
-  return unreadMessagesCount;
 };
+
+// Find rooms by hotel ID
 const findRoomsByHotelId = async (hotelId) => {
-  return Room.find({ hotelId });
+  return await Room.find({ hotelId });
 };
+
+// Find chat rooms by hotel ID
 const findChatRoomsByHotelId = async (hotelId) => {
-  return ChatRoom.find({ hotelId });
+  return await ChatRoom.find({ hotelId });
 };
+
+// Count unread messages for a list of chat room IDs
 const countUnreadMessagesForChatRooms = async (chatRoomIds) => {
-  return Message.countDocuments({
+  return await Message.countDocuments({
     chatRoomId: { $in: chatRoomIds },
     senderType: 'User',
     read: false,
   });
 };
 
+// Count total hotels for a hotelier
 const countTotalHotels = async (hotelierId) => {
-  return Hotel.countDocuments({ hotelierId });
+  return await Hotel.countDocuments({ hotelierId });
 };
 
+// Count total bookings for a hotelier
 const countTotalBookings = async (hotelierId) => {
-  return Booking.countDocuments({ hotelierId, bookingStatus: 'confirmed' });
+  return await Booking.countDocuments({ hotelierId, bookingStatus: 'confirmed' });
 };
 
+// Calculate total revenue for a hotelier
 const calculateTotalRevenue = async (hotelierId) => {
-  return Booking.aggregate([
+  const result = await Booking.aggregate([
     { $match: { hotelierId, bookingStatus: 'confirmed' } },
     { $group: { _id: null, totalAmount: { $sum: '$totalAmount' } } },
   ]);
+
+  return result.length > 0 ? result[0].totalAmount : 0;
 };
 
+// Get monthly bookings for a hotelier
 const getMonthlyBookings = async (hotelierId) => {
-  return Booking.aggregate([
+  return await Booking.aggregate([
     { $match: { hotelierId, bookingStatus: 'confirmed' } },
     {
       $group: {
@@ -146,8 +167,9 @@ const getMonthlyBookings = async (hotelierId) => {
   ]);
 };
 
+// Get yearly bookings for a hotelier
 const getYearlyBookings = async (hotelierId) => {
-  return Booking.aggregate([
+  return await Booking.aggregate([
     { $match: { hotelierId, bookingStatus: 'confirmed' } },
     {
       $group: {
@@ -158,13 +180,15 @@ const getYearlyBookings = async (hotelierId) => {
     { $sort: { "_id.year": 1 } }
   ]);
 };
+
+// Get sales report for a hotelier within a date range
 const getSalesReport = async (hotelierId, fromDate, toDate) => {
-  return Booking.aggregate([
+  return await Booking.aggregate([
     {
       $match: {
         bookingDate: { $gte: fromDate, $lte: toDate },
         bookingStatus: 'confirmed',
-        hotelierId: hotelierId
+        hotelierId
       }
     },
     {
@@ -223,12 +247,17 @@ export default {
   createHotel,
   findHotelsByHotelierId,
   findHotelById,
+  findRoomById,
   findHotelierById,
   saveHotelier,
-  findRoomById,
   countUnreadMessagesForHotels,
   findRoomsByHotelId,
   findChatRoomsByHotelId,
   countUnreadMessagesForChatRooms,
-  countTotalHotels, countTotalBookings, calculateTotalRevenue, getMonthlyBookings, getYearlyBookings,getSalesReport
+  countTotalHotels,
+  countTotalBookings,
+  calculateTotalRevenue,
+  getMonthlyBookings,
+  getYearlyBookings,
+  getSalesReport,
 };

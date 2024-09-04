@@ -1,4 +1,3 @@
-
 import Wallet from "../models/walletModel.js";
 
 const findWalletByUserId = async (userId) => {

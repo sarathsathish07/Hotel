@@ -3,7 +3,7 @@ import userService from '../services/userService.js';
 import User from '../models/userModel.js';
 import Hotel from '../models/hotelModel.js';
 import Room from '../models/roomModel.js';
-
+import responseMessages from '../constants/responseMessages.js';
 
 const authUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -17,17 +17,16 @@ const authUser = expressAsyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      message: 'User authenticated successfully',
+      message: responseMessages.AUTH_USER_SUCCESS,
     });
   } catch (error) {
     res.status(401).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.AUTH_USER_ERROR,
     });
   }
 });
-
 
 const googleLogin = async (req, res) => {
   const { googleName: name, googleEmail: email } = req.body;
@@ -36,7 +35,7 @@ const googleLogin = async (req, res) => {
 
     if (user) {
       if (!user.isBlocked) {
-        generateToken(res, user._id);
+        userService.generateToken(res, user._id);
         res.status(200).json({
           status: 'success',
           data: {
@@ -44,18 +43,18 @@ const googleLogin = async (req, res) => {
             name: user.name,
             email: user.email,
           },
-          message: 'User logged in successfully with Google',
+          message: responseMessages.GOOGLE_LOGIN_SUCCESS,
         });
       } else {
         res.status(401).json({
           status: 'error',
           data: null,
-          message: 'User is blocked or not authorized',
+          message: responseMessages.GOOGLE_LOGIN_ERROR,
         });
       }
     } else {
       user = await User.create({ name, email });
-      generateToken(res, user._id);
+      userService.generateToken(res, user._id);
       res.status(201).json({
         status: 'success',
         data: {
@@ -63,18 +62,17 @@ const googleLogin = async (req, res) => {
           name: user.name,
           email: user.email,
         },
-        message: 'New user created and logged in with Google',
+        message: responseMessages.GOOGLE_LOGIN_NEW_USER,
       });
     }
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: 'Failed to authenticate using Google',
+      message: responseMessages.GOOGLE_LOGIN_ERROR,
     });
   }
 };
-
 
 const registerUser = expressAsyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -88,17 +86,16 @@ const registerUser = expressAsyncHandler(async (req, res) => {
     res.status(statusCode).json({
       status: 'success',
       data: responseData,
-      message,
+      message: responseMessages.REGISTER_USER_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.REGISTER_USER_ERROR,
     });
   }
 });
-
 
 const verifyOtp = expressAsyncHandler(async (req, res) => {
   const { email, otp } = req.body;
@@ -107,13 +104,13 @@ const verifyOtp = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message,
+      message: responseMessages.VERIFY_OTP_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.VERIFY_OTP_ERROR,
     });
   }
 });
@@ -125,17 +122,16 @@ const resendOtp = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'OTP resent successfully',
+      message: responseMessages.RESEND_OTP_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.RESEND_OTP_ERROR,
     });
   }
 });
-
 
 const logoutUser = expressAsyncHandler((req, res) => {
   try {
@@ -143,17 +139,16 @@ const logoutUser = expressAsyncHandler((req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message,
+      message: responseMessages.LOGOUT_USER_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.LOGOUT_USER_ERROR,
     });
   }
 });
-
 
 const getUserProfile = expressAsyncHandler(async (req, res) => {
   try {
@@ -166,17 +161,16 @@ const getUserProfile = expressAsyncHandler(async (req, res) => {
         email: user.email,
         profileImageName: user.profileImageName,
       },
-      message: 'User profile retrieved successfully',
+      message: responseMessages.USER_PROFILE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.USER_PROFILE_ERROR,
     });
   }
 });
-
 
 const updateUserProfile = expressAsyncHandler(async (req, res) => {
   try {
@@ -198,18 +192,16 @@ const updateUserProfile = expressAsyncHandler(async (req, res) => {
         email: updatedUser.email,
         profileImageName: updatedUser.profileImageName,
       },
-      message: 'User profile updated successfully',
+      message: responseMessages.USER_PROFILE_UPDATE_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.USER_PROFILE_UPDATE_ERROR,
     });
   }
 });
-
-
 
 const getHotels = async (req, res) => {
   try {
@@ -249,123 +241,117 @@ const getHotels = async (req, res) => {
 
     const hotelsWithAvgPrice = await Promise.all(hotels.map(async hotel => {
       const rooms = await Room.find({ hotelId: hotel._id });
-      const avgPrice = rooms.reduce((sum, room) => sum + room.price, 0) / rooms.length;
-      return { ...hotel.toObject(), avgPrice }; 
+      const avgPrice = rooms.reduce((total, room) => total + room.price, 0) / rooms.length;
+      return { ...hotel.toObject(), avgPrice: avgPrice.toFixed(2) };
     }));
 
-    if (sort === 'price_low_high') {
+    if (sort === 'asc') {
       hotelsWithAvgPrice.sort((a, b) => a.avgPrice - b.avgPrice);
-    } else if (sort === 'price_high_low') {
+    } else if (sort === 'desc') {
       hotelsWithAvgPrice.sort((a, b) => b.avgPrice - a.avgPrice);
     }
 
     res.status(200).json({
       status: 'success',
       data: hotelsWithAvgPrice,
-      message: 'Hotels retrieved successfully',
+      message: responseMessages.HOTELS_RETRIEVED_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.HOTELS_RETRIEVAL_ERROR,
     });
   }
 };
 
-
-const haversineDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; 
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
-
-
-const getHotelById = expressAsyncHandler(async (req, res) => {
+const getHotelDetails = async (req, res) => {
   try {
     const { id } = req.params;
-    const hotel = await userService.getSingleHotelById(id);
-    if (hotel) {
-      res.status(200).json({
-        status: 'success',
-        data: hotel,
-        message: 'Hotel retrieved successfully',
-      });
-    } else {
-      res.status(404).json({
+    const hotel = await Hotel.findById(id);
+    if (!hotel) {
+      return res.status(404).json({
         status: 'error',
         data: null,
-        message: 'Hotel not found',
+        message: responseMessages.HOTEL_NOT_FOUND,
       });
     }
+
+    const rooms = await Room.find({ hotelId: id });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        hotel,
+        rooms,
+      },
+      message: responseMessages.HOTEL_RETRIEVED_SUCCESS,
+    });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.HOTEL_RETRIEVAL_ERROR,
     });
   }
-});
-
+};
 
 const sendPasswordResetEmail = expressAsyncHandler(async (req, res) => {
   const { email } = req.body;
-
   try {
-    const response = await userService.sendPasswordResetEmailService(email, req);
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        data: null,
+        message: responseMessages.PASSWORD_RESET_EMAIL_ERROR,
+      });
+    }
+    
+    await userService.sendPasswordResetEmailService(email);
     res.status(200).json({
       status: 'success',
-      data: response,
-      message: 'Password reset email sent successfully',
+      data: null,
+      message: responseMessages.PASSWORD_RESET_EMAIL_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.PASSWORD_RESET_EMAIL_ERROR,
     });
   }
 });
 
-
 const resetPassword = expressAsyncHandler(async (req, res) => {
-  const resetToken = req.params.token;
-  const { password } = req.body;
-
+  const { email, newPassword } = req.body;
   try {
-    const response = await userService.resetPasswordService(resetToken, password);
+    await userService.resetPasswordService(email, newPassword);
     res.status(200).json({
       status: 'success',
-      data: response,
-      message: 'Password reset successfully',
+      data: null,
+      message: responseMessages.PASSWORD_RESET_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: error.message,
+      message: responseMessages.PASSWORD_RESET_ERROR,
     });
   }
 });
 
-
 export {
-  authUser, 
+  authUser,
+  googleLogin,
   registerUser,
+  verifyOtp,
+  resendOtp,
   logoutUser,
   getUserProfile,
   updateUserProfile,
-  verifyOtp,
   getHotels,
-  resendOtp,
-  getHotelById,
+  getHotelDetails,
   sendPasswordResetEmail,
   resetPassword,
-  googleLogin,
 };
