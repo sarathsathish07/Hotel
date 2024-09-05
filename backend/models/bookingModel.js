@@ -53,6 +53,9 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  guestCount: {
+    type: Number,
+  },
   totalAmount: {
     type: Number,
     required: true,

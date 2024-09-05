@@ -174,6 +174,8 @@ const BookingsScreen = () => {
                                         <p><strong>Booking Date:</strong> {new Date(booking?.bookingDate).toLocaleDateString()}</p>
                                         <p><strong>Total Amount:</strong> Rs {booking?.totalAmount}</p>
                                         <p><strong>Payment Method:</strong> {booking?.paymentMethod}</p>
+                                        <p><strong>Room Count:</strong> {booking?.roomsBooked}</p>
+                                        <p><strong>Guest Count:</strong> {booking?.guestCount}</p>
                                         <p><strong>Status:</strong> {booking?.bookingStatus}</p>
                                         {booking?.bookingStatus === 'cancelled' && booking?.cancelMessage && (
                                           <p><strong>Cancel Message:</strong> {booking?.cancelMessage}</p>

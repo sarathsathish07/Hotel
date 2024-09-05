@@ -53,6 +53,7 @@ const CheckoutScreen = () => {
       hotelierId: room.hotelierId,
       roomsBooked: roomCount,
       totalAmount: totalPrice,
+      guestCount
     };
 
     try {
