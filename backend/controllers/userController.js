@@ -1,9 +1,9 @@
-import expressAsyncHandler from 'express-async-handler';
-import userService from '../services/userService.js';
-import User from '../models/userModel.js';
-import Hotel from '../models/hotelModel.js';
-import Room from '../models/roomModel.js';
-import responseMessages from '../constants/responseMessages.js';
+import expressAsyncHandler from "express-async-handler";
+import userService from "../services/userService.js";
+import User from "../models/userModel.js";
+import Hotel from "../models/hotelModel.js";
+import Room from "../models/roomModel.js";
+import responseMessages from "../constants/responseMessages.js";
 
 const authUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -11,7 +11,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
     const user = await userService.authenticateUser(email, password);
     userService.generateToken(res, user._id);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         _id: user._id,
         name: user.name,
@@ -21,7 +21,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
     });
   } catch (error) {
     res.status(401).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.AUTH_USER_ERROR,
     });
@@ -37,7 +37,7 @@ const googleLogin = async (req, res) => {
       if (!user.isBlocked) {
         userService.generateToken(res, user._id);
         res.status(200).json({
-          status: 'success',
+          status: "success",
           data: {
             _id: user._id,
             name: user.name,
@@ -47,7 +47,7 @@ const googleLogin = async (req, res) => {
         });
       } else {
         res.status(401).json({
-          status: 'error',
+          status: "error",
           data: null,
           message: responseMessages.GOOGLE_LOGIN_ERROR,
         });
@@ -56,7 +56,7 @@ const googleLogin = async (req, res) => {
       user = await User.create({ name, email });
       userService.generateToken(res, user._id);
       res.status(201).json({
-        status: 'success',
+        status: "success",
         data: {
           _id: user._id,
           name: user.name,
@@ -67,7 +67,7 @@ const googleLogin = async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.GOOGLE_LOGIN_ERROR,
     });
@@ -77,20 +77,24 @@ const googleLogin = async (req, res) => {
 const registerUser = expressAsyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const { user, userExists, message } = await userService.registerNewUser(name, email, password);
+    const { user, userExists, message } = await userService.registerNewUser(
+      name,
+      email,
+      password
+    );
     const statusCode = userExists ? 200 : 201;
     const responseData = userExists
       ? { otpSent: true }
       : { _id: user._id, name: user.name, email: user.email, otpSent: true };
 
     res.status(statusCode).json({
-      status: 'success',
+      status: "success",
       data: responseData,
       message: responseMessages.REGISTER_USER_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.REGISTER_USER_ERROR,
     });
@@ -102,13 +106,13 @@ const verifyOtp = expressAsyncHandler(async (req, res) => {
   try {
     const message = await userService.verifyUserOtp(email, otp);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: null,
       message: responseMessages.VERIFY_OTP_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.VERIFY_OTP_ERROR,
     });
@@ -120,13 +124,13 @@ const resendOtp = expressAsyncHandler(async (req, res) => {
   try {
     await userService.resendOtp(email);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: null,
       message: responseMessages.RESEND_OTP_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.RESEND_OTP_ERROR,
     });
@@ -137,13 +141,13 @@ const logoutUser = expressAsyncHandler((req, res) => {
   try {
     const message = userService.logoutUser(res);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: null,
       message: responseMessages.LOGOUT_USER_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.LOGOUT_USER_ERROR,
     });
@@ -154,7 +158,7 @@ const getUserProfile = expressAsyncHandler(async (req, res) => {
   try {
     const user = await userService.getUserProfile(req.user._id);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         _id: user._id,
         name: user.name,
@@ -165,7 +169,7 @@ const getUserProfile = expressAsyncHandler(async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.USER_PROFILE_ERROR,
     });
@@ -185,7 +189,7 @@ const updateUserProfile = expressAsyncHandler(async (req, res) => {
     );
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         _id: updatedUser._id,
         name: updatedUser.name,
@@ -196,7 +200,7 @@ const updateUserProfile = expressAsyncHandler(async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.USER_PROFILE_UPDATE_ERROR,
     });
@@ -205,8 +209,14 @@ const updateUserProfile = expressAsyncHandler(async (req, res) => {
 
 const getHotels = async (req, res) => {
   try {
-    const { sort = '', amenities = '', city = '', latitude, longitude } = req.query;
-    const amenitiesArray = amenities ? amenities.split(',') : [];
+    const {
+      sort = "",
+      amenities = "",
+      city = "",
+      latitude,
+      longitude,
+    } = req.query;
+    const amenitiesArray = amenities ? amenities.split(",") : [];
     const radiusInKm = 50;
 
     let hotels = [];
@@ -217,15 +227,20 @@ const getHotels = async (req, res) => {
 
       hotels = await Hotel.find({ isListed: true });
 
-      const filteredHotels = hotels.filter(hotel => {
+      const filteredHotels = hotels.filter((hotel) => {
         const hotelLatitude = hotel.latitude;
         const hotelLongitude = hotel.longitude;
-        
+
         if (hotelLatitude !== undefined && hotelLongitude !== undefined) {
-          const distance = haversineDistance(userLatitude, userLongitude, hotelLatitude, hotelLongitude);
+          const distance = haversineDistance(
+            userLatitude,
+            userLongitude,
+            hotelLatitude,
+            hotelLongitude
+          );
           return distance <= radiusInKm;
         }
-        return false; 
+        return false;
       });
 
       hotels = filteredHotels;
@@ -236,29 +251,34 @@ const getHotels = async (req, res) => {
     }
 
     if (amenitiesArray.length > 0) {
-      hotels = hotels.filter(hotel => amenitiesArray.every(amenity => hotel.amenities.includes(amenity)));
+      hotels = hotels.filter((hotel) =>
+        amenitiesArray.every((amenity) => hotel.amenities.includes(amenity))
+      );
     }
 
-    const hotelsWithAvgPrice = await Promise.all(hotels.map(async hotel => {
-      const rooms = await Room.find({ hotelId: hotel._id });
-      const avgPrice = rooms.reduce((total, room) => total + room.price, 0) / rooms.length;
-      return { ...hotel.toObject(), avgPrice: avgPrice.toFixed(2) };
-    }));
+    const hotelsWithAvgPrice = await Promise.all(
+      hotels.map(async (hotel) => {
+        const rooms = await Room.find({ hotelId: hotel._id });
+        const avgPrice =
+          rooms.reduce((total, room) => total + room.price, 0) / rooms.length;
+        return { ...hotel.toObject(), avgPrice: avgPrice.toFixed(2) };
+      })
+    );
 
-    if (sort === 'asc') {
+    if (sort === "asc") {
       hotelsWithAvgPrice.sort((a, b) => a.avgPrice - b.avgPrice);
-    } else if (sort === 'desc') {
+    } else if (sort === "desc") {
       hotelsWithAvgPrice.sort((a, b) => b.avgPrice - a.avgPrice);
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: hotelsWithAvgPrice,
       message: responseMessages.HOTELS_RETRIEVED_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.HOTELS_RETRIEVAL_ERROR,
     });
@@ -271,7 +291,7 @@ const getHotelDetails = async (req, res) => {
     const hotel = await Hotel.findById(id);
     if (!hotel) {
       return res.status(404).json({
-        status: 'error',
+        status: "error",
         data: null,
         message: responseMessages.HOTEL_NOT_FOUND,
       });
@@ -280,7 +300,7 @@ const getHotelDetails = async (req, res) => {
     const rooms = await Room.find({ hotelId: id });
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         hotel,
         rooms,
@@ -289,7 +309,7 @@ const getHotelDetails = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.HOTEL_RETRIEVAL_ERROR,
     });
@@ -302,21 +322,21 @@ const sendPasswordResetEmail = expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
-        status: 'error',
+        status: "error",
         data: null,
         message: responseMessages.PASSWORD_RESET_EMAIL_ERROR,
       });
     }
-    
+
     await userService.sendPasswordResetEmailService(email);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: null,
       message: responseMessages.PASSWORD_RESET_EMAIL_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.PASSWORD_RESET_EMAIL_ERROR,
     });
@@ -328,13 +348,13 @@ const resetPassword = expressAsyncHandler(async (req, res) => {
   try {
     await userService.resetPasswordService(email, newPassword);
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: null,
       message: responseMessages.PASSWORD_RESET_SUCCESS,
     });
   } catch (error) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       data: null,
       message: responseMessages.PASSWORD_RESET_ERROR,
     });

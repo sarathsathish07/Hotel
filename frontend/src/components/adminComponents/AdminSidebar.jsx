@@ -1,7 +1,14 @@
-import React from 'react';
-import { Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import { FaTachometerAlt, FaUsers, FaHotel, FaCheckCircle, FaComments, FaCalendarCheck } from 'react-icons/fa';
+import React from "react";
+import { Nav } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaHotel,
+  FaCheckCircle,
+  FaComments,
+  FaCalendarCheck,
+} from "react-icons/fa";
 
 const AdminSidebar = ({ hotelierName }) => {
   return (

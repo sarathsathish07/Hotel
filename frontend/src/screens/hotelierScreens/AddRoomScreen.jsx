@@ -22,9 +22,9 @@ const AddRoomScreen = () => {
     amenities: "",
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     document.title = "Add Rooms";
-  })
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,8 +37,10 @@ const AddRoomScreen = () => {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-    const validImages = files.filter(file => validImageTypes.includes(file.type));
-    
+    const validImages = files.filter((file) =>
+      validImageTypes.includes(file.type)
+    );
+
     if (validImages.length !== files.length) {
       toast.error("Only image files are allowed (jpeg, png, gif)");
       return;
@@ -109,48 +111,110 @@ const AddRoomScreen = () => {
   if (isLoading) return <Loader />;
   return (
     <HotelierLayout>
-      <Container className="px-4 w-75" style={{ maxHeight: "100vh", overflowY: "auto" }}>
+      <Container
+        className="px-4 w-75"
+        style={{ maxHeight: "100vh", overflowY: "auto" }}
+      >
         <h1 className="my-3">Add Room</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="type" className="mb-3">
             <Form.Label>Type</Form.Label>
-            <Form.Control type="text" name="type" value={formData?.type} onChange={handleChange} required />
+            <Form.Control
+              type="text"
+              name="type"
+              value={formData?.type}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="price" className="mb-3">
             <Form.Label>Price</Form.Label>
-            <Form.Control type="number" name="price" value={formData?.price} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="price"
+              value={formData?.price}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="area" className="mb-3">
             <Form.Label>Area</Form.Label>
-            <Form.Control type="number" name="area" value={formData?.area} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="area"
+              value={formData?.area}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="occupancy" className="mb-3">
             <Form.Label>Occupancy</Form.Label>
-            <Form.Control type="number" name="occupancy" value={formData?.occupancy} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="occupancy"
+              value={formData?.occupancy}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="noOfRooms" className="mb-3">
             <Form.Label>Number of Rooms</Form.Label>
-            <Form.Control type="number" name="noOfRooms" value={formData?.noOfRooms} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="noOfRooms"
+              value={formData?.noOfRooms}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="description" className="mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} name="description" value={formData?.description} onChange={handleChange} required />
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="description"
+              value={formData?.description}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="amenities" className="mb-3">
             <Form.Label>Amenities</Form.Label>
-            <Form.Control type="text" name="amenities" value={formData?.amenities} onChange={handleChange} required />
+            <Form.Control
+              type="text"
+              name="amenities"
+              value={formData?.amenities}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="images" className="mb-3">
             <Form.Label>Images</Form.Label>
-            <Form.Control type="file" name="images" onChange={handleImageChange} multiple />
+            <Form.Control
+              type="file"
+              name="images"
+              onChange={handleImageChange}
+              multiple
+            />
             <div className="mt-3">
               {selectedImages &&
                 Array.from(selectedImages).map((image, index) => (
-                  <div key={index} style={{ position: "relative", display: "inline-block", marginRight: "10px" }}>
+                  <div
+                    key={index}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      marginRight: "10px",
+                    }}
+                  >
                     <img
                       src={URL.createObjectURL(image)}
                       alt={`Selected ${index}`}
-                      style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
                     />
                     <button
                       type="button"

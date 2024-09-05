@@ -1,23 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Image, Nav, Tab, Card, Button, Modal, Form } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { useGetHotelByIdQuery, useCheckRoomAvailabilityMutation, useSaveBookingMutation, useGetReviewsByHotelIdQuery } from '../../slices/usersApiSlice';
-import Loader from '../../components/generalComponents/Loader';
-import Footer from '../../components/userComponents/Footer';
-import { toast } from 'react-toastify';
-import Rating from 'react-rating';
-import 'font-awesome/css/font-awesome.min.css';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Image,
+  Nav,
+  Tab,
+  Card,
+  Button,
+  Modal,
+  Form,
+} from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {
+  useGetHotelByIdQuery,
+  useCheckRoomAvailabilityMutation,
+  useSaveBookingMutation,
+  useGetReviewsByHotelIdQuery,
+} from "../../slices/usersApiSlice";
+import Loader from "../../components/generalComponents/Loader";
+import Footer from "../../components/userComponents/Footer";
+import { toast } from "react-toastify";
+import Rating from "react-rating";
+import "font-awesome/css/font-awesome.min.css";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
 const HotelDetailsScreen = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [activeKey, setActiveKey] = useState('description');
+  const [activeKey, setActiveKey] = useState("description");
   const { data: hotel, error, isLoading, refetch } = useGetHotelByIdQuery(id);
-  const { data: reviews, isLoading: isLoadingReviews, refetch: refetchReviews } = useGetReviewsByHotelIdQuery(id, {
-    skip: activeKey !== 'reviews',
+  const {
+    data: reviews,
+    isLoading: isLoadingReviews,
+    refetch: refetchReviews,
+  } = useGetReviewsByHotelIdQuery(id, {
+    skip: activeKey !== "reviews",
   });
   const [checkRoomAvailability] = useCheckRoomAvailabilityMutation();
   const [saveBooking] = useSaveBookingMutation();
@@ -31,14 +51,14 @@ const HotelDetailsScreen = () => {
   const [guestCount, setGuestCount] = useState(1);
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDfWY6h4Y7JrizQHDZcfsds0NSLcvC1bVM', 
+    googleMapsApiKey: "AIzaSyDfWY6h4Y7JrizQHDZcfsds0NSLcvC1bVM",
   });
 
-  const baseURL = 'https://celebratespaces.site/';
+  const baseURL = "https://celebratespaces.site/";
   useEffect(() => {
     document.title = "Hotel details - Celebrate Spaces";
     refetch();
-    if (activeKey === 'reviews') {
+    if (activeKey === "reviews") {
       refetchReviews();
     }
   }, [refetch, activeKey, refetchReviews]);
@@ -59,26 +79,26 @@ const HotelDetailsScreen = () => {
   const handleBooking = async () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-  
+
     if (checkInDate < today) {
-      toast.error('Check-in date cannot be in the past');
+      toast.error("Check-in date cannot be in the past");
       return;
     }
-  
+
     if (checkOutDate <= checkInDate) {
-      toast.error('Check-out date must be after check-in date');
+      toast.error("Check-out date must be after check-in date");
       return;
     }
     if (roomCount <= 0) {
-      toast.error('Room count must be greater than zero');
+      toast.error("Room count must be greater than zero");
       return;
     }
-  
+
     if (guestCount <= 0) {
-      toast.error('Guest count must be greater than zero');
+      toast.error("Guest count must be greater than zero");
       return;
     }
-  
+
     try {
       const availabilityResponse = await checkRoomAvailability({
         roomId: selectedRoom,
@@ -87,12 +107,15 @@ const HotelDetailsScreen = () => {
         roomCount,
         guestCount,
       }).unwrap();
-  
+
       if (!availabilityResponse.isAvailable) {
-        toast.error(availabilityResponse.message || 'Room is not available for the selected dates');
+        toast.error(
+          availabilityResponse.message ||
+            "Room is not available for the selected dates"
+        );
         return;
       }
-  
+
       const queryParams = {
         hotelId: id,
         room: selectedRoom,
@@ -104,14 +127,13 @@ const HotelDetailsScreen = () => {
       const queryString = new URLSearchParams(queryParams).toString();
       navigate(`/booking?${queryString}`);
     } catch (error) {
-      toast.error('Error checking room availability');
+      toast.error("Error checking room availability");
     }
   };
-  
 
   const mapContainerStyle = {
-    width: '100%',
-    height: '400px',
+    width: "100%",
+    height: "400px",
   };
 
   const mapCenter = {
@@ -121,12 +143,12 @@ const HotelDetailsScreen = () => {
 
   if (isLoading) return <Loader />;
   if (error) {
-    toast.error(error?.data?.message || 'Error fetching hotel details');
+    toast.error(error?.data?.message || "Error fetching hotel details");
     return <div>Error fetching hotel details</div>;
   }
 
   if (loadError) {
-    toast.error('Error loading Google Maps');
+    toast.error("Error loading Google Maps");
     return <div>Error loading Google Maps</div>;
   }
 
@@ -137,7 +159,10 @@ const HotelDetailsScreen = () => {
           <Col md={8}>
             <Image
               ref={mainImageRef}
-              src={`${baseURL}${hotel?.images[0].replace("backend\\public\\", "")}`}
+              src={`${baseURL}${hotel?.images[0].replace(
+                "backend\\public\\",
+                ""
+              )}`}
               alt="Hotel Main Image"
               fluid
               className="hotel-details-main-image"
@@ -161,7 +186,9 @@ const HotelDetailsScreen = () => {
         <Row>
           <Col>
             <h1>{hotel?.name}</h1>
-            <p>{hotel?.city}, {hotel?.address}</p>
+            <p>
+              {hotel?.city}, {hotel?.address}
+            </p>
             <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
               <Nav variant="tabs">
                 <Nav.Item>
@@ -201,7 +228,10 @@ const HotelDetailsScreen = () => {
                         <Card>
                           <Card.Img
                             variant="top"
-                            src={`${baseURL}${room?.images[0].replace("backend\\public\\", "")}`}
+                            src={`${baseURL}${room?.images[0].replace(
+                              "backend\\public\\",
+                              ""
+                            )}`}
                             alt="Room Image"
                             className="hotel-details-room-image"
                           />
@@ -211,7 +241,9 @@ const HotelDetailsScreen = () => {
                               {room?.description}
                               <br />
                               <br />
-                              <strong>Occupancy:</strong> {room?.occupancy}<br/><br/>
+                              <strong>Occupancy:</strong> {room?.occupancy}
+                              <br />
+                              <br />
                               <strong>Price:</strong> Rs {room?.price}/night
                             </Card.Text>
                             <Button onClick={() => handleBookNow(room?._id)}>
@@ -236,12 +268,28 @@ const HotelDetailsScreen = () => {
                             <Card.Body>
                               <Card.Title>{review?.userId?.name}</Card.Title>
                               <Card.Text>
-                              <Rating
-                                initialRating={review?.rating}
-                                readonly
-                                emptySymbol={<i className="fa fa-star-o" style={{ color: '#FFD700', fontSize: '1.5rem' }} />}
-                                fullSymbol={<i className="fa fa-star" style={{ color: '#FFD700', fontSize: '1.5rem' }} />}
-                              />
+                                <Rating
+                                  initialRating={review?.rating}
+                                  readonly
+                                  emptySymbol={
+                                    <i
+                                      className="fa fa-star-o"
+                                      style={{
+                                        color: "#FFD700",
+                                        fontSize: "1.5rem",
+                                      }}
+                                    />
+                                  }
+                                  fullSymbol={
+                                    <i
+                                      className="fa fa-star"
+                                      style={{
+                                        color: "#FFD700",
+                                        fontSize: "1.5rem",
+                                      }}
+                                    />
+                                  }
+                                />
                               </Card.Text>
                               <Card.Text>{review?.review}</Card.Text>
                             </Card.Body>
@@ -260,56 +308,63 @@ const HotelDetailsScreen = () => {
       </Container>
       <Footer />
       <Modal show={showModal} onHide={handleCloseModal}>
-  <Modal.Header closeButton>
-    <Modal.Title>Book Room</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Form.Group controlId="checkInDate" className='my-2'>
-        <Form.Label className='mx-2'>Check-in Date</Form.Label>
-        <DatePicker
-          selected={checkInDate}
-          onChange={(date) => setCheckInDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="form-control"
-        />
-      </Form.Group>
-      <Form.Group controlId="checkOutDate">
-        <Form.Label className='mx-2'>Check-out Date</Form.Label>
-        <DatePicker
-          selected={checkOutDate}
-          onChange={(date) => setCheckOutDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="form-control"
-        />
-      </Form.Group>
-      <Form.Group controlId="roomCount" className='my-2' style={{display:"flex",flexDirection:"row"}}>
-        <Form.Label className='mx-2'>Room Count</Form.Label>
-        <Form.Control
-          type="number"
-          min="1"
-          value={roomCount}
-          style={{width:"48%"}}
-          onChange={(e) => setRoomCount(Number(e.target.value))}
-        />
-      </Form.Group>
-      <Form.Group controlId="guestCount" className='my-2' style={{display:"flex",flexDirection:"row"}}>
-        <Form.Label className='mx-2'>Number of Guests</Form.Label>
-        <Form.Control
-          type="number"
-          min="1"
-          value={guestCount}
-          style={{width:"48%"}}
-          onChange={(e) => setGuestCount(Number(e.target.value))}
-        />
-      </Form.Group>
-      <Button variant="primary" onClick={handleBooking}>
-        Book Now
-      </Button>
-    </Form>
-  </Modal.Body>
-</Modal>
-
+        <Modal.Header closeButton>
+          <Modal.Title>Book Room</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="checkInDate" className="my-2">
+              <Form.Label className="mx-2">Check-in Date</Form.Label>
+              <DatePicker
+                selected={checkInDate}
+                onChange={(date) => setCheckInDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="form-control"
+              />
+            </Form.Group>
+            <Form.Group controlId="checkOutDate">
+              <Form.Label className="mx-2">Check-out Date</Form.Label>
+              <DatePicker
+                selected={checkOutDate}
+                onChange={(date) => setCheckOutDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="form-control"
+              />
+            </Form.Group>
+            <Form.Group
+              controlId="roomCount"
+              className="my-2"
+              style={{ display: "flex", flexDirection: "row" }}
+            >
+              <Form.Label className="mx-2">Room Count</Form.Label>
+              <Form.Control
+                type="number"
+                min="1"
+                value={roomCount}
+                style={{ width: "48%" }}
+                onChange={(e) => setRoomCount(Number(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group
+              controlId="guestCount"
+              className="my-2"
+              style={{ display: "flex", flexDirection: "row" }}
+            >
+              <Form.Label className="mx-2">Number of Guests</Form.Label>
+              <Form.Control
+                type="number"
+                min="1"
+                value={guestCount}
+                style={{ width: "48%" }}
+                onChange={(e) => setGuestCount(Number(e.target.value))}
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={handleBooking}>
+              Book Now
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

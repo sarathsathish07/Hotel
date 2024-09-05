@@ -6,7 +6,11 @@ const getWalletTransactions = async (userId) => {
     const wallet = await walletRepository.findWalletByUserId(userId);
 
     if (!wallet) {
-      return { status: "success", data: [], message: responseMessages.NO_TRANSACTIONS_FOUND };
+      return {
+        status: "success",
+        data: [],
+        message: responseMessages.NO_TRANSACTIONS_FOUND,
+      };
     }
 
     return {

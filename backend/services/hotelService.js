@@ -54,7 +54,11 @@ const fetchAcceptedHotels = async (
       message: responseMessages.FETCH_ACCEPTED_HOTELS_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.FETCH_ACCEPTED_HOTELS_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.FETCH_ACCEPTED_HOTELS_ERROR,
+    };
   }
 };
 
@@ -164,7 +168,11 @@ const verifyHotelierOtp = async (email, otp) => {
     const hotelier = await hotelRepository.findHotelierByEmail(email);
     if (hotelier) {
       if (new Date() > hotelier.otpExpiry) {
-        return { status: "error", data: null, message: responseMessages.OTP_VERIFY_EXPIRED };
+        return {
+          status: "error",
+          data: null,
+          message: responseMessages.OTP_VERIFY_EXPIRED,
+        };
       }
 
       if (hotelier.otp.toString() === otp.trim()) {
@@ -176,10 +184,18 @@ const verifyHotelierOtp = async (email, otp) => {
           message: responseMessages.OTP_VERIFY_SUCCESS,
         };
       } else {
-        return { status: "error", data: null, message: responseMessages.OTP_VERIFY_INVALID };
+        return {
+          status: "error",
+          data: null,
+          message: responseMessages.OTP_VERIFY_INVALID,
+        };
       }
     } else {
-      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.PROFILE_NOT_FOUND,
+      };
     }
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -211,7 +227,11 @@ const logoutHotelier = async (res) => {
       httpOnly: true,
       expires: new Date(0),
     });
-    return { status: "success", data: null, message: responseMessages.LOGOUT_SUCCESS };
+    return {
+      status: "success",
+      data: null,
+      message: responseMessages.LOGOUT_SUCCESS,
+    };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
@@ -240,7 +260,11 @@ const updateHotelierProfile = async (hotelierId, updateData, profileImage) => {
   try {
     const hotelier = await hotelRepository.findHotelierById(hotelierId);
     if (!hotelier) {
-      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.PROFILE_NOT_FOUND,
+      };
     }
 
     Object.assign(hotelier, updateData);
@@ -250,7 +274,11 @@ const updateHotelierProfile = async (hotelierId, updateData, profileImage) => {
     }
 
     await hotelRepository.saveHotelier(hotelier);
-    return { status: "success", data: hotelier, message: responseMessages.PROFILE_UPDATE_SUCCESS };
+    return {
+      status: "success",
+      data: hotelier,
+      message: responseMessages.PROFILE_UPDATE_SUCCESS,
+    };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
@@ -260,26 +288,41 @@ const uploadCertificate = async (hotelierId, certificate) => {
   try {
     const hotelier = await hotelRepository.findHotelierById(hotelierId);
     if (!hotelier) {
-      return { status: "error", data: null, message: responseMessages.PROFILE_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.PROFILE_NOT_FOUND,
+      };
     }
 
     hotelier.certificate = certificate;
     await hotelRepository.saveHotelier(hotelier);
-    return { status: "success", data: hotelier, message: responseMessages.CERTIFICATE_UPLOAD_SUCCESS };
+    return {
+      status: "success",
+      data: hotelier,
+      message: responseMessages.CERTIFICATE_UPLOAD_SUCCESS,
+    };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
 };
 const addHotel = async (hotelierId, hotelData) => {
   try {
-    const createdHotel = await hotelRepository.createHotel(hotelierId, hotelData);
+    const createdHotel = await hotelRepository.createHotel(
+      hotelierId,
+      hotelData
+    );
     return {
       status: "success",
       data: createdHotel,
       message: responseMessages.HOTEL_ADD_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: error.message || responseMessages.GENERAL_ERROR,
+    };
   }
 };
 
@@ -292,7 +335,11 @@ const getHotels = async (hotelierId) => {
       message: responseMessages.HOTELS_FETCH_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: error.message || responseMessages.GENERAL_ERROR,
+    };
   }
 };
 
@@ -300,7 +347,11 @@ const getHotelById = async (hotelId) => {
   try {
     const hotel = await hotelRepository.findHotelById(hotelId);
     if (!hotel) {
-      return { status: "error", data: null, message: responseMessages.HOTEL_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.HOTEL_NOT_FOUND,
+      };
     }
 
     const rooms = await hotelRepository.findRoomById({ hotelId });
@@ -311,7 +362,11 @@ const getHotelById = async (hotelId) => {
       message: responseMessages.HOTEL_DETAILS_FETCH_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: error.message || responseMessages.GENERAL_ERROR,
+    };
   }
 };
 
@@ -319,7 +374,11 @@ const updateHotelData = async (hotelId, updateData, files) => {
   try {
     const hotel = await hotelRepository.findHotelById(hotelId);
     if (!hotel) {
-      return { status: "error", data: null, message: responseMessages.HOTEL_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.HOTEL_NOT_FOUND,
+      };
     }
 
     hotel.name = updateData.name || hotel.name;
@@ -333,12 +392,16 @@ const updateHotelData = async (hotelId, updateData, files) => {
     hotel.longitude = updateData.longitude || hotel.longitude;
 
     if (files && files.length > 0) {
-      const newImages = files.map((file) => file.path.replace(/.*public[\\/]/, ""));
+      const newImages = files.map((file) =>
+        file.path.replace(/.*public[\\/]/, "")
+      );
       hotel.images.push(...newImages);
     }
 
     if (updateData.removeImages && updateData.removeImages.length > 0) {
-      hotel.images = hotel.images.filter((image) => !updateData.removeImages.includes(image));
+      hotel.images = hotel.images.filter(
+        (image) => !updateData.removeImages.includes(image)
+      );
     }
 
     const updatedHotel = await hotel.save();
@@ -348,7 +411,11 @@ const updateHotelData = async (hotelId, updateData, files) => {
       message: responseMessages.HOTEL_UPDATE_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: error.message || responseMessages.GENERAL_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: error.message || responseMessages.GENERAL_ERROR,
+    };
   }
 };
 
@@ -357,7 +424,8 @@ const getHotelsWithUnreadMessages = async (hotelierId) => {
 
   const hotelData = await Promise.all(
     hotels.map(async (hotel) => {
-      const unreadMessagesCount = await hotelRepository.countUnreadMessagesForHotels([hotel._id]);
+      const unreadMessagesCount =
+        await hotelRepository.countUnreadMessagesForHotels([hotel._id]);
 
       return {
         ...hotel._doc,
@@ -380,7 +448,8 @@ const getHotelDetailsById = async (hotelId) => {
   const chatRooms = await hotelRepository.findChatRoomsByHotelId(hotelId);
   const chatRoomIds = chatRooms.map((chatRoom) => chatRoom._id);
 
-  const unreadMessagesCount = await hotelRepository.countUnreadMessagesForChatRooms(chatRoomIds);
+  const unreadMessagesCount =
+    await hotelRepository.countUnreadMessagesForChatRooms(chatRoomIds);
 
   return {
     ...hotel.toObject(),
@@ -415,7 +484,7 @@ const getHotelierSalesReport = async (hotelierId, fromDate, toDate) => {
   return hotelRepository.getSalesReport(hotelierId, fromDate, toDate);
 };
 
-export  default {
+export default {
   generateHotelierToken,
   fetchAcceptedHotels,
   sendHotelierOtpEmail,
@@ -434,6 +503,5 @@ export  default {
   getHotelsWithUnreadMessages,
   getHotelDetailsById,
   getHotelierStats,
-  getHotelierSalesReport
-
+  getHotelierSalesReport,
 };

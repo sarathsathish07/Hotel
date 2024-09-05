@@ -5,14 +5,20 @@ import responseMessages from "../constants/responseMessages.js";
 
 const getMessagesByChatRoomId = async (chatRoomId) => {
   try {
-    const messages = await messageRepository.findMessagesByChatRoomId(chatRoomId);
+    const messages = await messageRepository.findMessagesByChatRoomId(
+      chatRoomId
+    );
     return {
       status: "success",
       data: messages,
       message: responseMessages.GET_MESSAGES_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.GET_MESSAGES_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.GET_MESSAGES_ERROR,
+    };
   }
 };
 
@@ -35,7 +41,11 @@ const sendMessage = async (chatRoomId, messageData) => {
       message: responseMessages.SEND_MESSAGE_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.SEND_MESSAGE_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.SEND_MESSAGE_ERROR,
+    };
   }
 };
 
@@ -44,14 +54,20 @@ const getUnreadMessages = async (userId) => {
     const chatRooms = await chatRoomRepository.findChatRoomsByUserId(userId);
     const chatRoomIds = chatRooms.map((room) => room._id);
 
-    const unreadMessages = await messageRepository.findUnreadMessages(chatRoomIds);
+    const unreadMessages = await messageRepository.findUnreadMessages(
+      chatRoomIds
+    );
     return {
       status: "success",
       data: unreadMessages,
       message: responseMessages.GET_UNREAD_MESSAGES_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.GET_UNREAD_MESSAGES_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.GET_UNREAD_MESSAGES_ERROR,
+    };
   }
 };
 
@@ -60,39 +76,60 @@ const getHotelUnreadMessages = async (hotelierId) => {
     const hotels = await hotelRepository.findHotelsByHotelierId(hotelierId);
     const hotelIds = hotels.map((hotel) => hotel._id);
 
-    const chatRooms = await chatRoomRepository.findChatRoomsByHotelIds(hotelIds);
+    const chatRooms = await chatRoomRepository.findChatRoomsByHotelIds(
+      hotelIds
+    );
     const chatRoomIds = chatRooms.map((room) => room._id);
 
-    const unreadMessages = await messageRepository.findUnreadMessagesByChatRoomIds(chatRoomIds);
+    const unreadMessages =
+      await messageRepository.findUnreadMessagesByChatRoomIds(chatRoomIds);
     return {
       status: "success",
       data: unreadMessages,
       message: responseMessages.GET_HOTEL_UNREAD_MESSAGES_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.GET_HOTEL_UNREAD_MESSAGES_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.GET_HOTEL_UNREAD_MESSAGES_ERROR,
+    };
   }
 };
 
 const markMessagesAsRead = async (chatRoomId) => {
   try {
     await messageRepository.markMessagesAsRead(chatRoomId);
-    return { status: "success", data: null, message: responseMessages.MARK_MESSAGES_AS_READ_SUCCESS };
+    return {
+      status: "success",
+      data: null,
+      message: responseMessages.MARK_MESSAGES_AS_READ_SUCCESS,
+    };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.MARK_MESSAGES_AS_READ_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.MARK_MESSAGES_AS_READ_ERROR,
+    };
   }
 };
 
 const getHotelMessages = async (chatRoomId) => {
   try {
-    const messages = await messageRepository.findMessagesByChatRoomId(chatRoomId);
+    const messages = await messageRepository.findMessagesByChatRoomId(
+      chatRoomId
+    );
     return {
       status: "success",
       data: messages,
       message: responseMessages.GET_HOTEL_MESSAGES_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.GET_HOTEL_MESSAGES_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.GET_HOTEL_MESSAGES_ERROR,
+    };
   }
 };
 
@@ -134,16 +171,28 @@ const sendHotelMessage = async ({
       message: responseMessages.SEND_HOTEL_MESSAGE_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.SEND_HOTEL_MESSAGE_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.SEND_HOTEL_MESSAGE_ERROR,
+    };
   }
 };
 
 const markHotelMessagesAsRead = async (chatRoomId) => {
   try {
     await messageRepository.markMessagesAsReadHotel(chatRoomId);
-    return { status: "success", data: null, message: responseMessages.MARK_HOTEL_MESSAGES_AS_READ_SUCCESS };
+    return {
+      status: "success",
+      data: null,
+      message: responseMessages.MARK_HOTEL_MESSAGES_AS_READ_SUCCESS,
+    };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.MARK_HOTEL_MESSAGES_AS_READ_ERROR };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.MARK_HOTEL_MESSAGES_AS_READ_ERROR,
+    };
   }
 };
 

@@ -232,7 +232,6 @@ html {
 }
 
 .hotelierbody .card {
-
   padding: 20px;
   border-radius: 10px;
   color: rgb(0, 0, 0);
@@ -423,12 +422,9 @@ html {
   background-color: #9caeb8;
 }
 
-
 .hotel-details-content {
   margin-top: 20px;
 }
-
-
 
 .hotel-image {
   height: 200px;
@@ -465,27 +461,25 @@ html {
   object-fit: cover;
   margin: 10px;
 }
-.form-group-inline{
+.form-group-inline {
   display: flex;
   flex-direction: row;
   padding-bottom: 15px;
-
 }
-.form-room{
+.form-room {
   width: 20%;
 }
-.modal-label{
+.modal-label {
   margin-right: 20px;
   font-weight: bold;
 }
-.modal-group{
+.modal-group {
   padding-bottom: 15px;
 }
 .footer {
   background-color: #082b43;
   color: white;
   padding: 20px 0;
-  
 }
 
 .footer h5 {
@@ -515,17 +509,17 @@ html {
   margin: 0;
 }
 .notification-badge {
-  font-size: 0.6rem; 
-  width: 15px; 
+  font-size: 0.6rem;
+  width: 15px;
   height: 15px;
   line-height: 15px;
-  text-align: center; 
-  top: 0px; 
-  right: -9px; 
-  transform: translate(50%, -50%); 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  text-align: center;
+  top: 0px;
+  right: -9px;
+  transform: translate(50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .destination-card {
   border: none;
@@ -556,7 +550,7 @@ html {
   border-radius: 5px;
 }
 .destination-title {
-  font-size: 1.0rem;
+  font-size: 1rem;
   margin: 0;
 }
 .testimonials-section .card {
@@ -586,15 +580,14 @@ html {
   color: #777;
 }
 
-
 .chat-screen {
   display: flex;
-  height: 560px; 
+  height: 560px;
   border: 1px solid #ddd;
 }
 
 .chat-sidebar {
-  width: 250px; 
+  width: 250px;
   background-color: #f8f9fa;
   padding: 20px;
   overflow-y: auto;
@@ -624,7 +617,7 @@ html {
   color: #333 !important;
 }
 .chat-sidebar li:hover {
-  background-color: #cfcfcf; 
+  background-color: #cfcfcf;
   border-radius: 5px;
 }
 
@@ -632,13 +625,11 @@ html {
   flex: 1;
   display: flex;
   flex-direction: column;
-  
 }
 
 .chat-messages h3 {
   margin-top: 0;
 }
-
 
 .sent {
   background-color: #aae69e;
@@ -650,7 +641,6 @@ html {
   background-color: white;
   align-self: flex-start;
   text-align: left;
- 
 }
 
 .new-message {
@@ -686,7 +676,6 @@ html {
   border: 1px solid #ddd;
   background-image: url("..//../frontend/src/assets/images/doodle5.png");
   background-size: contain;
-  
 }
 
 .message {
@@ -749,7 +738,9 @@ html {
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
   40% {
@@ -762,16 +753,15 @@ html {
 
 .notification-menu {
   width: 250px;
-  white-space: normal; 
+  white-space: normal;
   left: -300px;
   right: 0;
 }
 
 .notification-menu .dropdown-item {
-  white-space: normal; 
-  word-wrap: break-word; 
+  white-space: normal;
+  word-wrap: break-word;
 }
-
 
 .dot-indicator {
   display: inline-block;
@@ -799,6 +789,6 @@ html {
   transform: translateY(-50%);
 }
 
-#username{
+#username {
   color: white;
 }

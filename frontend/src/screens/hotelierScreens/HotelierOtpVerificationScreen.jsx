@@ -87,7 +87,6 @@ const HotelierOtpVerificationScreen = () => {
             />
           </Form.Group>
 
-
           <Button
             type="submit"
             variant="primary"

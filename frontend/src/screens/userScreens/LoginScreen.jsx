@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoginMutation,useResendOtpMutation,useGoogleLoginMutation } from "../../slices/usersApiSlice";
+import {
+  useLoginMutation,
+  useResendOtpMutation,
+  useGoogleLoginMutation,
+} from "../../slices/usersApiSlice";
 import { setCredentials } from "../../slices/authSlice";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
@@ -39,9 +43,9 @@ const LoginScreen = () => {
     } catch (error) {
       if (error?.data?.message === "Please verify your OTP before logging in") {
         try {
-          await resendOtp({ email }); 
+          await resendOtp({ email });
           toast.info("OTP has expired. Resending OTP...");
-          navigate("/verify-otp", { state: { email } }); 
+          navigate("/verify-otp", { state: { email } });
         } catch (resendError) {
           toast.error(resendError?.data?.message || resendError.error);
         }
@@ -55,7 +59,7 @@ const LoginScreen = () => {
       const decoded = jwtDecode(credentialResponse.credential);
       const googleName = decoded.name;
       const googleEmail = decoded.email;
-  
+
       const responseFromApiCall = await googleLogin({
         googleName,
         googleEmail,
@@ -63,16 +67,19 @@ const LoginScreen = () => {
       dispatch(setCredentials({ ...responseFromApiCall }));
       navigate("/");
     } catch (error) {
-      if (error.status === 401 && error.data.message === "User is blocked or not authorized") {
+      if (
+        error.status === 401 &&
+        error.data.message === "User is blocked or not authorized"
+      ) {
         toast.error("User is blocked or not authorized");
       } else {
-        toast.error(error.data?.message || "An error occurred during Google login");
+        toast.error(
+          error.data?.message || "An error occurred during Google login"
+        );
       }
     }
   };
   if (isLoading) return <Loader />;
-  
-  
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginbody">
@@ -113,8 +120,6 @@ const LoginScreen = () => {
                   ></Form.Control>
                 </Form.Group>
 
-               
-
                 <Button
                   type="submit"
                   variant="primary"
@@ -133,7 +138,8 @@ const LoginScreen = () => {
 
                 <Row>
                   <Col className="text-center py-2">
-                    Forgot Password? <Link to="/forgot-password">Click here</Link>
+                    Forgot Password?{" "}
+                    <Link to="/forgot-password">Click here</Link>
                   </Col>
                 </Row>
 
@@ -144,8 +150,11 @@ const LoginScreen = () => {
                   </Col>
                 </Row>
               </Form>
-              <div className="text-center my-4" style={{display:"flex",justifyContent:'center'}}>
-              <GoogleOAuthProvider  clientId="684114676709-5r4de1pbjcdhccojbdmtrpcoc46e3bv4.apps.googleusercontent.com">
+              <div
+                className="text-center my-4"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <GoogleOAuthProvider clientId="684114676709-5r4de1pbjcdhccojbdmtrpcoc46e3bv4.apps.googleusercontent.com">
                   <GoogleLogin
                     onSuccess={handleSuccess}
                     onError={() => {

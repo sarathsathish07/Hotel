@@ -1,8 +1,11 @@
-import React from 'react';
-import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
-import { useAdminListHotelMutation, useAdminUnlistHotelMutation } from '../../slices/adminApiSlice';
-import { toast } from 'react-toastify';
-import { DataTable } from '../generalComponents/DataTable';
+import React from "react";
+import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+import {
+  useAdminListHotelMutation,
+  useAdminUnlistHotelMutation,
+} from "../../slices/adminApiSlice";
+import { toast } from "react-toastify";
+import { DataTable } from "../generalComponents/DataTable";
 
 export const HotelsTable = ({ hotels, refetchData }) => {
   const [listHotel] = useAdminListHotelMutation();
@@ -10,12 +13,12 @@ export const HotelsTable = ({ hotels, refetchData }) => {
 
   const handleActionClick = async (hotel, actionType) => {
     try {
-      if (actionType === 'list') {
+      if (actionType === "list") {
         await listHotel({ hotelId: hotel._id }).unwrap();
-        toast.success('Hotel listed successfully');
+        toast.success("Hotel listed successfully");
       } else {
         await unlistHotel({ hotelId: hotel._id }).unwrap();
-        toast.success('Hotel unlisted successfully');
+        toast.success("Hotel unlisted successfully");
       }
       refetchData();
     } catch (err) {
@@ -24,15 +27,19 @@ export const HotelsTable = ({ hotels, refetchData }) => {
   };
 
   const columns = [
-    { label: 'Name', key: 'name' },
-    { label: 'City', key: 'city' },
-    { label: 'Address', key: 'address' },
-    { label: 'Status', key: 'isListed', format: (isListed) => (isListed ? 'Listed' : 'Unlisted') },
+    { label: "Name", key: "name" },
+    { label: "City", key: "city" },
+    { label: "Address", key: "address" },
+    {
+      label: "Status",
+      key: "isListed",
+      format: (isListed) => (isListed ? "Listed" : "Unlisted"),
+    },
   ];
 
   const actionButtons = [
-    { icon: <AiFillCheckCircle />, actionType: 'list' },
-    { icon: <AiFillCloseCircle />, actionType: 'unlist' },
+    { icon: <AiFillCheckCircle />, actionType: "list" },
+    { icon: <AiFillCloseCircle />, actionType: "unlist" },
   ];
 
   return (
@@ -44,7 +51,7 @@ export const HotelsTable = ({ hotels, refetchData }) => {
       searchPlaceholder="Enter Name or City..."
       onActionClick={handleActionClick}
       actionButtons={actionButtons}
-      searchKeys={['name', 'city']}
+      searchKeys={["name", "city"]}
     />
   );
 };

@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useHotelierLoginMutation,useResendHotelierOtpMutation } from "../../slices/hotelierApiSlice.js";
+import {
+  useHotelierLoginMutation,
+  useResendHotelierOtpMutation,
+} from "../../slices/hotelierApiSlice.js";
 import { setCredentials } from "../../slices/hotelierAuthSlice.js";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader.jsx";
@@ -36,7 +39,7 @@ const HotelierLoginScreen = () => {
     } catch (error) {
       if (error?.data?.message === "Please verify your OTP before logging in") {
         try {
-          await resendOtp({ email }); 
+          await resendOtp({ email });
           toast.info("OTP has expired. Resending OTP...");
           navigate("/hotelier/verify-otp", { state: { email } });
         } catch (resendError) {
@@ -87,7 +90,6 @@ const HotelierLoginScreen = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-
 
                 <Button type="submit" variant="primary" className="mt-3" block>
                   Sign In

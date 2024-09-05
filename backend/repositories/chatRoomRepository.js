@@ -1,8 +1,8 @@
-import ChatRoom from '../models/chatRoomModel.js';
-import Message from '../models/messageModel.js';
+import ChatRoom from "../models/chatRoomModel.js";
+import Message from "../models/messageModel.js";
 
 const findChatRoomsByUserId = async (userId) => {
-  return await ChatRoom.find({ userId }).populate('hotelId', 'name');
+  return await ChatRoom.find({ userId }).populate("hotelId", "name");
 };
 
 const findChatRoomByUserIdAndHotelId = async (userId, hotelId) => {
@@ -15,7 +15,9 @@ const createChatRoom = async (chatRoomData) => {
 };
 
 const updateChatRoomLastMessage = async (chatRoomId, lastMessageData) => {
-  return await ChatRoom.findByIdAndUpdate(chatRoomId, lastMessageData, { new: true });
+  return await ChatRoom.findByIdAndUpdate(chatRoomId, lastMessageData, {
+    new: true,
+  });
 };
 
 const findChatRoomsByHotelIds = async (hotelIds) => {
@@ -23,13 +25,13 @@ const findChatRoomsByHotelIds = async (hotelIds) => {
 };
 
 const findChatRoomsByHotelId = async (hotelId) => {
-  return await ChatRoom.find({ hotelId }).populate('userId', 'name');
+  return await ChatRoom.find({ hotelId }).populate("userId", "name");
 };
 
 const countUnreadMessages = async (chatRoomId) => {
   return await Message.countDocuments({
     chatRoomId,
-    senderType: 'User',
+    senderType: "User",
     read: false,
   });
 };

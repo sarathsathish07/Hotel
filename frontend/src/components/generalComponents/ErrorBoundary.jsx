@@ -1,5 +1,5 @@
-import React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   return (
@@ -13,11 +13,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
 
 const ErrorBoundaryWrapper = ({ children }) => {
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorFallback}
-      onReset={() => {
-      }}
-    >
+    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
       {children}
     </ErrorBoundary>
   );

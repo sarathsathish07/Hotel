@@ -16,8 +16,10 @@ const AdminVerificationScreen = () => {
     isLoading: isFetching,
     refetch,
   } = useGetVerificationDataQuery();
-  const [acceptVerification, { isLoading: isAccepting }] = useAdminAcceptVerificationMutation();
-  const [rejectVerification, { isLoading: isRejecting }] = useAdminRejectVerificationMutation();
+  const [acceptVerification, { isLoading: isAccepting }] =
+    useAdminAcceptVerificationMutation();
+  const [rejectVerification, { isLoading: isRejecting }] =
+    useAdminRejectVerificationMutation();
   const [showCertificateModal, setShowCertificateModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState("");
@@ -48,7 +50,10 @@ const AdminVerificationScreen = () => {
     }
 
     try {
-      await rejectVerification({ adminId: selectedHotelId, reason: trimmedReason });
+      await rejectVerification({
+        adminId: selectedHotelId,
+        reason: trimmedReason,
+      });
       refetch();
       toast.success("Verification request rejected");
       closeRejectModal();
@@ -59,7 +64,10 @@ const AdminVerificationScreen = () => {
   };
 
   const openCertificateModal = (certificate) => {
-    const adjustedCertificatePath = certificate.replace("backend\\public\\", "");
+    const adjustedCertificatePath = certificate.replace(
+      "backend\\public\\",
+      ""
+    );
     setSelectedCertificate(adjustedCertificatePath);
     setShowCertificateModal(true);
   };
@@ -97,13 +105,24 @@ const AdminVerificationScreen = () => {
               <Card.Body>
                 <h3>{hotel?.name}</h3>
                 <p>Status: {hotel?.verificationStatus}</p>
-                <Button variant="primary" onClick={() => openCertificateModal(hotel?.certificate)}>
+                <Button
+                  variant="primary"
+                  onClick={() => openCertificateModal(hotel?.certificate)}
+                >
                   View Certificate
                 </Button>{" "}
-                <Button variant="success" onClick={() => handleAccept(hotel?._id)} disabled={isAccepting || isRejecting}>
+                <Button
+                  variant="success"
+                  onClick={() => handleAccept(hotel?._id)}
+                  disabled={isAccepting || isRejecting}
+                >
                   {isAccepting ? <Loader /> : "Accept"}
                 </Button>{" "}
-                <Button variant="danger" onClick={() => openRejectModal(hotel?._id)} disabled={isAccepting || isRejecting}>
+                <Button
+                  variant="danger"
+                  onClick={() => openRejectModal(hotel?._id)}
+                  disabled={isAccepting || isRejecting}
+                >
                   {isRejecting ? <Loader /> : "Reject"}
                 </Button>
               </Card.Body>
@@ -111,7 +130,11 @@ const AdminVerificationScreen = () => {
           ))
         )}
 
-        <Modal show={showCertificateModal} onHide={closeCertificateModal} size="xl">
+        <Modal
+          show={showCertificateModal}
+          onHide={closeCertificateModal}
+          size="xl"
+        >
           <Modal.Header closeButton>
             <Modal.Title>View Certificate</Modal.Title>
           </Modal.Header>

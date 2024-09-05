@@ -1,121 +1,126 @@
 import { apiSlice } from "./apiSlice.js";
 
-const USERS_URL = '/api/users'
+const USERS_URL = "/api/users";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder)=>({
+  endpoints: (builder) => ({
     login: builder.mutation({
-      query: (data)=>({
+      query: (data) => ({
         url: `${USERS_URL}/auth`,
-        method: 'POST',
-        body: data
-      })
+        method: "POST",
+        body: data,
+      }),
     }),
-    googleLogin:builder.mutation({
-      query:(data)=>({
-         url:`${USERS_URL}/googleLogin`,
-         method:'POST',
-         body:data
-      })
-  }),
+    googleLogin: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/googleLogin`,
+        method: "POST",
+        body: data,
+      }),
+    }),
     register: builder.mutation({
-      query: (data)=>({
+      query: (data) => ({
         url: `${USERS_URL}`,
-        method: 'POST',
-        body: data
-      })
+        method: "POST",
+        body: data,
+      }),
     }),
     verifyOtp: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/verify-otp`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     resendOtp: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/resend-otp`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     logout: builder.mutation({
-      query: ()=>({
+      query: () => ({
         url: `${USERS_URL}/logout`,
-        method: 'POST'
-      })
+        method: "POST",
+      }),
     }),
     getUserProfile: builder.query({
       query: () => ({
-        url: `${USERS_URL}/profile`, 
-        method: 'GET',
+        url: `${USERS_URL}/profile`,
+        method: "GET",
       }),
     }),
     updateUser: builder.mutation({
-      query: (data)=>({
+      query: (data) => ({
         url: `${USERS_URL}/profile`,
-        method: 'PUT',
-        body: data
-      })
+        method: "PUT",
+        body: data,
+      }),
     }),
     getHotelsData: builder.mutation({
-      query: ({ sort = 'price_low_high', amenities = [], city = '', latitude = null, longitude = null }) => {
+      query: ({
+        sort = "price_low_high",
+        amenities = [],
+        city = "",
+        latitude = null,
+        longitude = null,
+      }) => {
         const params = { sort, amenities, city };
-            if (latitude && longitude) {
+        if (latitude && longitude) {
           params.latitude = latitude;
           params.longitude = longitude;
         }
-    
+
         return {
           url: `${USERS_URL}/hotels`,
-          method: 'GET',
+          method: "GET",
           params,
         };
       },
     }),
-    
+
     getRoomByRoomId: builder.query({
       query: (roomId) => `${USERS_URL}/rooms/${roomId}`,
     }),
-    
-    
+
     getHotelById: builder.query({
       query: (id) => ({
         url: `${USERS_URL}/hotels/${id}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     checkRoomAvailability: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/check-availability`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     saveBooking: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/booking`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     updateBookingStatus: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/booking/update-status`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
       }),
     }),
     getBookings: builder.query({
       query: () => ({
         url: `${USERS_URL}/bookings`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     sendPasswordResetEmail: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/forgot-password`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
@@ -123,47 +128,47 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     resetPassword: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/reset-password/${data.token}`,
-        method: 'PUT',
+        method: "PUT",
         body: { password: data.password },
       }),
     }),
     getRoomsData: builder.mutation({
       query: (hotelIds) => ({
         url: `${USERS_URL}/rooms`,
-        method: 'POST',
+        method: "POST",
         body: { hotelIds },
       }),
     }),
     getWalletTransactions: builder.query({
       query: () => ({
         url: `${USERS_URL}/wallet`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
-    getWalletBalance : builder.query({
+    getWalletBalance: builder.query({
       query: () => ({
         url: `${USERS_URL}/wallet/balance`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     addCashToWallet: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/wallet/add-cash`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     updateWallet: builder.mutation({
       query: (amount) => ({
         url: `${USERS_URL}/wallet/update`,
-        method: 'PUT',
+        method: "PUT",
         body: { amount },
       }),
     }),
     addReview: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/add-review`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
@@ -176,7 +181,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     cancelBooking: builder.mutation({
       query: ({ bookingId, refundMethod }) => ({
         url: `${USERS_URL}/cancel-booking/${bookingId}`,
-        method: 'PUT',
+        method: "PUT",
         body: { refundMethod },
       }),
     }),
@@ -186,40 +191,40 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     markNotificationAsRead: builder.mutation({
       query: (id) => ({
         url: `${USERS_URL}/notifications/${id}/read`,
-        method: 'PUT',
+        method: "PUT",
       }),
     }),
     getChatRooms: builder.query({
       query: () => ({
         url: `${USERS_URL}/chatrooms`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     createChatRoom: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/chatrooms`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     getMessages: builder.query({
       query: (chatRoomId) => ({
         url: `${USERS_URL}/chatrooms/${chatRoomId}/messages`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     sendMessage: builder.mutation({
       query: (data) => {
         const formData = new FormData();
-        formData.append('content', data.content);
-        formData.append('senderType', data.senderType);
+        formData.append("content", data.content);
+        formData.append("senderType", data.senderType);
         if (data.file) {
-          formData.append('file', data.file);
+          formData.append("file", data.file);
         }
 
         return {
           url: `${USERS_URL}/chatrooms/${data.chatRoomId}/messages`,
-          method: 'POST',
+          method: "POST",
           body: formData,
         };
       },
@@ -227,27 +232,26 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     fetchUnreadMessages: builder.query({
       query: () => ({
         url: `${USERS_URL}/unread-messages`,
-        method: 'GET'
-      })
+        method: "GET",
+      }),
     }),
     markMessagesAsRead: builder.mutation({
       query: (chatRoomId) => ({
         url: `${USERS_URL}/mark-messages-read`,
-        method: 'POST',
-        body: { chatRoomId }
-      })
-    })
-  })
-})
+        method: "POST",
+        body: { chatRoomId },
+      }),
+    }),
+  }),
+});
 
-
-export const { 
-  useLoginMutation, 
+export const {
+  useLoginMutation,
   useGoogleLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
   useVerifyOtpMutation,
-  useResendOtpMutation, 
+  useResendOtpMutation,
   useUpdateUserMutation,
   useGetHotelsDataMutation,
   useGetUserProfileQuery,
@@ -258,7 +262,7 @@ export const {
   useSendPasswordResetEmailMutation,
   useResetPasswordMutation,
   useGetRoomsDataMutation,
-  useCheckRoomAvailabilityMutation ,
+  useCheckRoomAvailabilityMutation,
   useGetWalletTransactionsQuery,
   useAddCashToWalletMutation,
   useGetWalletBalanceQuery,
@@ -269,11 +273,11 @@ export const {
   useCancelBookingMutation,
   useFetchUnreadNotificationsQuery,
   useMarkNotificationAsReadMutation,
-  useGetChatRoomsQuery, 
-  useCreateChatRoomMutation, 
-  useGetMessagesQuery, 
+  useGetChatRoomsQuery,
+  useCreateChatRoomMutation,
+  useGetMessagesQuery,
   useSendMessageMutation,
   useGetRoomByRoomIdQuery,
   useFetchUnreadMessagesQuery,
-  useMarkMessagesAsReadMutation 
-} = usersApiSlice
+  useMarkMessagesAsReadMutation,
+} = usersApiSlice;

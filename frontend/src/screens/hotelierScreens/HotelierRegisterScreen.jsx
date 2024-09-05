@@ -15,9 +15,9 @@ const HotelierRegisterScreen = () => {
 
   const [register, { isLoading }] = useHotelierRegisterMutation();
 
-  useEffect(()=>{
+  useEffect(() => {
     document.title = "Register";
-  },[])
+  }, []);
 
   const validateName = (name) => {
     if (name.length === 0) {
@@ -99,7 +99,7 @@ const HotelierRegisterScreen = () => {
       toast.error(error?.data?.message || error.error);
     }
   };
-  if(isLoading) return <Loader/>
+  if (isLoading) return <Loader />;
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginbody">
@@ -155,8 +155,6 @@ const HotelierRegisterScreen = () => {
                     className="form-control"
                   />
                 </Form.Group>
-
-               
 
                 <Button type="submit" variant="primary" className="mt-3" block>
                   Sign Up

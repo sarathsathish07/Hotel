@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetHotelByHotelIdQuery, useUpdateHotelMutation } from "../../slices/hotelierApiSlice";
+import {
+  useGetHotelByHotelIdQuery,
+  useUpdateHotelMutation,
+} from "../../slices/hotelierApiSlice";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
@@ -9,7 +12,12 @@ import Loader from "../../components/generalComponents/Loader";
 const EditHotelScreen = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: hotel, isLoading, isError, refetch } = useGetHotelByHotelIdQuery(id);
+  const {
+    data: hotel,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetHotelByHotelIdQuery(id);
   const [updateHotel] = useUpdateHotelMutation();
 
   const [formData, setFormData] = useState({
@@ -51,9 +59,9 @@ const EditHotelScreen = () => {
 
   const handleImageChange = (e) => {
     const files = e.target.files;
-    const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const imageTypes = ["image/jpeg", "image/png", "image/jpg"];
 
-    const selectedValidImages = Array.from(files).filter(file =>
+    const selectedValidImages = Array.from(files).filter((file) =>
       imageTypes.includes(file.type)
     );
 
@@ -88,8 +96,15 @@ const EditHotelScreen = () => {
     const trimmedDescription = formData.description.trim();
     const trimmedAmenities = formData.amenities.trim();
 
-
-    if (!trimmedName || !trimmedCity || !trimmedAddress || !trimmedDescription || !trimmedAmenities || !formData.latitude || !formData.longitude) {
+    if (
+      !trimmedName ||
+      !trimmedCity ||
+      !trimmedAddress ||
+      !trimmedDescription ||
+      !trimmedAmenities ||
+      !formData.latitude ||
+      !formData.longitude
+    ) {
       toast.error("All fields are required");
       return;
     }
@@ -132,11 +147,13 @@ const EditHotelScreen = () => {
       toast.success("Hotel updated successfully");
       navigate("/hotelier/registered-hotels");
     } catch (error) {
-      toast.error(error?.data?.message || error?.error || "Error updating hotel");
+      toast.error(
+        error?.data?.message || error?.error || "Error updating hotel"
+      );
     }
   };
 
-  if (isLoading) return <Loader/>;
+  if (isLoading) return <Loader />;
   if (isError) {
     toast.error("Error fetching hotel details");
     return <div>Error</div>;
@@ -144,7 +161,10 @@ const EditHotelScreen = () => {
 
   return (
     <HotelierLayout>
-      <Container className="px-4 w-75" style={{ maxHeight: "100vh", overflowY: "auto" }}>
+      <Container
+        className="px-4 w-75"
+        style={{ maxHeight: "100vh", overflowY: "auto" }}
+      >
         <h1 className="my-3">Edit Hotel</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="name" className="mb-3">
@@ -227,7 +247,10 @@ const EditHotelScreen = () => {
                     {typeof image === "string" && (
                       <Card.Img
                         variant="top"
-                        src={`https://celebratespaces.site/${image.replace("backend\\public\\", "")}`}
+                        src={`https://celebratespaces.site/${image.replace(
+                          "backend\\public\\",
+                          ""
+                        )}`}
                         alt={`Hotel Image ${index}`}
                         style={{ height: "150px", objectFit: "cover" }}
                       />

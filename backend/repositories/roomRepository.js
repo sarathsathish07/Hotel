@@ -1,4 +1,4 @@
-import Room from '../models/roomModel.js';
+import Room from "../models/roomModel.js";
 
 const createRoom = async (hotelId, hotelierId, roomData) => {
   try {
@@ -15,9 +15,7 @@ const createRoom = async (hotelId, hotelierId, roomData) => {
 
 const getRoomById = async (roomId) => {
   try {
-    return await Room.findById(roomId)
-      .populate('hotelId', 'name')
-      .exec();
+    return await Room.findById(roomId).populate("hotelId", "name").exec();
   } catch (error) {
     throw new Error(`Error fetching room details: ${error.message}`);
   }
@@ -34,5 +32,5 @@ const findRoomsByHotelIds = async (hotelIds) => {
 export default {
   createRoom,
   getRoomById,
-  findRoomsByHotelIds
+  findRoomsByHotelIds,
 };

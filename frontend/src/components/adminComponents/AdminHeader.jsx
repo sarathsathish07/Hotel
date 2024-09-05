@@ -35,14 +35,10 @@ const AdminHeader = () => {
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto" >
+            <Nav className="ms-auto">
               {adminInfo ? (
                 <>
-                  <NavDropdown
-                    title={adminInfo?.email}
-                    id="username"
-                    
-                  >
+                  <NavDropdown title={adminInfo?.email} id="username">
                     <NavDropdown.Item onClick={logoutHandler}>
                       Logout
                     </NavDropdown.Item>

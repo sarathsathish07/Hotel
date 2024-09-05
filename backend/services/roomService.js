@@ -18,7 +18,11 @@ const getRoomByIdHandler = async (roomId) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.ROOM_NOT_FOUND,
+      };
     }
     return {
       status: "success",
@@ -39,7 +43,11 @@ const getRoomsByHotelIdsService = async (hotelIds) => {
       message: responseMessages.ROOMS_RETRIEVED_SUCCESS,
     };
   } catch (error) {
-    return { status: "error", data: null, message: responseMessages.ERROR_FETCHING_ROOMS };
+    return {
+      status: "error",
+      data: null,
+      message: responseMessages.ERROR_FETCHING_ROOMS,
+    };
   }
 };
 
@@ -47,7 +55,11 @@ const updateRoomData = async (roomId, updateData, files) => {
   try {
     const room = await RoomRepository.getRoomById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.ROOM_NOT_FOUND,
+      };
     }
 
     room.type = updateData.type || room.type;

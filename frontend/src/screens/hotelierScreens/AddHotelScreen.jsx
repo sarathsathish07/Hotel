@@ -19,9 +19,9 @@ const AddHotelScreen = () => {
   const [addHotel] = useAddHotelMutation();
   const navigate = useNavigate();
 
-useEffect(()=>{
-  document.title = "Add Hotel";
-},[])
+  useEffect(() => {
+    document.title = "Add Hotel";
+  }, []);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -87,7 +87,7 @@ useEffect(()=>{
     }
 
     try {
-      setLoading(true); 
+      setLoading(true);
       const formData = new FormData();
       formData.append("name", trimmedName);
       formData.append("city", trimmedCity);
@@ -106,7 +106,7 @@ useEffect(()=>{
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -114,7 +114,10 @@ useEffect(()=>{
 
   return (
     <HotelierLayout>
-      <Container className="px-4 w-75" style={{ maxHeight: "100vh", overflowY: "auto" }}>
+      <Container
+        className="px-4 w-75"
+        style={{ maxHeight: "100vh", overflowY: "auto" }}
+      >
         <h1 className="my-3">Add Hotel</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="name" className="mb-3">
@@ -146,11 +149,7 @@ useEffect(()=>{
           </Form.Group>
           <Form.Group controlId="images" className="mb-3">
             <Form.Label>Images</Form.Label>
-            <Form.Control
-              type="file"
-              multiple
-              onChange={handleImageChange}
-            />
+            <Form.Control type="file" multiple onChange={handleImageChange} />
             <div className="mt-3">
               {selectedImages &&
                 selectedImages.map((image, index) => (

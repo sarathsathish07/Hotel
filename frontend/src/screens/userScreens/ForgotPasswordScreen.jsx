@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Button, Card } from 'react-bootstrap';
-import { useSendPasswordResetEmailMutation } from '../../slices/usersApiSlice';
-import { toast } from 'react-toastify';
-import Loader from '../../components/generalComponents/Loader';
-
+import React, { useEffect, useState } from "react";
+import { Form, Button, Card } from "react-bootstrap";
+import { useSendPasswordResetEmailMutation } from "../../slices/usersApiSlice";
+import { toast } from "react-toastify";
+import Loader from "../../components/generalComponents/Loader";
 
 const ForgotPasswordScreen = () => {
-  const [email, setEmail] = useState('');
-  const [sendPasswordResetEmail, { isLoading }] = useSendPasswordResetEmailMutation();
-  useEffect(()=>{
+  const [email, setEmail] = useState("");
+  const [sendPasswordResetEmail, { isLoading }] =
+    useSendPasswordResetEmailMutation();
+  useEffect(() => {
     document.title = "Forgot Password - Celebrate Spaces";
-  },[])
+  }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       await sendPasswordResetEmail({ email }).unwrap();
-      toast.success('Password reset email sent successfully');
+      toast.success("Password reset email sent successfully");
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
@@ -25,7 +25,7 @@ const ForgotPasswordScreen = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginbody">
-      <Card style={{ width: '30rem', padding: '2rem' }}>
+      <Card style={{ width: "30rem", padding: "2rem" }}>
         <Card.Body>
           <Card.Title className="text-center">Forgot Password</Card.Title>
           <Form onSubmit={submitHandler}>
@@ -38,8 +38,6 @@ const ForgotPasswordScreen = () => {
                 onChange={(e) => setEmail(e.target.value)}
               ></Form.Control>
             </Form.Group>
-
-            
 
             <Button type="submit" variant="primary" className="mt-3" block>
               Send Reset Link

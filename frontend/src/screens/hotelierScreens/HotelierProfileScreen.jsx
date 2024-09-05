@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Card, Container, Row, Col, Image, Nav } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Card,
+  Container,
+  Row,
+  Col,
+  Image,
+  Nav,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader.jsx";
 import { setCredentials } from "../../slices/hotelierAuthSlice.js";
-import { useHotelierUpdateUserMutation, useGetHotelierProfileQuery } from "../../slices/hotelierApiSlice.js";
+import {
+  useHotelierUpdateUserMutation,
+  useGetHotelierProfileQuery,
+} from "../../slices/hotelierApiSlice.js";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout.jsx";
-
 
 const HotelierProfileScreen = () => {
   const [name, setName] = useState("");
@@ -15,7 +26,11 @@ const HotelierProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
   const { hotelierInfo } = useSelector((state) => state.hotelierAuth);
-  const { data: userProfile, isLoading: profileLoading, refetch } = useGetHotelierProfileQuery();
+  const {
+    data: userProfile,
+    isLoading: profileLoading,
+    refetch,
+  } = useGetHotelierProfileQuery();
   const [updateProfile, { isLoading }] = useHotelierUpdateUserMutation();
 
   useEffect(() => {
@@ -32,12 +47,9 @@ const HotelierProfileScreen = () => {
     }
   }, [hotelierInfo, refetch]);
 
-
-  
-
   const validateName = (name) => {
-    if (name.trim() === '') {
-      toast.error('Name is required');
+    if (name.trim() === "") {
+      toast.error("Name is required");
       return false;
     }
     return true;
@@ -45,12 +57,12 @@ const HotelierProfileScreen = () => {
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (email.trim() === '') {
-      toast.error('Email is required');
+    if (email.trim() === "") {
+      toast.error("Email is required");
       return false;
     }
     if (!emailRegex.test(email)) {
-      toast.error('Email is not valid');
+      toast.error("Email is not valid");
       return false;
     }
     return true;
@@ -64,7 +76,7 @@ const HotelierProfileScreen = () => {
       !/[!@#$%^&*(),.?":{}|<>]/.test(password)
     ) {
       toast.error(
-        'Password must be at least 8 characters long and contain at least one letter, one number, and one special character.'
+        "Password must be at least 8 characters long and contain at least one letter, one number, and one special character."
       );
       return false;
     }
@@ -78,32 +90,39 @@ const HotelierProfileScreen = () => {
       return;
     }
 
-    if (password && (password !== confirmPassword || !validatePassword(password))) {
-      toast.error("Passwords do not match or do not meet the required criteria");
+    if (
+      password &&
+      (password !== confirmPassword || !validatePassword(password))
+    ) {
+      toast.error(
+        "Passwords do not match or do not meet the required criteria"
+      );
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      if (password) formData.append('password', password);
+      formData.append("name", name);
+      formData.append("email", email);
+      if (password) formData.append("password", password);
 
       const responseFromApiCall = await updateProfile(formData).unwrap();
       await refetch();
       dispatch(setCredentials(responseFromApiCall));
-      toast.success('Profile Updated Successfully');
+      toast.success("Profile Updated Successfully");
     } catch (error) {
-      toast.error(error?.data?.message || error?.message || "An error occurred");
+      toast.error(
+        error?.data?.message || error?.message || "An error occurred"
+      );
     }
   };
 
   if (profileLoading) return <Loader />;
-  if(isLoading) return <Loader/>
+  if (isLoading) return <Loader />;
 
   return (
     <HotelierLayout>
- <Container className="profile-container">
+      <Container className="profile-container">
         <Row>
           <Col md={2}></Col>
           <Col md={8}>
@@ -160,7 +179,6 @@ const HotelierProfileScreen = () => {
                   >
                     Update
                   </Button>
-                  
                 </Form>
               </Card.Body>
             </Card>
@@ -168,8 +186,6 @@ const HotelierProfileScreen = () => {
         </Row>
       </Container>
     </HotelierLayout>
-     
-
   );
 };
 

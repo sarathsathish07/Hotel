@@ -3,9 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
-import { useRegisterMutation,useGoogleLoginMutation } from "../../slices/usersApiSlice";
+import {
+  useRegisterMutation,
+  useGoogleLoginMutation,
+} from "../../slices/usersApiSlice";
 import registerImage from "../../assets/images/hotel1.jpg";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../slices/authSlice";
@@ -21,9 +24,9 @@ const RegisterScreen = () => {
 
   const [register, { isLoading }] = useRegisterMutation();
 
-  useEffect(()=>{
+  useEffect(() => {
     document.title = "Register - Celebrate Spaces";
-  },[])
+  }, []);
 
   const validateName = (name) => {
     if (name.length === 0) {
@@ -194,8 +197,11 @@ const RegisterScreen = () => {
                   </Col>
                 </Row>
               </Form>
-              <div className="text-center" style={{display:"flex",justifyContent:'center'}}>
-              <GoogleOAuthProvider  clientId="684114676709-5r4de1pbjcdhccojbdmtrpcoc46e3bv4.apps.googleusercontent.com">
+              <div
+                className="text-center"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <GoogleOAuthProvider clientId="684114676709-5r4de1pbjcdhccojbdmtrpcoc46e3bv4.apps.googleusercontent.com">
                   <GoogleLogin
                     onSuccess={handleSuccess}
                     onError={() => {
@@ -204,7 +210,6 @@ const RegisterScreen = () => {
                   />
                 </GoogleOAuthProvider>
               </div>
-              
             </Card.Body>
           </Col>
         </Row>

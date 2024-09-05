@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const chatRoomSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotel',
+    ref: "Hotel",
     required: true,
   },
   createdAt: {
@@ -17,6 +17,6 @@ const chatRoomSchema = new mongoose.Schema({
   },
 });
 
-const ChatRoom = mongoose.model('ChatRoom', chatRoomSchema);
+const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema);
 
 export default ChatRoom;

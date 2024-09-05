@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
@@ -17,7 +10,7 @@ import {
 } from "../../slices/usersApiSlice";
 import bgImage from "../../assets/images/bgimage.jpg";
 import defaultProfileImage from "../../assets/images/5856.jpg";
-import Footer from '../../components/userComponents/Footer';
+import Footer from "../../components/userComponents/Footer";
 import Sidebar from "../../components/userComponents/Sidebar";
 
 const ProfileScreen = () => {
@@ -25,7 +18,7 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState(""); 
+  const [currentPassword, setCurrentPassword] = useState("");
   const [profileImage, setProfileImage] = useState(null);
 
   const dispatch = useDispatch();
@@ -55,14 +48,13 @@ const ProfileScreen = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (!file.type.startsWith('image')) {
-        toast.error('Please select an image file.');
+      if (!file.type.startsWith("image")) {
+        toast.error("Please select an image file.");
         return;
       }
       setProfileImage(file);
     }
   };
-  
 
   const validateName = (name) => {
     if (name.trim() === "") {
@@ -122,7 +114,7 @@ const ProfileScreen = () => {
       formData.append("name", name);
       formData.append("email", email);
       if (password) formData.append("password", password);
-      formData.append("currentPassword", currentPassword); 
+      formData.append("currentPassword", currentPassword);
       if (profileImage) formData.append("profileImage", profileImage);
 
       const responseFromApiCall = await updateProfile(formData).unwrap();
@@ -147,7 +139,6 @@ const ProfileScreen = () => {
   if (profileLoading) return <Loader />;
 
   return (
-    
     <div>
       <div className="position-relative">
         <img src={bgImage} alt="background" className="background-image" />
@@ -158,7 +149,10 @@ const ProfileScreen = () => {
       <Container className="profile-container">
         <Row className="my-4">
           <Col md={3} className="sidebar-container">
-            <Sidebar profileImage={userInfo?.profileImage} name={userInfo?.name} />
+            <Sidebar
+              profileImage={userInfo?.profileImage}
+              name={userInfo?.name}
+            />
           </Col>
           <Col md={8}>
             <Card className="profile-card">
@@ -239,7 +233,7 @@ const ProfileScreen = () => {
           </Col>
         </Row>
       </Container>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

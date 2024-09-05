@@ -13,7 +13,7 @@ import Sidebar from "../../components/userComponents/Sidebar.jsx";
 import { useSelector } from "react-redux";
 import EmojiPicker from "emoji-picker-react";
 import { FaPaperclip } from "react-icons/fa";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 const socket = io("https://celebratespaces.site/");
 
@@ -51,17 +51,16 @@ const ChatScreen = () => {
     if (selectedChatRoom) {
       refetchMessages();
       socket.emit("joinRoom", { roomId: selectedChatRoom._id });
-      markMessagesAsRead(selectedChatRoom._id); 
+      markMessagesAsRead(selectedChatRoom._id);
       socket.emit("messageRead", { roomId: selectedChatRoom._id });
     }
   }, [selectedChatRoom, refetchMessages, markMessagesAsRead]);
 
   useEffect(() => {
     socket.on("message", (message) => {
-      
       if (message.chatRoomId === selectedChatRoom?._id) {
         refetchMessages();
-      } 
+      }
     });
 
     return () => {
@@ -72,11 +71,10 @@ const ChatScreen = () => {
   useEffect(() => {
     socket.on("messageRead", (data) => {
       if (data.roomId === selectedChatRoom?._id) {
-        
         refetchChatRooms();
       }
     });
-  
+
     return () => {
       socket.off("messageRead");
     };
@@ -84,18 +82,17 @@ const ChatScreen = () => {
 
   useEffect(() => {
     socket.on("messageUnReadHotel", () => {
-        refetchChatRooms();
-      
+      refetchChatRooms();
     });
-  
+
     return () => {
       socket.off("messageUnReadHotel");
     };
   }, [refetchChatRooms]);
-  
-  useEffect(()=>{
-    refetchChatRooms()
-  })
+
+  useEffect(() => {
+    refetchChatRooms();
+  });
 
   useEffect(() => {
     socket.on("typingHotel", () => {
@@ -134,18 +131,18 @@ const ChatScreen = () => {
         content: newMessage,
         senderType: "User",
       };
-  
+
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
         messageData.content = selectedFile.name;
         messageData.file = selectedFile;
       }
-  
+
       await sendMessage(messageData);
       setNewMessage("");
       setSelectedFile(null);
-      setSelectedFileName(""); 
+      setSelectedFileName("");
       refetchMessages();
       socket.emit("message", messageData);
       socket.emit("messageUnRead", { roomId: selectedChatRoom._id });
@@ -192,7 +189,10 @@ const ChatScreen = () => {
     <Container className="profile-container" style={{ height: "50vh" }}>
       <Row>
         <Col md={3} className="sidebar-container">
-          <Sidebar profileImage={userInfo?.profileImage} name={userInfo?.name} />
+          <Sidebar
+            profileImage={userInfo?.profileImage}
+            name={userInfo?.name}
+          />
         </Col>
         <Col md={9}>
           <div className="chat-screen">
@@ -205,11 +205,24 @@ const ChatScreen = () => {
                   {chatRooms.map((room) => (
                     <li
                       key={room?.hotelId?._id}
-                      className={currentHotelId === room?.hotelId?._id ? "active" : ""}
+                      className={
+                        currentHotelId === room?.hotelId?._id ? "active" : ""
+                      }
                       onClick={() => handleChatRoomSelect(room?.hotelId?._id)}
                     >
                       {room?.hotelId?.name}
-                      {room?.unreadMessagesCount > 0 && <span style={{ marginLeft: "10px", color: "red",fontSize:"30px",borderRadius:"50%" }}>•</span>}
+                      {room?.unreadMessagesCount > 0 && (
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            color: "red",
+                            fontSize: "30px",
+                            borderRadius: "50%",
+                          }}
+                        >
+                          •
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -218,9 +231,16 @@ const ChatScreen = () => {
             <div className="chat-messages">
               {selectedChatRoom ? (
                 <>
-                  <h5 className="my-3 mx-2">{selectedChatRoom?.hotelId?.name}</h5>
+                  <h5 className="my-3 mx-2">
+                    {selectedChatRoom?.hotelId?.name}
+                  </h5>
                   {isTyping && (
-                    <p className="typing-indicator mx-2" style={{ color: "black" }}>Typing...</p>
+                    <p
+                      className="typing-indicator mx-2"
+                      style={{ color: "black" }}
+                    >
+                      Typing...
+                    </p>
                   )}
                   <div className="messages">
                     {messagesLoading ? (
@@ -228,33 +248,51 @@ const ChatScreen = () => {
                     ) : (
                       messages
                         .slice()
-                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                        .sort(
+                          (a, b) =>
+                            new Date(a.createdAt) - new Date(b.createdAt)
+                        )
                         .map((msg) => (
                           <div
                             key={msg._id}
-                            className={`message ${msg.senderType === "User" ? "sent" : "received"}`}
+                            className={`message ${
+                              msg.senderType === "User" ? "sent" : "received"
+                            }`}
                           >
                             {msg?.fileUrl ? (
-                              <div style={{ display: "flex", flexDirection: "column" }}>
-                                {msg.fileUrl.endsWith('.pdf') ||  
-                                    msg.fileUrl.endsWith('.doc') ||
-                                    msg.fileUrl.endsWith('.docx') ||
-                                    msg.fileUrl.endsWith('.xls') ||
-                                    msg.fileUrl.endsWith('.xlsx') ||
-                                    msg.fileUrl.endsWith('.txt') ? (
-                                      <div style={{ display: "flex", flexDirection: "column" }}>
-                                      <div>{msg.content}</div>
-                                      <a
-                                        href={`https://celebratespaces.site${msg?.fileUrl?.startsWith('/') ? msg?.fileUrl : `/${msg?.fileUrl}`}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        download
-                                        style={{ marginTop: "5px" }}
-                                      >
-                                        Download
-                                      </a>
-                                    </div>
-                                    
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {msg.fileUrl.endsWith(".pdf") ||
+                                msg.fileUrl.endsWith(".doc") ||
+                                msg.fileUrl.endsWith(".docx") ||
+                                msg.fileUrl.endsWith(".xls") ||
+                                msg.fileUrl.endsWith(".xlsx") ||
+                                msg.fileUrl.endsWith(".txt") ? (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                    }}
+                                  >
+                                    <div>{msg.content}</div>
+                                    <a
+                                      href={`https://celebratespaces.site${
+                                        msg?.fileUrl?.startsWith("/")
+                                          ? msg?.fileUrl
+                                          : `/${msg?.fileUrl}`
+                                      }`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      download
+                                      style={{ marginTop: "5px" }}
+                                    >
+                                      Download
+                                    </a>
+                                  </div>
                                 ) : (
                                   <img
                                     src={`https://celebratespaces.site/${msg?.fileUrl}`}
@@ -267,8 +305,11 @@ const ChatScreen = () => {
                               msg?.content
                             )}
 
-                            <div className="message-time" style={{ fontSize: '9px', marginTop: '5px' }}>
-                              {format(new Date(msg?.createdAt), ' hh:mm')}
+                            <div
+                              className="message-time"
+                              style={{ fontSize: "9px", marginTop: "5px" }}
+                            >
+                              {format(new Date(msg?.createdAt), " hh:mm")}
                             </div>
                           </div>
                         ))
@@ -295,25 +336,54 @@ const ChatScreen = () => {
                       />
                       <button
                         onClick={handleSendMessage}
-                        style={{ backgroundColor: "#555555", padding: "10px", borderRadius: "10px", width: "70px" }}
+                        style={{
+                          backgroundColor: "#555555",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          width: "70px",
+                        }}
                       >
                         Send
                       </button>
                       <div>
                         {showEmojiPicker && (
-                          <div style={{ position: "absolute", bottom: "50px",right:"20px" }}>
+                          <div
+                            style={{
+                              position: "absolute",
+                              bottom: "50px",
+                              right: "20px",
+                            }}
+                          >
                             <EmojiPicker onEmojiClick={handleEmojiClick} />
                           </div>
                         )}
                         <button
                           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                          style={{ marginLeft: "10px", border: "1px solid black", padding: "10px", borderRadius: "10px" }}
+                          style={{
+                            marginLeft: "10px",
+                            border: "1px solid black",
+                            padding: "10px",
+                            borderRadius: "10px",
+                          }}
                         >
                           😊
                         </button>
                       </div>
-                      <label htmlFor="file-upload" style={{ marginLeft: "10px", border: "1px solid black", padding: "5px", borderRadius: "10px", width: "50px", textAlign: "center", cursor: "pointer" }}>
-                        <FaPaperclip style={{ color: "#555555", cursor: "pointer" }} />
+                      <label
+                        htmlFor="file-upload"
+                        style={{
+                          marginLeft: "10px",
+                          border: "1px solid black",
+                          padding: "5px",
+                          borderRadius: "10px",
+                          width: "50px",
+                          textAlign: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <FaPaperclip
+                          style={{ color: "#555555", cursor: "pointer" }}
+                        />
                       </label>
                       <input
                         id="file-upload"
@@ -321,15 +391,13 @@ const ChatScreen = () => {
                         style={{ display: "none" }}
                         onChange={handleFileChange}
                       />
-
                     </div>
                   </div>
                 </>
               ) : (
-                
-                  <p style={{marginTop:"30%",marginLeft:"30%"}} >Please select a chat room to start messaging.</p>
-           
-                
+                <p style={{ marginTop: "30%", marginLeft: "30%" }}>
+                  Please select a chat room to start messaging.
+                </p>
               )}
             </div>
           </div>

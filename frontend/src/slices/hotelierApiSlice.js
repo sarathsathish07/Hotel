@@ -1,94 +1,94 @@
-import { apiSlice } from './apiSlice';
+import { apiSlice } from "./apiSlice";
 
-const HOTELS_URL = '/api/hotels';
+const HOTELS_URL = "/api/hotels";
 
 export const hotelierApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     hotelierLogin: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}/auth`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     hotelierRegister: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     hotelierVerifyOtp: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}/verify-otp`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     resendHotelierOtp: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}/resend-otp`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     hotelierLogout: builder.mutation({
       query: () => ({
         url: `${HOTELS_URL}/logout`,
-        method: 'POST',
+        method: "POST",
       }),
     }),
     getHotelierProfile: builder.query({
       query: () => ({
-        url: `${HOTELS_URL}/profile`, 
-        method: 'GET',
+        url: `${HOTELS_URL}/profile`,
+        method: "GET",
       }),
     }),
     hotelierUpdateUser: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}/profile`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
       }),
     }),
     uploadHotelCertificate: builder.mutation({
       query: ({ hotelId, formData }) => ({
         url: `${HOTELS_URL}/upload-certificate/${hotelId}`,
-        method: 'POST',
+        method: "POST",
         body: formData,
       }),
     }),
-    
+
     addHotel: builder.mutation({
       query: (data) => ({
         url: `${HOTELS_URL}/add-hotel`,
-        method: 'POST',
+        method: "POST",
         body: data,
       }),
     }),
     getHotels: builder.query({
       query: () => ({
         url: `${HOTELS_URL}/get-hotels`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     getHotelByHotelId: builder.query({
       query: (id) => ({
         url: `${HOTELS_URL}/hotels/${id}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     updateHotel: builder.mutation({
       query: ({ id, formData }) => ({
         url: `${HOTELS_URL}/hotels/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body: formData,
       }),
     }),
     addRoom: builder.mutation({
       query: ({ hotelId, formData }) => ({
         url: `${HOTELS_URL}/add-room/${hotelId}`,
-        method: 'POST',
+        method: "POST",
         body: formData,
       }),
     }),
@@ -108,13 +108,13 @@ export const hotelierApiSlice = apiSlice.injectEndpoints({
     getHotelierDashboardStats: builder.query({
       query: () => ({
         url: `${HOTELS_URL}/dashboard`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     getHotelierSalesReport: builder.mutation({
       query: ({ from, to }) => ({
         url: `${HOTELS_URL}/salesReport`,
-        method: 'POST',
+        method: "POST",
         body: { from, to },
       }),
     }),
@@ -127,16 +127,16 @@ export const hotelierApiSlice = apiSlice.injectEndpoints({
     sendHotelMessage: builder.mutation({
       query: (data) => {
         const formData = new FormData();
-        formData.append('content', data.content);
-        formData.append('senderType', data.senderType);
-        formData.append('hotelId', data.hotelId)
+        formData.append("content", data.content);
+        formData.append("senderType", data.senderType);
+        formData.append("hotelId", data.hotelId);
         if (data.file) {
-          formData.append('file', data.file);
+          formData.append("file", data.file);
         }
 
         return {
           url: `${HOTELS_URL}/chatrooms/${data.chatRoomId}/messages`,
-          method: 'POST',
+          method: "POST",
           body: formData,
         };
       },
@@ -144,14 +144,14 @@ export const hotelierApiSlice = apiSlice.injectEndpoints({
     markHotelMessagesAsRead: builder.mutation({
       query: (chatRoomId) => ({
         url: `${HOTELS_URL}/mark-messages-read`,
-        method: 'POST',
-        body: { chatRoomId }
+        method: "POST",
+        body: { chatRoomId },
       }),
     }),
     fetchHotelUnreadMessages: builder.query({
       query: () => ({
         url: `${HOTELS_URL}/unreadHotelmessages`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     fetchUnreadHotelierNotifications: builder.query({
@@ -160,11 +160,10 @@ export const hotelierApiSlice = apiSlice.injectEndpoints({
     markHotelierNotificationAsRead: builder.mutation({
       query: (id) => ({
         url: `${HOTELS_URL}/notifications/${id}/read`,
-        method: 'PUT',
+        method: "PUT",
       }),
     }),
   }),
-  
 });
 
 export const {
@@ -183,13 +182,14 @@ export const {
   useAddRoomMutation,
   useGetRoomByIdQuery,
   useGetHotelierBookingsQuery,
-  useUpdateRoomMutation ,
+  useUpdateRoomMutation,
   useGetHotelierDashboardStatsQuery,
-  useGetHotelierSalesReportMutation ,
+  useGetHotelierSalesReportMutation,
   useGetHotelChatRoomsQuery,
   useGetHotelMessagesQuery,
   useSendHotelMessageMutation,
   useMarkHotelMessagesAsReadMutation,
-  useFetchHotelUnreadMessagesQuery ,
-  useFetchUnreadHotelierNotificationsQuery, useMarkHotelierNotificationAsReadMutation
+  useFetchHotelUnreadMessagesQuery,
+  useFetchUnreadHotelierNotificationsQuery,
+  useMarkHotelierNotificationAsReadMutation,
 } = hotelierApiSlice;

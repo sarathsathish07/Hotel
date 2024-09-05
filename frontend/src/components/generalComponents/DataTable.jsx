@@ -1,6 +1,14 @@
-
-import React, { useState } from 'react';
-import { Table, Container, Row, Col, Card, Button, Form as BootstrapForm, Pagination } from 'react-bootstrap';
+import React, { useState } from "react";
+import {
+  Table,
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form as BootstrapForm,
+  Pagination,
+} from "react-bootstrap";
 
 export const DataTable = ({
   data,
@@ -11,9 +19,9 @@ export const DataTable = ({
   onActionClick,
   actionButtons,
   itemsPerPage = 5,
-  searchKeys = []
+  searchKeys = [],
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleSearch = (event) => {
@@ -24,7 +32,10 @@ export const DataTable = ({
   const filteredData = data.filter((item) =>
     searchKeys.some((key) => {
       const value = item[key];
-      return typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase());
+      return (
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     })
   );
 
@@ -43,10 +54,13 @@ export const DataTable = ({
             <Card.Body>
               <div className="containerS">
                 <BootstrapForm>
-                  <BootstrapForm.Group className="mt-3" controlId="searchForm.ControlInput1">
+                  <BootstrapForm.Group
+                    className="mt-3"
+                    controlId="searchForm.ControlInput1"
+                  >
                     <BootstrapForm.Label>Search:</BootstrapForm.Label>
                     <BootstrapForm.Control
-                      style={{ width: '500px' }}
+                      style={{ width: "500px" }}
                       value={searchQuery}
                       type="text"
                       placeholder={searchPlaceholder}
@@ -56,7 +70,7 @@ export const DataTable = ({
                 </BootstrapForm>
               </div>
               <br />
-              <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
                 <Table responsive>
                   <thead>
                     <tr>
@@ -71,7 +85,9 @@ export const DataTable = ({
                       <tr key={rowIndex}>
                         {columns.map((col, colIndex) => (
                           <td key={colIndex}>
-                            {col.format ? col.format(item[col.key], item) : item[col.key]}
+                            {col.format
+                              ? col.format(item[col.key], item)
+                              : item[col.key]}
                           </td>
                         ))}
                         <td>
@@ -80,7 +96,9 @@ export const DataTable = ({
                               key={actionIndex}
                               variant="transparent"
                               size="sm"
-                              onClick={() => onActionClick(item, action.actionType)}
+                              onClick={() =>
+                                onActionClick(item, action.actionType)
+                              }
                               className="me-2"
                             >
                               {action.icon}
@@ -93,7 +111,9 @@ export const DataTable = ({
                 </Table>
                 <div className="d-flex justify-content-center mt-3">
                   <Pagination>
-                    {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }).map((_, index) => (
+                    {Array.from({
+                      length: Math.ceil(filteredData.length / itemsPerPage),
+                    }).map((_, index) => (
                       <Pagination.Item
                         key={index + 1}
                         active={index + 1 === currentPage}

@@ -1,31 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Navbar, Nav, Container, NavDropdown, Badge, Dropdown } from 'react-bootstrap';
-import { FaBell, FaSignOutAlt } from 'react-icons/fa';
-import { useSelector, useDispatch } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { useHotelierLogoutMutation, useFetchUnreadHotelierNotificationsQuery, useMarkHotelierNotificationAsReadMutation } from '../../slices/hotelierApiSlice';
-import { logout } from '../../slices/hotelierAuthSlice';
-import io from 'socket.io-client';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Navbar,
+  Nav,
+  Container,
+  NavDropdown,
+  Badge,
+  Dropdown,
+} from "react-bootstrap";
+import { FaBell, FaSignOutAlt } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { LinkContainer } from "react-router-bootstrap";
+import { useNavigate } from "react-router-dom";
+import {
+  useHotelierLogoutMutation,
+  useFetchUnreadHotelierNotificationsQuery,
+  useMarkHotelierNotificationAsReadMutation,
+} from "../../slices/hotelierApiSlice";
+import { logout } from "../../slices/hotelierAuthSlice";
+import io from "socket.io-client";
 
-const socket = io('https://celebratespaces.site/');
+const socket = io("https://celebratespaces.site/");
 
 const HotelierHeader = () => {
   const { hotelierInfo } = useSelector((state) => state.hotelierAuth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApiCall] = useHotelierLogoutMutation();
-  
+
   const dropdownRef = useRef(null);
-  const { data: notifications = [], refetch } = useFetchUnreadHotelierNotificationsQuery();
-  const [markHotelierNotificationAsRead] = useMarkHotelierNotificationAsReadMutation();
+  const { data: notifications = [], refetch } =
+    useFetchUnreadHotelierNotificationsQuery();
+  const [markHotelierNotificationAsRead] =
+    useMarkHotelierNotificationAsReadMutation();
   const [showNotifications, setShowNotifications] = useState(false);
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      navigate('/hotelier/login');
+      navigate("/hotelier/login");
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +63,9 @@ const HotelierHeader = () => {
         setShowNotifications(false);
         try {
           await Promise.all(
-            notifications.map(notification => markHotelierNotificationAsRead(notification._id).unwrap())
+            notifications.map((notification) =>
+              markHotelierNotificationAsRead(notification._id).unwrap()
+            )
           );
           refetch();
         } catch (error) {
@@ -60,23 +75,28 @@ const HotelierHeader = () => {
     };
 
     if (showNotifications) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotifications, notifications, markHotelierNotificationAsRead, refetch]);
+  }, [
+    showNotifications,
+    notifications,
+    markHotelierNotificationAsRead,
+    refetch,
+  ]);
 
   useEffect(() => {
-    socket.on('newNotification', (notification) => {
+    socket.on("newNotification", (notification) => {
       refetch();
     });
 
     return () => {
-      socket.off('newNotification');
+      socket.off("newNotification");
     };
   }, [refetch]);
 
@@ -84,18 +104,38 @@ const HotelierHeader = () => {
 
   return (
     <header>
-      <Navbar bg='custom' variant='dark' expand='lg' collapseOnSelect className="hotel-header">
+      <Navbar
+        bg="custom"
+        variant="dark"
+        expand="lg"
+        collapseOnSelect
+        className="hotel-header"
+      >
         <Container>
-          <LinkContainer to='/hotelier'>
+          <LinkContainer to="/hotelier">
             <Navbar.Brand className="title">Celebrate Spaces</Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='ms-auto align-items-center'>
-              <div className="position-relative mx-3 notification-dropdown" ref={dropdownRef} onClick={handleIconClick}>
-                <FaBell style={{ fontSize: '15px', color: 'white', cursor: 'pointer' }} />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ms-auto align-items-center">
+              <div
+                className="position-relative mx-3 notification-dropdown"
+                ref={dropdownRef}
+                onClick={handleIconClick}
+              >
+                <FaBell
+                  style={{
+                    fontSize: "15px",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                />
                 {notifications.length > 0 && (
-                  <Badge pill bg="danger" className="notification-badge position-absolute start-60 translate-middle">
+                  <Badge
+                    pill
+                    bg="danger"
+                    className="notification-badge position-absolute start-60 translate-middle"
+                  >
                     {notifications.length}
                   </Badge>
                 )}
@@ -105,7 +145,12 @@ const HotelierHeader = () => {
                       <Dropdown.Item>No unread notifications</Dropdown.Item>
                     ) : (
                       notifications.map((notification) => (
-                        <Dropdown.Item key={notification?._id} onClick={() => handleNotificationClick(notification?._id)}>
+                        <Dropdown.Item
+                          key={notification?._id}
+                          onClick={() =>
+                            handleNotificationClick(notification?._id)
+                          }
+                        >
                           {notification?.message}
                         </Dropdown.Item>
                       ))
@@ -114,8 +159,8 @@ const HotelierHeader = () => {
                 )}
               </div>
 
-              <NavDropdown title={hotelierInfo?.name} id='username'>
-                <LinkContainer to='/hotelier/profile'>
+              <NavDropdown title={hotelierInfo?.name} id="username">
+                <LinkContainer to="/hotelier/profile">
                   <NavDropdown.Item>Profile</NavDropdown.Item>
                 </LinkContainer>
                 <NavDropdown.Item onClick={logoutHandler}>

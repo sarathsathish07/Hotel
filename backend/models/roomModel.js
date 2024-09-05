@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const roomSchema = new mongoose.Schema({
   type: {
@@ -39,16 +39,16 @@ const roomSchema = new mongoose.Schema({
   },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotel',
+    ref: "Hotel",
     required: true,
   },
   hotelierId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotelier',
+    ref: "Hotelier",
     required: true,
   },
 });
 
-const Room = mongoose.model('Room', roomSchema);
+const Room = mongoose.model("Room", roomSchema);
 
 export default Room;

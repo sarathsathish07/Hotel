@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Container, Card, Row, Col, Button, Form, Accordion } from "react-bootstrap";
-import { useGetHotelsDataMutation, useGetRoomsDataMutation } from "../../slices/usersApiSlice";
+import {
+  Container,
+  Card,
+  Row,
+  Col,
+  Button,
+  Form,
+  Accordion,
+} from "react-bootstrap";
+import {
+  useGetHotelsDataMutation,
+  useGetRoomsDataMutation,
+} from "../../slices/usersApiSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 import bgImage from "../../assets/images/bg-1.png";
 import Loader from "../../components/generalComponents/Loader";
@@ -18,25 +29,26 @@ const HotelsScreen = () => {
   const [filterCity, setFilterCity] = useState(initialCity);
   const [filterAmenities, setFilterAmenities] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-  const [getHotels, { isLoading: isLoadingHotels }] = useGetHotelsDataMutation();
+  const [getHotels, { isLoading: isLoadingHotels }] =
+    useGetHotelsDataMutation();
   const [getRooms, { isLoading: isLoadingRooms }] = useGetRoomsDataMutation();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const hotelsPerPage = 6;
 
-  const baseURL = 'https://celebratespaces.site/';
+  const baseURL = "https://celebratespaces.site/";
 
   useEffect(() => {
     document.title = "Hotels - Celebrate Spaces";
     const fetchHotelsAndRooms = async () => {
       try {
-        console.log("Fetching hotels with location:", userLocation)
+        console.log("Fetching hotels with location:", userLocation);
         const hotelResponse = await getHotels({
           sort,
           amenities: filterAmenities.length > 0 ? filterAmenities : [],
           city: filterCity,
-          latitude: userLocation?.latitude,  
-          longitude: userLocation?.longitude, 
+          latitude: userLocation?.latitude,
+          longitude: userLocation?.longitude,
         }).unwrap();
         setHotels(hotelResponse);
 
@@ -69,7 +81,9 @@ const HotelsScreen = () => {
     if (e.target.checked) {
       setSelectedAmenities([...selectedAmenities, amenity]);
     } else {
-      setSelectedAmenities(selectedAmenities.filter((item) => item !== amenity));
+      setSelectedAmenities(
+        selectedAmenities.filter((item) => item !== amenity)
+      );
     }
   };
 
@@ -84,7 +98,7 @@ const HotelsScreen = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ latitude, longitude });
-          setFilterCity(''); 
+          setFilterCity("");
         },
         (error) => {
           toast.error("Failed to get location.");
@@ -180,15 +194,17 @@ const HotelsScreen = () => {
                   <Accordion.Header>Amenities</Accordion.Header>
                   <Accordion.Body>
                     <Form.Group>
-                      {["Free Wifi", "Pool", "Parking", "Gym"].map((amenity) => (
-                        <Form.Check
-                          key={amenity}
-                          type="checkbox"
-                          label={amenity}
-                          value={amenity}
-                          onChange={handleAmenityChange}
-                        />
-                      ))}
+                      {["Free Wifi", "Pool", "Parking", "Gym"].map(
+                        (amenity) => (
+                          <Form.Check
+                            key={amenity}
+                            type="checkbox"
+                            label={amenity}
+                            value={amenity}
+                            onChange={handleAmenityChange}
+                          />
+                        )
+                      )}
                     </Form.Group>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -196,7 +212,11 @@ const HotelsScreen = () => {
               <Button variant="primary" className="mt-3" onClick={applyFilters}>
                 Apply Filters
               </Button>
-              <Button variant="secondary" className="mt-3" onClick={handleLocationSearch}>
+              <Button
+                variant="secondary"
+                className="mt-3"
+                onClick={handleLocationSearch}
+              >
                 Search Near Me
               </Button>
             </Card>
@@ -206,13 +226,19 @@ const HotelsScreen = () => {
             <Row>
               {currentHotels.map((hotel) => (
                 <Col key={hotel?._id} md={4} className="mb-4">
-                  <Card className="hotel-card" onClick={() => handleHotelClick(hotel?._id)}>
-                  <Card.Img
-                    variant="top"
-                    src={`${baseURL}${hotel?.images[0].replace("backend\\public\\", "")}`}
-                    alt={hotel?.name}
-                    className="hotel-image"
-                  />
+                  <Card
+                    className="hotel-card"
+                    onClick={() => handleHotelClick(hotel?._id)}
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={`${baseURL}${hotel?.images[0].replace(
+                        "backend\\public\\",
+                        ""
+                      )}`}
+                      alt={hotel?.name}
+                      className="hotel-image"
+                    />
                     <Card.Body className="hotel-card-body">
                       <Card.Title>{hotel?.name}</Card.Title>
                       <Row>
@@ -222,7 +248,9 @@ const HotelsScreen = () => {
                         </Col>
                         <Col>
                           <Card.Text className="mb-0">Avg Price</Card.Text>
-                          <Card.Text>Rs {calculateAveragePrice(hotel?._id)}</Card.Text>
+                          <Card.Text>
+                            Rs {calculateAveragePrice(hotel?._id)}
+                          </Card.Text>
                         </Col>
                       </Row>
                     </Card.Body>
@@ -231,11 +259,23 @@ const HotelsScreen = () => {
               ))}
             </Row>
             <div className="pagination-controls d-flex justify-content-center align-items-center mt-3">
-              <Button variant="secondary" onClick={handlePrevPage} disabled={currentPage === 1}>
+              <Button
+                variant="secondary"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
                 Previous
               </Button>
-              <span className="mx-2">Page {currentPage} of {Math.ceil(hotels.length / hotelsPerPage)}</span>
-              <Button variant="secondary" onClick={handleNextPage} disabled={currentPage === Math.ceil(hotels.length / hotelsPerPage)}>
+              <span className="mx-2">
+                Page {currentPage} of {Math.ceil(hotels.length / hotelsPerPage)}
+              </span>
+              <Button
+                variant="secondary"
+                onClick={handleNextPage}
+                disabled={
+                  currentPage === Math.ceil(hotels.length / hotelsPerPage)
+                }
+              >
                 Next
               </Button>
             </div>

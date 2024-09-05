@@ -48,9 +48,8 @@ const getHotelChatRooms = async (hotelId) => {
 
     const chatRoomsWithUnreadCount = await Promise.all(
       chatRooms.map(async (room) => {
-        const unreadMessagesCount = await chatRoomRepository.countUnreadMessages(
-          room._id
-        );
+        const unreadMessagesCount =
+          await chatRoomRepository.countUnreadMessages(room._id);
         return {
           ...room.toObject(),
           unreadMessagesCount,

@@ -2,16 +2,15 @@
   display: flex;
 }
 
-.right{
+.right {
   padding-left: 1039px;
   padding-top: 25px;
 }
 
 .dark-button {
-  background-color: #20a12d; 
-  color: #fafafa; 
-  border: none; 
-  cursor: pointer; 
+  background-color: #20a12d;
+  color: #fafafa;
+  border: none;
+  cursor: pointer;
   overflow-x: hidden;
-  
 }

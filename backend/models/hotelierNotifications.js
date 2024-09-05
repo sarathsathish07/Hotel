@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const hotelierNotificationSchema = new mongoose.Schema({
   hotelierId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotelier',
+    ref: "Hotelier",
     required: true,
   },
   isRead: {
@@ -20,6 +20,9 @@ const hotelierNotificationSchema = new mongoose.Schema({
   },
 });
 
-const HotelierNotification = mongoose.model('HotelierNotification', hotelierNotificationSchema);
+const HotelierNotification = mongoose.model(
+  "HotelierNotification",
+  hotelierNotificationSchema
+);
 
 export default HotelierNotification;

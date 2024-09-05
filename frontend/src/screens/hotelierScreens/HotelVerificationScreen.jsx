@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { useUploadHotelCertificateMutation, useGetHotelierProfileQuery } from "../../slices/hotelierApiSlice";
+import {
+  useUploadHotelCertificateMutation,
+  useGetHotelierProfileQuery,
+} from "../../slices/hotelierApiSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
 import bgImage from "../../assets/images/bgimage.jpg";
@@ -14,12 +17,14 @@ const HotelVerificationScreen = () => {
   const navigate = useNavigate();
   const { hotelierInfo } = useSelector((state) => state.hotelierAuth);
   const { hotelId } = useParams();
-  const { data: profile, isLoading: profileLoading } = useGetHotelierProfileQuery();
-  const [uploadHotelCertificate, { isLoading }] = useUploadHotelCertificateMutation();
+  const { data: profile, isLoading: profileLoading } =
+    useGetHotelierProfileQuery();
+  const [uploadHotelCertificate, { isLoading }] =
+    useUploadHotelCertificateMutation();
 
-  useEffect(()=>{
+  useEffect(() => {
     document.title = "Hotel Verification";
-  },[])
+  }, []);
 
   const handleCertificateChange = (e) => {
     const file = e.target.files[0];
@@ -45,7 +50,10 @@ const HotelVerificationScreen = () => {
       const formData = new FormData();
       formData.append("certificate", certificate);
 
-      const response = await uploadHotelCertificate({ hotelId, formData }).unwrap();
+      const response = await uploadHotelCertificate({
+        hotelId,
+        formData,
+      }).unwrap();
 
       if (response.error) {
         toast.error(response.error.message);
@@ -63,17 +71,17 @@ const HotelVerificationScreen = () => {
     if (profileLoading) {
       return <Loader />;
     }
-    if(isLoading) return <Loader/>
+    if (isLoading) return <Loader />;
 
     return (
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="certificates" className="my-3">
           <Form.Label>Upload Certificate</Form.Label>
           <Form.Control type="file" onChange={handleCertificateChange} />
-          {validationError && <div className="text-danger mt-2">{validationError}</div>}
+          {validationError && (
+            <div className="text-danger mt-2">{validationError}</div>
+          )}
         </Form.Group>
-
-        
 
         <Button type="submit" style={{ backgroundColor: "#082b43" }}>
           Submit
@@ -91,7 +99,7 @@ const HotelVerificationScreen = () => {
         </div>
       </div>
       <HotelierLayout>
-      <Container className="px-4 w-75 my-5">
+        <Container className="px-4 w-75 my-5">
           <Row>
             <Col md={8}>
               <Card className="profile-card">

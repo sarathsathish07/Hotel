@@ -35,12 +35,12 @@ const updateNotificationAsRead = async (notification) => {
   return await notification.save();
 };
 
-export default { 
-  createNotification, 
-  createHotelierNotification, 
-  findUnreadNotificationsByUserId, 
-  findNotificationById, 
-  updateNotificationStatus, 
-  getUnreadNotifications, 
-  updateNotificationAsRead 
+export default {
+  createNotification,
+  createHotelierNotification,
+  findUnreadNotificationsByUserId,
+  findNotificationById,
+  updateNotificationStatus,
+  getUnreadNotifications,
+  updateNotificationAsRead,
 };

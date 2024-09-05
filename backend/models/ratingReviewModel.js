@@ -1,19 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const ratingReviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotel',
+    ref: "Hotel",
     required: true,
   },
   bookingId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Booking',
+    ref: "Booking",
     required: true,
   },
   rating: {
@@ -32,6 +32,6 @@ const ratingReviewSchema = new mongoose.Schema({
   },
 });
 
-const RatingReview = mongoose.model('RatingReview', ratingReviewSchema);
+const RatingReview = mongoose.model("RatingReview", ratingReviewSchema);
 
 export default RatingReview;

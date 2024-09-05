@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetRoomByIdQuery, useUpdateRoomMutation } from "../../slices/hotelierApiSlice";
+import {
+  useGetRoomByIdQuery,
+  useUpdateRoomMutation,
+} from "../../slices/hotelierApiSlice";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
 import { toast } from "react-toastify";
 import Loader from "../../components/generalComponents/Loader";
@@ -9,7 +12,12 @@ import Loader from "../../components/generalComponents/Loader";
 const EditRoomScreen = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { data: room, isLoading, isError, refetch } = useGetRoomByIdQuery(roomId);
+  const {
+    data: room,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetRoomByIdQuery(roomId);
   const [updateRoom] = useUpdateRoomMutation();
 
   const [formData, setFormData] = useState({
@@ -51,15 +59,14 @@ const EditRoomScreen = () => {
 
   const handleImageChange = (e) => {
     const files = e.target.files;
-    const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  
-    const selectedValidImages = Array.from(files).filter(file =>
+    const imageTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+    const selectedValidImages = Array.from(files).filter((file) =>
       imageTypes.includes(file.type)
     );
-  
+
     setSelectedImages(selectedValidImages);
   };
-  
 
   const handleRemoveImage = (index) => {
     setImagesToDelete((prev) => [...prev, formData.images[index]]);
@@ -128,11 +135,13 @@ const EditRoomScreen = () => {
       toast.success("Room updated successfully");
       navigate("/hotelier/registered-hotels");
     } catch (error) {
-      toast.error(error?.data?.message || error?.error || "Error updating room");
+      toast.error(
+        error?.data?.message || error?.error || "Error updating room"
+      );
     }
   };
 
-  if (isLoading) return <Loader/>;
+  if (isLoading) return <Loader />;
   if (isError) {
     toast.error("Error fetching room details");
     return <div>Error</div>;
@@ -140,36 +149,82 @@ const EditRoomScreen = () => {
 
   return (
     <HotelierLayout>
-      <Container className="px-4 w-75" style={{ maxHeight: "100vh", overflowY: "auto" }}>
+      <Container
+        className="px-4 w-75"
+        style={{ maxHeight: "100vh", overflowY: "auto" }}
+      >
         <h1 className="my-3">Edit Room</h1>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="type" className="mb-3">
             <Form.Label>Type</Form.Label>
-            <Form.Control type="text" name="type" value={formData?.type} onChange={handleChange} required />
+            <Form.Control
+              type="text"
+              name="type"
+              value={formData?.type}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="price" className="mb-3">
             <Form.Label>Price</Form.Label>
-            <Form.Control type="number" name="price" value={formData?.price} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="price"
+              value={formData?.price}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="area" className="mb-3">
             <Form.Label>Area</Form.Label>
-            <Form.Control type="number" name="area" value={formData?.area} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="area"
+              value={formData?.area}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="occupancy" className="mb-3">
             <Form.Label>Occupancy</Form.Label>
-            <Form.Control type="number" name="occupancy" value={formData?.occupancy} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="occupancy"
+              value={formData?.occupancy}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="noOfRooms" className="mb-3">
             <Form.Label>Number of Rooms</Form.Label>
-            <Form.Control type="number" name="noOfRooms" value={formData?.noOfRooms} onChange={handleChange} required />
+            <Form.Control
+              type="number"
+              name="noOfRooms"
+              value={formData?.noOfRooms}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="description" className="mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} name="description" value={formData?.description} onChange={handleChange} required />
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="description"
+              value={formData?.description}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="amenities" className="mb-3">
             <Form.Label>Amenities</Form.Label>
-            <Form.Control type="text" name="amenities" value={formData?.amenities} onChange={handleChange} required />
+            <Form.Control
+              type="text"
+              name="amenities"
+              value={formData?.amenities}
+              onChange={handleChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="images" className="mb-3">
             <Form.Label>Images</Form.Label>
@@ -177,10 +232,13 @@ const EditRoomScreen = () => {
               {formData?.images.map((image, index) => (
                 <Col key={index} md={3} className="mb-3 position-relative">
                   <Card style={{ width: "100%", height: "100%" }}>
-                    {typeof image === 'string' && (
+                    {typeof image === "string" && (
                       <Card.Img
                         variant="top"
-                        src={`https://celebratespaces.site/${image.replace("backend\\public\\", "")}`}
+                        src={`https://celebratespaces.site/${image.replace(
+                          "backend\\public\\",
+                          ""
+                        )}`}
                         alt={`Room Image ${index}`}
                         style={{ height: "150px", objectFit: "cover" }}
                       />
@@ -197,9 +255,16 @@ const EditRoomScreen = () => {
                 </Col>
               ))}
             </Row>
-            <Form.Control type="file" name="images" onChange={handleImageChange} multiple />
+            <Form.Control
+              type="file"
+              name="images"
+              onChange={handleImageChange}
+              multiple
+            />
           </Form.Group>
-          <Button type="submit" className="mb-3">Update Room</Button>
+          <Button type="submit" className="mb-3">
+            Update Room
+          </Button>
         </Form>
       </Container>
     </HotelierLayout>

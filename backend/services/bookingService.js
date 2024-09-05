@@ -24,7 +24,11 @@ const checkAvailability = async (
   try {
     const room = await Room.findById(roomId);
     if (!room) {
-      return { status: "error", data: null, message: responseMessages.ROOM_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.ROOM_NOT_FOUND,
+      };
     }
 
     const roomsRequired = Math.ceil(guestCount / room.occupancy);
@@ -75,7 +79,11 @@ const updateBookingStatusService = async (
   try {
     const booking = await findBookingById(bookingId);
     if (!booking) {
-      return { status: "error", data: null, message: responseMessages.BOOKING_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.BOOKING_NOT_FOUND,
+      };
     }
     booking.paymentId = paymentId;
     booking.paymentStatus = paymentStatus;
@@ -197,7 +205,8 @@ const cancelBooking = async (bookingId) => {
   }
 
   booking.bookingStatus = "cancelled";
-  booking.cancelMessage = responseMessages.BOOKING_CANCELLED_REFUND(refundPercentage);
+  booking.cancelMessage =
+    responseMessages.BOOKING_CANCELLED_REFUND(refundPercentage);
   await saveBooking(booking);
 
   const wallet = await walletRepository.findWalletByUserId(booking.userId);

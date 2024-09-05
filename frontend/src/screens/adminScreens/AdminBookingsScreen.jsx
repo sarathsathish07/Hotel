@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Table, Container, Row, Col, Card, Button, Collapse, Form as BootstrapForm, Pagination } from 'react-bootstrap';
-import { useGetAllBookingsQuery } from '../../slices/adminApiSlice';
-import Loader from '../../components/generalComponents/Loader';
-import AdminLayout from '../../components/adminComponents/AdminLayout';
-import { FaChevronDown } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  Table,
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Collapse,
+  Form as BootstrapForm,
+  Pagination,
+} from "react-bootstrap";
+import { useGetAllBookingsQuery } from "../../slices/adminApiSlice";
+import Loader from "../../components/generalComponents/Loader";
+import AdminLayout from "../../components/adminComponents/AdminLayout";
+import { FaChevronDown } from "react-icons/fa";
 
 const AdminBookingsScreen = () => {
   const { adminInfo } = useSelector((state) => state.adminAuth);
@@ -26,25 +36,32 @@ const AdminBookingsScreen = () => {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
-  const filteredBookings = bookings?.filter(
-    (booking) =>
-      booking.hotelId.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.roomId.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.userId.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
-  const sortedBookings = [...filteredBookings].sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+  const filteredBookings =
+    bookings?.filter(
+      (booking) =>
+        booking.hotelId.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        booking.roomId.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.userId.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+  const sortedBookings = [...filteredBookings].sort(
+    (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
+  );
 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
-  const currentBookings = sortedBookings?.slice(indexOfFirstBooking, indexOfLastBooking);
+  const currentBookings = sortedBookings?.slice(
+    indexOfFirstBooking,
+    indexOfLastBooking
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (isLoading) return <Loader />;
-
 
   return (
     <AdminLayout>
@@ -56,8 +73,13 @@ const AdminBookingsScreen = () => {
               <Card.Body>
                 <div className="containerS">
                   <BootstrapForm>
-                    <BootstrapForm.Group className="mt-3" controlId="exampleForm.ControlInput1">
-                      <BootstrapForm.Label>Search bookings:</BootstrapForm.Label>
+                    <BootstrapForm.Group
+                      className="mt-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <BootstrapForm.Label>
+                        Search bookings:
+                      </BootstrapForm.Label>
                       <BootstrapForm.Control
                         style={{ width: "500px" }}
                         value={searchQuery}
@@ -69,7 +91,7 @@ const AdminBookingsScreen = () => {
                   </BootstrapForm>
                 </div>
                 <br />
-                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                <div style={{ maxHeight: "500px", overflowY: "auto" }}>
                   <Table responsive>
                     <thead>
                       <tr>
@@ -88,11 +110,20 @@ const AdminBookingsScreen = () => {
                             <td>{booking?.hotelId?.name}</td>
                             <td>{booking?.roomId?.type}</td>
                             <td>{booking?.userId?.name}</td>
-                            <td>{new Date(booking?.bookingDate).toLocaleDateString()}</td>
+                            <td>
+                              {new Date(
+                                booking?.bookingDate
+                              ).toLocaleDateString()}
+                            </td>
                             <td>{booking?.totalAmount}</td>
                             <td>
-                              <Button variant="link" onClick={() => toggleRow(booking?._id)}>
-                                {expandedRow === booking?._id ? 'Hide Details' : 'View Details'}{' '}
+                              <Button
+                                variant="link"
+                                onClick={() => toggleRow(booking?._id)}
+                              >
+                                {expandedRow === booking?._id
+                                  ? "Hide Details"
+                                  : "View Details"}{" "}
                                 <FaChevronDown />
                               </Button>
                             </td>
@@ -103,11 +134,30 @@ const AdminBookingsScreen = () => {
                                 <div>
                                   <Card className="mt-2">
                                     <Card.Body>
-                                      <p><strong>Guest Name:</strong> {booking?.userId?.name}</p>
-                                      <p><strong>Email:</strong> {booking?.userId?.email}</p>
-                                      <p><strong>Payment Method:</strong> {booking?.paymentMethod}</p>
-                                      <p><strong>Check-In:</strong> {new Date(booking?.checkInDate).toLocaleDateString()}</p>
-                                      <p><strong>Check-Out:</strong> {new Date(booking?.checkOutDate).toLocaleDateString()}</p>
+                                      <p>
+                                        <strong>Guest Name:</strong>{" "}
+                                        {booking?.userId?.name}
+                                      </p>
+                                      <p>
+                                        <strong>Email:</strong>{" "}
+                                        {booking?.userId?.email}
+                                      </p>
+                                      <p>
+                                        <strong>Payment Method:</strong>{" "}
+                                        {booking?.paymentMethod}
+                                      </p>
+                                      <p>
+                                        <strong>Check-In:</strong>{" "}
+                                        {new Date(
+                                          booking?.checkInDate
+                                        ).toLocaleDateString()}
+                                      </p>
+                                      <p>
+                                        <strong>Check-Out:</strong>{" "}
+                                        {new Date(
+                                          booking?.checkOutDate
+                                        ).toLocaleDateString()}
+                                      </p>
                                     </Card.Body>
                                   </Card>
                                 </div>
@@ -120,7 +170,11 @@ const AdminBookingsScreen = () => {
                   </Table>
                   <div className="d-flex justify-content-center mt-3">
                     <Pagination>
-                      {Array.from({ length: Math.ceil(filteredBookings.length / bookingsPerPage) }).map((_, index) => (
+                      {Array.from({
+                        length: Math.ceil(
+                          filteredBookings.length / bookingsPerPage
+                        ),
+                      }).map((_, index) => (
                         <Pagination.Item
                           key={index + 1}
                           active={index + 1 === currentPage}

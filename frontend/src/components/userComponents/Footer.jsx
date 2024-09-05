@@ -10,7 +10,9 @@ const Footer = () => {
           <Col md={5}>
             <h5>About Us</h5>
             <p>
-              Celebrate Spaces is your go-to platform for finding and booking the best hotels worldwide. Experience luxury and comfort at unbeatable prices.
+              Celebrate Spaces is your go-to platform for finding and booking
+              the best hotels worldwide. Experience luxury and comfort at
+              unbeatable prices.
             </p>
           </Col>
           <Col md={3}>
@@ -41,7 +43,10 @@ const Footer = () => {
         </Row>
         <Row>
           <Col className="text-center mt-3">
-            <p>&copy; {new Date().getFullYear()} Celebrate Spaces. All rights reserved.</p>
+            <p>
+              &copy; {new Date().getFullYear()} Celebrate Spaces. All rights
+              reserved.
+            </p>
           </Col>
         </Row>
       </Container>

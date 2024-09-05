@@ -1,19 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotel',
+    ref: "Hotel",
     required: true,
   },
   roomId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Room',
+    ref: "Room",
     required: true,
   },
   checkInDate: {
@@ -27,13 +27,13 @@ const bookingSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
     required: true,
-    enum: ['wallet', 'razorpay'],
+    enum: ["wallet", "razorpay"],
   },
   paymentStatus: {
     type: String,
     required: true,
-    enum: ['pending', 'completed', 'failed'],
-    default: 'pending',
+    enum: ["pending", "completed", "failed"],
+    default: "pending",
   },
   bookingDate: {
     type: Date,
@@ -42,11 +42,11 @@ const bookingSchema = new mongoose.Schema({
   bookingStatus: {
     type: String,
     required: true,
-    enum: ['confirmed', 'cancelled', 'pending'],
+    enum: ["confirmed", "cancelled", "pending"],
   },
   hotelierId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hotelier',
+    ref: "Hotelier",
     required: true,
   },
   roomsBooked: {
@@ -60,14 +60,14 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  paymentId: { 
+  paymentId: {
     type: String,
   },
-  cancelMessage : { 
+  cancelMessage: {
     type: String,
   },
 });
 
-const Booking = mongoose.model('Booking', bookingSchema);
+const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;

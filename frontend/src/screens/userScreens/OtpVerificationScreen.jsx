@@ -66,7 +66,6 @@ const OtpVerificationScreen = () => {
   };
   if (isLoading) return <Loader />;
 
-
   return (
     <div className="login-container loginbody">
       <div className="position-absolute top-0 start-0 p-3">
@@ -85,8 +84,6 @@ const OtpVerificationScreen = () => {
               className="form-control"
             />
           </Form.Group>
-
-         
 
           <Button type="submit" variant="primary" className="mt-3">
             Verify

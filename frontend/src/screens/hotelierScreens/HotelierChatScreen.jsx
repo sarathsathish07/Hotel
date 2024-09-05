@@ -5,47 +5,59 @@ import {
   useGetHotelChatRoomsQuery,
   useGetHotelMessagesQuery,
   useSendHotelMessageMutation,
-  useMarkHotelMessagesAsReadMutation
+  useMarkHotelMessagesAsReadMutation,
 } from "../../slices/hotelierApiSlice.js";
 import HotelierLayout from "../../components/hotelierComponents/HotelierLayout";
 import io from "socket.io-client";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import EmojiPicker from "emoji-picker-react";
 import { FaPaperclip } from "react-icons/fa";
 
-const socket = io('https://celebratespaces.site/');
+const socket = io("https://celebratespaces.site/");
 
 const HotelierChatScreen = () => {
   const { hotelId } = useParams();
   const [selectedChatRoom, setSelectedChatRoom] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const { data: chatRooms = [], isLoading: isLoadingChatRooms, isError: isErrorChatRooms,refetch: refetchHotelChatRooms, } = useGetHotelChatRoomsQuery(hotelId);
-  const { data: messages = [], isLoading: isLoadingMessages, isError: isErrorMessages, refetch: refetchMessages } = useGetHotelMessagesQuery(selectedChatRoom?._id, { skip: !selectedChatRoom });
+  const {
+    data: chatRooms = [],
+    isLoading: isLoadingChatRooms,
+    isError: isErrorChatRooms,
+    refetch: refetchHotelChatRooms,
+  } = useGetHotelChatRoomsQuery(hotelId);
+  const {
+    data: messages = [],
+    isLoading: isLoadingMessages,
+    isError: isErrorMessages,
+    refetch: refetchMessages,
+  } = useGetHotelMessagesQuery(selectedChatRoom?._id, {
+    skip: !selectedChatRoom,
+  });
   const [sendMessage] = useSendHotelMessageMutation();
   const [markMessagesAsRead] = useMarkHotelMessagesAsReadMutation();
 
   useEffect(() => {
     document.title = "Messages";
-    socket.on('message', (message) => {
+    socket.on("message", (message) => {
       if (message.chatRoomId === selectedChatRoom?._id) {
         refetchMessages();
       }
     });
 
     return () => {
-      socket.off('message');
+      socket.off("message");
     };
   }, [selectedChatRoom, refetchMessages]);
 
-  useEffect(()=>{
-    refetchHotelChatRooms()
-  })
+  useEffect(() => {
+    refetchHotelChatRooms();
+  });
 
   useEffect(() => {
     socket.on("typingUser", () => {
@@ -59,13 +71,13 @@ const HotelierChatScreen = () => {
     return () => {
       socket.off("typingUser");
       socket.off("stopTypingUser");
-    }
+    };
   }, []);
 
   useEffect(() => {
     if (selectedChatRoom) {
       refetchMessages();
-      socket.emit('joinRoom', { roomId: selectedChatRoom._id });
+      socket.emit("joinRoom", { roomId: selectedChatRoom._id });
 
       markMessagesAsRead(selectedChatRoom._id);
       socket.emit("messageRead", { roomId: selectedChatRoom._id });
@@ -78,7 +90,7 @@ const HotelierChatScreen = () => {
         refetchHotelChatRooms();
       }
     });
-  
+
     return () => {
       socket.off("messageRead");
     };
@@ -86,16 +98,13 @@ const HotelierChatScreen = () => {
 
   useEffect(() => {
     socket.on("messageUnRead", () => {
-        refetchHotelChatRooms();
-      
+      refetchHotelChatRooms();
     });
-  
+
     return () => {
       socket.off("messageUnRead");
     };
   }, [refetchHotelChatRooms]);
-  
-  
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -122,7 +131,7 @@ const HotelierChatScreen = () => {
       await sendMessage(messageData);
       setNewMessage("");
       setSelectedFile(null);
-      setSelectedFileName(""); 
+      setSelectedFileName("");
       refetchMessages();
       socket.emit("message", messageData);
       socket.emit("messageUnReadHotel", { roomId: selectedChatRoom._id });
@@ -150,10 +159,10 @@ const HotelierChatScreen = () => {
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
     if (!isTyping) {
-      socket.emit('typingHotel', { roomId: selectedChatRoom._id });
+      socket.emit("typingHotel", { roomId: selectedChatRoom._id });
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        socket.emit('stopTypingHotel', { roomId: selectedChatRoom._id });
+        socket.emit("stopTypingHotel", { roomId: selectedChatRoom._id });
       }, 3000);
     }
   };
@@ -177,12 +186,26 @@ const HotelierChatScreen = () => {
                   {chatRooms.map((room) => (
                     <li
                       key={room._id}
-                      className={selectedChatRoom && selectedChatRoom._id === room._id ? "active" : ""}
+                      className={
+                        selectedChatRoom && selectedChatRoom._id === room._id
+                          ? "active"
+                          : ""
+                      }
                       onClick={() => handleChatRoomSelect(room)}
                     >
                       {room.userId.name}
                       {room.unreadMessagesCount > 0 && (
-                        <span className="" style={{ marginLeft: "10px", color: "red",fontSize:"30px",borderRadius:"50%" }}>•</span>
+                        <span
+                          className=""
+                          style={{
+                            marginLeft: "10px",
+                            color: "red",
+                            fontSize: "30px",
+                            borderRadius: "50%",
+                          }}
+                        >
+                          •
+                        </span>
                       )}
                     </li>
                   ))}
@@ -196,40 +219,63 @@ const HotelierChatScreen = () => {
                 <>
                   <h5 className="my-3 mx-2">{selectedChatRoom.userId.name}</h5>
                   {isTyping && (
-                    <p className="typing-indicator mx-2" style={{ color: "black" }}>Typing...</p>
+                    <p
+                      className="typing-indicator mx-2"
+                      style={{ color: "black" }}
+                    >
+                      Typing...
+                    </p>
                   )}
-                  <div className="messages" style={{ overflowY: "scroll", height: "450px" }}>
+                  <div
+                    className="messages"
+                    style={{ overflowY: "scroll", height: "450px" }}
+                  >
                     {isLoadingMessages ? (
                       <p>Loading messages...</p>
                     ) : (
                       messages
                         .slice()
-                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                        .sort(
+                          (a, b) =>
+                            new Date(a.createdAt) - new Date(b.createdAt)
+                        )
                         .map((msg) => (
                           <div
                             key={msg._id}
-                            className={`message ${msg.senderType === "User" ? "received" : "sent"}`}
+                            className={`message ${
+                              msg.senderType === "User" ? "received" : "sent"
+                            }`}
                           >
                             {msg.fileUrl ? (
-                              <div style={{ display: "flex", flexDirection: "column" }}>
-                                {msg.fileUrl.endsWith('.pdf') ||  
-                                    msg.fileUrl.endsWith('.doc') ||
-                                    msg.fileUrl.endsWith('.docx') ||
-                                    msg.fileUrl.endsWith('.xls') ||
-                                    msg.fileUrl.endsWith('.xlsx') ||
-                                    msg.fileUrl.endsWith('.txt') ? (
-                                      <div style={{ display: "flex", flexDirection: "column" }}>
-                                      <div>{msg.content}</div> 
-                                      <a
-                                        href={`https://celebratespaces.site/${msg.fileUrl}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        download
-                                        style={{ marginTop: "5px" }}
-                                      >
-                                        Download
-                                      </a>
-                                    </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {msg.fileUrl.endsWith(".pdf") ||
+                                msg.fileUrl.endsWith(".doc") ||
+                                msg.fileUrl.endsWith(".docx") ||
+                                msg.fileUrl.endsWith(".xls") ||
+                                msg.fileUrl.endsWith(".xlsx") ||
+                                msg.fileUrl.endsWith(".txt") ? (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                    }}
+                                  >
+                                    <div>{msg.content}</div>
+                                    <a
+                                      href={`https://celebratespaces.site/${msg.fileUrl}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      download
+                                      style={{ marginTop: "5px" }}
+                                    >
+                                      Download
+                                    </a>
+                                  </div>
                                 ) : (
                                   <img
                                     src={`https://celebratespaces.site/${msg.fileUrl}`}
@@ -242,8 +288,11 @@ const HotelierChatScreen = () => {
                               msg.content
                             )}
 
-                            <div className="message-time" style={{ fontSize: '9px', marginTop: '5px' }}>
-                              {format(new Date(msg.createdAt), ' hh:mm')}
+                            <div
+                              className="message-time"
+                              style={{ fontSize: "9px", marginTop: "5px" }}
+                            >
+                              {format(new Date(msg.createdAt), " hh:mm")}
                             </div>
                           </div>
                         ))
@@ -270,27 +319,56 @@ const HotelierChatScreen = () => {
                       />
                       <button
                         onClick={handleSendMessage}
-                        style={{ backgroundColor: "#555555", padding: "10px", borderRadius: "10px", width: "70px" }}
+                        style={{
+                          backgroundColor: "#555555",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          width: "70px",
+                        }}
                       >
                         Send
                       </button>
-                    
-                    <div>
-                    {showEmojiPicker && (
-                        <div style={{ position: "absolute", bottom: "50px",right:"20px" }}>
-                          <EmojiPicker onEmojiClick={handleEmojiClick} />
-                        </div>
-                      )}
-                      <button
-                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className="emoji-button"
-                        style={{ marginLeft: "10px", border: "1px solid black", padding: "10px", borderRadius: "10px" }}
-                      >
-                        😊
-                      </button>
+
+                      <div>
+                        {showEmojiPicker && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              bottom: "50px",
+                              right: "20px",
+                            }}
+                          >
+                            <EmojiPicker onEmojiClick={handleEmojiClick} />
+                          </div>
+                        )}
+                        <button
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className="emoji-button"
+                          style={{
+                            marginLeft: "10px",
+                            border: "1px solid black",
+                            padding: "10px",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          😊
+                        </button>
                       </div>
-                      <label htmlFor="file-upload" style={{ marginLeft: "10px", border: "1px solid black", padding: "5px", borderRadius: "10px", width: "50px", textAlign: "center", cursor: "pointer" }}>
-                        <FaPaperclip style={{ color: "#555555", cursor: "pointer" }} />
+                      <label
+                        htmlFor="file-upload"
+                        style={{
+                          marginLeft: "10px",
+                          border: "1px solid black",
+                          padding: "5px",
+                          borderRadius: "10px",
+                          width: "50px",
+                          textAlign: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <FaPaperclip
+                          style={{ color: "#555555", cursor: "pointer" }}
+                        />
                       </label>
                       <input
                         id="file-upload"
@@ -302,7 +380,9 @@ const HotelierChatScreen = () => {
                   </div>
                 </>
               ) : (
-                <p style={{marginTop:"30%",marginLeft:"30%"}}>Select a chat to start messaging</p>
+                <p style={{ marginTop: "30%", marginLeft: "30%" }}>
+                  Select a chat to start messaging
+                </p>
               )}
             </div>
           </Col>

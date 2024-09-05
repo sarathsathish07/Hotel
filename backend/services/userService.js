@@ -60,7 +60,11 @@ const authenticateUser = async (email, password) => {
 
     if (user && (await user.matchPassword(password))) {
       if (user.isBlocked) {
-        return { status: "error", data: null, message: responseMessages.USER_BLOCKED };
+        return {
+          status: "error",
+          data: null,
+          message: responseMessages.USER_BLOCKED,
+        };
       }
       if (!user.otpVerified) {
         if (new Date() > user.otpExpiry) {
@@ -140,7 +144,11 @@ const verifyUserOtp = async (email, otp) => {
 
     if (user && user.otp.toString() === otp.trim()) {
       if (user.otpExpires && user.otpExpires < Date.now()) {
-        return { status: "error", data: null, message: responseMessages.OTP_EXPIRED };
+        return {
+          status: "error",
+          data: null,
+          message: responseMessages.OTP_EXPIRED,
+        };
       }
       user.otpVerified = true;
       await userRepository.saveUser(user);
@@ -150,7 +158,11 @@ const verifyUserOtp = async (email, otp) => {
         message: responseMessages.OTP_INVALID,
       };
     } else {
-      return { status: "error", data: null, message: responseMessages.OTP_INVALID };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.OTP_INVALID,
+      };
     }
   } catch (error) {
     return { status: "error", data: null, message: error.message };
@@ -162,7 +174,11 @@ const resendOtp = async (email) => {
     const user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      return { status: "error", data: null, message: responseMessages.USER_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.USER_NOT_FOUND,
+      };
     }
 
     const otp = crypto.randomInt(100000, 999999);
@@ -187,7 +203,11 @@ const logoutUser = (res) => {
       httpOnly: true,
       expires: new Date(0),
     });
-    return { status: "success", data: null, message: responseMessages.PROFILE_UPDATED };
+    return {
+      status: "success",
+      data: null,
+      message: responseMessages.PROFILE_UPDATED,
+    };
   } catch (error) {
     return { status: "error", data: null, message: error.message };
   }
@@ -215,7 +235,11 @@ const updateUserProfileService = async (userId, updateData, profileImage) => {
   try {
     const user = await userRepository.findUserById(userId);
     if (!user) {
-      return { status: "error", data: null, message: responseMessages.USER_NOT_FOUND };
+      return {
+        status: "error",
+        data: null,
+        message: responseMessages.USER_NOT_FOUND,
+      };
     }
 
     if (updateData.currentPassword) {
@@ -278,11 +302,8 @@ const sendPasswordResetEmailService = async (email) => {
 
     const resetUrl = `https://celebrate-spaces.vercel.app/reset-password/${resetToken}`;
 
-    const message = 
-      `You requested a password reset. Please make a request to:
-      ${resetUrl}`
-    ;
-
+    const message = `You requested a password reset. Please make a request to:
+      ${resetUrl}`;
     await sendEmail({
       to: user.email,
       subject: "Password Reset Request",
@@ -341,5 +362,5 @@ export default {
   updateUserProfileService,
   getSingleHotelById,
   resetPasswordService,
-  sendPasswordResetEmailService
+  sendPasswordResetEmailService,
 };

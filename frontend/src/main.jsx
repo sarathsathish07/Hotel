@@ -19,7 +19,7 @@ import ProfileScreen from "./screens/userScreens/ProfileScreen.jsx";
 import AdminHomeScreen from "./screens/adminScreens/AdminHomeScreen.jsx";
 import AdminLoginScreen from "./screens/adminScreens/AdminLoginScreen.jsx";
 import OtpVerificationScreen from "./screens/userScreens/OtpVerificationScreen.jsx";
-import {UserManagementScreen}  from "./screens/adminScreens/UserManagementScreen.jsx";
+import { UserManagementScreen } from "./screens/adminScreens/UserManagementScreen.jsx";
 import HotelierHomeScreen from "./screens/hotelierScreens/HotelierHomeScreen.jsx";
 import HotelierLoginScreen from "./screens/hotelierScreens/HotelierLoginScreen.jsx";
 import HotelierProfileScreen from "./screens/hotelierScreens/HotelierProfileScreen.jsx";
@@ -64,9 +64,9 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/hotels/:id" element={<HotelDetailsScreen />} />
-        <Route path="/booking" element={<CheckoutScreen/>} />
-        <Route path="/bookings" element={<BookingsScreen/>} />
-        <Route path="/wallet" element={<WalletScreen/>} />
+        <Route path="/booking" element={<CheckoutScreen />} />
+        <Route path="/bookings" element={<BookingsScreen />} />
+        <Route path="/wallet" element={<WalletScreen />} />
         <Route path="/chat/:hotelId" element={<ChatScreen />} />
       </Route>
 
@@ -76,7 +76,7 @@ const router = createBrowserRouter(
         <Route path="get-user" element={<UserManagementScreen />} />
         <Route path="verification" element={<AdminVerificationScreen />} />
         <Route path="get-hotels" element={<HotelsManagementScreen />} />
-        <Route path="bookings" element={<AdminBookingsScreen/>} />
+        <Route path="bookings" element={<AdminBookingsScreen />} />
       </Route>
       <Route path="/admin/login" element={<AdminLoginScreen />} />
 
@@ -84,15 +84,27 @@ const router = createBrowserRouter(
       <Route path="/hotelier" element={<HotelierPrivateRoute />}>
         <Route index element={<HotelierHomeScreen />} />
         <Route path="profile" element={<HotelierProfileScreen />} />
-        <Route path="verify-hotel/:hotelId" element={<HotelVerificationScreen />} />
+        <Route
+          path="verify-hotel/:hotelId"
+          element={<HotelVerificationScreen />}
+        />
         <Route path="registered-hotels" element={<RegisteredHotelsScreen />} />
         <Route path="add-hotel" element={<AddHotelScreen />} />
         <Route path="/hotelier/edit-hotel/:id" element={<EditHotelScreen />} />
         <Route path="/hotelier/add-room/:hotelId" element={<AddRoomScreen />} />
-        <Route path="/hotelier/bookings" element={<HotelierBookingsScreen/>} />
-        <Route path="/hotelier/hotel-details/:id" element={<HotelDetailScreen />} />
-        <Route path="/hotelier/edit-room/:roomId" element={<EditRoomScreen />} />
-        <Route path="/hotelier/hotel/:hotelId/chat" element={<HotelierChatScreen />} />
+        <Route path="/hotelier/bookings" element={<HotelierBookingsScreen />} />
+        <Route
+          path="/hotelier/hotel-details/:id"
+          element={<HotelDetailScreen />}
+        />
+        <Route
+          path="/hotelier/edit-room/:roomId"
+          element={<EditRoomScreen />}
+        />
+        <Route
+          path="/hotelier/hotel/:hotelId/chat"
+          element={<HotelierChatScreen />}
+        />
       </Route>
       <Route path="/hotelier/login" element={<HotelierLoginScreen />} />
       <Route path="/hotelier/register" element={<HotelierRegisterScreen />} />
@@ -107,7 +119,7 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <React.StrictMode>
-    <ErrorBoundaryWrapper>
+      <ErrorBoundaryWrapper>
         <RouterProvider router={router} />
       </ErrorBoundaryWrapper>
     </React.StrictMode>

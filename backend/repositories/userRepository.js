@@ -1,6 +1,6 @@
-import User from '../models/userModel.js';
-import Hotel from '../models/hotelModel.js';
-import Room from '../models/roomModel.js';
+import User from "../models/userModel.js";
+import Hotel from "../models/hotelModel.js";
+import Room from "../models/roomModel.js";
 
 const findUserByEmail = async (email) => {
   try {
@@ -68,5 +68,5 @@ export {
   saveUser,
   findHotelById,
   findRoomsByHotelId,
-  findUserByResetToken
+  findUserByResetToken,
 };
