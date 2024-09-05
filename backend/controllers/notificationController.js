@@ -9,13 +9,13 @@ const getUnreadNotifications = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: notifications,
-      message: responseMessages.success.unreadNotificationsRetrieved,
+      message: responseMessages.unreadNotificationsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -28,13 +28,13 @@ const markNotificationAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: responseMessages.success.notificationMarkedAsRead,
+      message: responseMessages.notificationMarkedAsRead,
     });
   } catch (error) {
     res.status(error.message === 'Notification not found' ? 404 : 401).json({
       status: 'error',
       data: null,
-      message: error.message === 'Notification not found' ? responseMessages.error.notificationNotFound : responseMessages.error.serverError,
+      message: error.message === 'Notification not found' ? responseMessages.notificationNotFound : responseMessages.serverError,
     });
   }
 });
@@ -47,14 +47,14 @@ const getUnreadHotelierNotifications = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: notifications,
-      message: responseMessages.success.unreadNotificationsRetrieved,
+      message: responseMessages.unreadNotificationsRetrieved,
     });
   } catch (error) {
     console.error('Error fetching unread notifications:', error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -69,26 +69,26 @@ const markHotelierNotificationAsRead = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: responseMessages.success.notificationMarkedAsRead,
+      message: responseMessages.notificationMarkedAsRead,
     });
   } catch (error) {
     if (error.message === 'Notification not found') {
       res.status(404).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.notificationNotFound,
+        message: responseMessages.notificationNotFound,
       });
     } else if (error.message === 'Not authorized') {
       res.status(401).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.notAuthorized,
+        message: responseMessages.notAuthorized,
       });
     } else {
       res.status(500).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.serverError,
+        message: responseMessages.serverError,
       });
     }
   }

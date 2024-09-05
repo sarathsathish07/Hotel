@@ -276,10 +276,10 @@ const sendPasswordResetEmailService = async (email) => {
     user.resetPasswordExpire = resetTokenExpire;
     await userRepository.saveUser(user);
 
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `https://celebrate-spaces.vercel.app/reset-password/${resetToken}`;
 
     const message = 
-      `You requested a password reset. Please make a PUT request to:
+      `You requested a password reset. Please make a request to:
       ${resetUrl}`
     ;
 

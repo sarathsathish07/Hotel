@@ -69,6 +69,15 @@ const HotelDetailsScreen = () => {
       toast.error('Check-out date must be after check-in date');
       return;
     }
+    if (roomCount <= 0) {
+      toast.error('Room count must be greater than zero');
+      return;
+    }
+  
+    if (guestCount <= 0) {
+      toast.error('Guest count must be greater than zero');
+      return;
+    }
   
     try {
       const availabilityResponse = await checkRoomAvailability({

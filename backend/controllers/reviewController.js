@@ -11,13 +11,13 @@ const addReview = expressAsyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: newReview,
-      message: responseMessages.success.reviewAdded,
+      message: responseMessages.reviewAdded,
     });
   } catch (error) {
     res.status(error.message === 'Booking not found' ? 404 : 500).json({
       status: 'error',
       data: null,
-      message: error.message === 'Booking not found' ? responseMessages.error.bookingNotFound : responseMessages.error.serverError,
+      message: error.message === 'Booking not found' ? responseMessages.bookingNotFound : responseMessages.serverError,
     });
   }
 });
@@ -29,13 +29,13 @@ const getReviews = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: reviews,
-      message: responseMessages.success.reviewsRetrieved,
+      message: responseMessages.reviewsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -47,13 +47,13 @@ const getBookingReviews = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: reviews,
-      message: responseMessages.success.bookingReviewsRetrieved,
+      message: responseMessages.bookingReviewsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });

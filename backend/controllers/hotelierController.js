@@ -15,13 +15,13 @@ const authHotelierHandler = expressAsyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      message: responseMessages.success.hotelierAuthenticated,
+      message: responseMessages.hotelierAuthenticated,
     });
   } catch (error) {
     res.status(401).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.invalidCredentials,
+      message: responseMessages.invalidCredentials,
     });
   }
 });
@@ -34,7 +34,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'success',
         data: null,
-        message: responseMessages.success.hotelierRegistered,
+        message: responseMessages.hotelierRegistered,
         otpSent: true,
       });
     } else {
@@ -45,7 +45,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
           name: user.name,
           email: user.email,
         },
-        message: responseMessages.success.hotelierRegistered,
+        message: responseMessages.hotelierRegistered,
         otpSent: true,
       });
     }
@@ -53,7 +53,7 @@ const registerHotelierHandler = expressAsyncHandler(async (req, res) => {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.otpFailed,
+      message: responseMessages.otpFailed,
     });
   }
 });
@@ -65,13 +65,13 @@ const verifyHotelierOtpHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: responseMessages.success.otpVerified,
+      message: responseMessages.otpVerified,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.otpFailed,
+      message: responseMessages.otpFailed,
     });
   }
 });
@@ -83,13 +83,13 @@ const resendHotelierOtpHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: null,
-      message: responseMessages.success.otpResent,
+      message: responseMessages.otpResent,
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.resendOtpFailed,
+      message: responseMessages.resendOtpFailed,
     });
   }
 });
@@ -100,13 +100,13 @@ const logoutHotelierHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: response,
-      message: responseMessages.success.hotelierLoggedOut,
+      message: responseMessages.hotelierLoggedOut,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -117,13 +117,13 @@ const getHotelierProfileHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: user,
-      message: responseMessages.success.profileRetrieved,
+      message: responseMessages.profileRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -143,13 +143,13 @@ const updateHotelierProfileHandler = expressAsyncHandler(async (req, res) => {
         email: updatedHotelier.email,
         profileImageName: updatedHotelier.profileImageName
       },
-      message: responseMessages.success.profileUpdated,
+      message: responseMessages.profileUpdated,
     });
   } catch (error) {
     res.status(404).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -163,13 +163,13 @@ const uploadVerificationDetailsHandler = expressAsyncHandler(async (req, res) =>
     res.status(200).json({
       status: 'success',
       data: null,
-      message: responseMessages.success.verificationDetailsSubmitted,
+      message: responseMessages.verificationDetailsSubmitted,
     });
   } catch (error) {
     res.status(404).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.uploadFailed,
+      message: responseMessages.uploadFailed,
     });
   }
 });
@@ -196,13 +196,13 @@ const addHotelHandler = expressAsyncHandler(async (req, res) => {
     res.status(response.status).json({
       status: 'success',
       data: response.data,
-      message: responseMessages.success.hotelAdded,
+      message: responseMessages.hotelAdded,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -215,13 +215,13 @@ const getHotelsHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: hotelsWithUnreadMessages,
-      message: responseMessages.success.hotelsRetrieved,
+      message: responseMessages.hotelsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -234,14 +234,14 @@ const getHotelByIdHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: hotelDetails,
-      message: responseMessages.success.hotelDetailsRetrieved,
+      message: responseMessages.hotelDetailsRetrieved,
     });
   } catch (error) {
     console.error("Error in handler:", error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -272,14 +272,14 @@ const updateHotelHandler = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: updatedHotel,
-      message: responseMessages.success.hotelUpdated,
+      message: responseMessages.hotelUpdated,
     });
   } catch (error) {
     console.error("Error in handler:", error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 };
@@ -292,13 +292,13 @@ const getStatsHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: stats,
-      message: responseMessages.success.statsRetrieved,
+      message: responseMessages.statsRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -310,7 +310,7 @@ const getSalesReportHandler = expressAsyncHandler(async (req, res) => {
       return res.status(400).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.invalidDateRange,
+        message: responseMessages.invalidDateRange,
       });
     }
 
@@ -319,13 +319,13 @@ const getSalesReportHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: salesReport,
-      message: responseMessages.success.salesReportRetrieved,
+      message: responseMessages.salesReportRetrieved,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });

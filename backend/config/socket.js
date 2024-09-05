@@ -1,47 +1,48 @@
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 
 const configureSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000", "https://celebrate-spaces.vercel.app","https://celebrate-spaces-kqbj.vercel.app"],
+      origin: [
+        "http://localhost:3000",
+        "https://celebrate-spaces.vercel.app",
+        "https://celebrate-spaces-kqbj.vercel.app",
+      ],
       methods: ["GET", "POST"],
-      credentials: true 
+      credentials: true,
     },
   });
-  
 
-  io.on('connection', (socket) => {
-
-    socket.on('joinRoom', ({ roomId }) => {
+  io.on("connection", (socket) => {
+    socket.on("joinRoom", ({ roomId }) => {
       socket.join(roomId);
     });
 
-    socket.on('disconnect', () => {
+    socket.on("disconnect", () => {});
+    socket.on("messageRead", ({ roomId }) => {
+      io.to(roomId).emit("messageRead", { roomId });
     });
-    socket.on('messageRead', ({ roomId }) => {
-      io.to(roomId).emit('messageRead', { roomId });
+    socket.on("messageUnRead", ({ roomId }) => {
+      io.to(roomId).emit("messageUnRead", { roomId });
     });
-    socket.on('messageUnRead', ({ roomId }) => {
-      io.to(roomId).emit('messageUnRead', { roomId });
-    });
-    socket.on('messageUnReadHotel', ({ roomId }) => {
-      io.to(roomId).emit('messageUnReadHotel', { roomId });
-    });
-
-    socket.on('typingUser', ({ roomId }) => {
-      socket.to(roomId).emit('typingUser');
+    socket.on("messageUnReadHotel", ({ roomId }) => {
+      io.to(roomId).emit("messageUnReadHotel", { roomId });
     });
 
-    socket.on('stopTypingUser', ({ roomId }) => {
-      socket.to(roomId).emit('stopTypingUser');
+    socket.on("typingUser", ({ roomId }) => {
+      socket.to(roomId).emit("typingUser");
     });
 
-    socket.on('typingHotel', ({ roomId }) => {
-      socket.to(roomId).emit('typingHotel');
+    socket.on("stopTypingUser", ({ roomId }) => {
+      socket.to(roomId).emit("stopTypingUser");
     });
 
-    socket.on('stopTypingHotel', ({ roomId }) => {
-      socket.to(roomId).emit('stopTypingHotel');
+    socket.on("typingHotel", ({ roomId }) => {
+      socket.to(roomId).emit("typingHotel");
+    });
+
+    socket.on("stopTypingHotel", ({ roomId }) => {
+      socket.to(roomId).emit("stopTypingHotel");
     });
   });
 

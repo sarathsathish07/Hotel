@@ -11,7 +11,7 @@ const addRoom = asyncHandler(async (req, res) => {
     return res.status(400).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.noImagesUploaded,
+      message: responseMessages.noImagesUploaded,
     });
   }
 
@@ -35,13 +35,13 @@ const addRoom = asyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       data: createdRoom,
-      message: responseMessages.success.roomAdded,
+      message: responseMessages.roomAdded,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.errorAddingRoom,
+      message: responseMessages.errorAddingRoom,
     });
   }
 });
@@ -54,13 +54,13 @@ const getRoomById = asyncHandler(async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.roomNotFound,
+        message: responseMessages.roomNotFound,
       });
     }
     res.status(200).json({
       status: 'success',
       data: room,
-      message: responseMessages.success.roomRetrieved,
+      message: responseMessages.roomRetrieved,
     });
   } catch (error) {
     res.status(500).json({
@@ -79,13 +79,13 @@ const getRoomByRoomId = asyncHandler(async (req, res) => {
       return res.status(404).json({
         status: 'error',
         data: null,
-        message: responseMessages.error.roomNotFound,
+        message: responseMessages.roomNotFound,
       });
     }
     res.status(200).json({
       status: 'success',
       data: room,
-      message: responseMessages.success.roomRetrieved,
+      message: responseMessages.roomRetrieved,
     });
   } catch (error) {
     res.status(500).json({
@@ -103,14 +103,14 @@ const getRoomsByHotelIds = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: rooms,
-      message: responseMessages.success.roomsRetrieved,
+      message: responseMessages.roomsRetrieved,
     });
   } catch (error) {
     console.error('Error fetching rooms:', error);
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.serverError,
+      message: responseMessages.serverError,
     });
   }
 });
@@ -124,13 +124,13 @@ const updateRoomHandler = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: updatedRoom,
-      message: responseMessages.success.roomUpdated,
+      message: responseMessages.roomUpdated,
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
       data: null,
-      message: responseMessages.error.errorUpdatingRoom,
+      message: responseMessages.errorUpdatingRoom,
     });
   }
 });
